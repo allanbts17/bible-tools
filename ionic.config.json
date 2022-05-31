@@ -1,0 +1,7 @@
+{
+  "name": "Bible Tools",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
