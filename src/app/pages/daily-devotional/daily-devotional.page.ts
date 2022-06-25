@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { IonModal } from '@ionic/angular';
 import { ConfigService } from 'src/app/services/config.service';
 
 
@@ -8,11 +9,13 @@ import { ConfigService } from 'src/app/services/config.service';
   styleUrls: ['./daily-devotional.page.scss'],
 })
 export class DailyDevotionalPage implements OnInit {
+  @ViewChild('modal') modal: IonModal;
   tabs = []
   testTabs = ['RPSP','Matutina','Lección']
   newNoteSelectedCategory = ""
   newCategoryInput = false
   showColorPicker = false
+  selectedColor = "#ffffff"
 
   constructor(public config: ConfigService) { }
 
@@ -24,7 +27,11 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   addNote(){
+    this.modal.dismiss()
+  }
 
+  selectColor(color){
+    this.selectedColor = color
   }
 
   handleSelectChange(e){
