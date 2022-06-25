@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ConfigService } from './services/config.service';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -6,13 +7,22 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   public appPages = [
-    { title: 'Inbox', url: '/folder/Inbox', icon: 'mail' },
-    { title: 'Outbox', url: '/folder/Outbox', icon: 'paper-plane' },
-    { title: 'Favorites', url: '/folder/Favorites', icon: 'heart' },
-    { title: 'Archived', url: '/folder/Archived', icon: 'archive' },
-    { title: 'Trash', url: '/folder/Trash', icon: 'trash' },
-    { title: 'Spam', url: '/folder/Spam', icon: 'warning' },
+    { title: 'Bible', url: '/bible-study', icon: 'book' },
+    { title: 'Daily devotional', url: '/daily-devotional', icon: 'document-text' },
+    { title: 'Verse index', url: '/verse-index', icon: 'list' }
   ];
-  public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
-  constructor() {}
+  header_title = ""
+  header_subtitle = ""
+
+  constructor(public config: ConfigService) {
+    this.setText()
+  }
+
+  setText(){
+    this.header_title = this.config.getData().menu.header
+    this.header_subtitle = this.config.getData().menu.note
+    for(let i=0;i<this.appPages.length;i++){
+      this.appPages[i].title = this.config.getData().menu.items[i]
+    }
+  }
 }

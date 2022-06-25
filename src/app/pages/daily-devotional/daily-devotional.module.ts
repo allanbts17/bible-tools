@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { BibleStudyPageRoutingModule } from './bible-study-routing.module';
+import { DailyDevotionalPageRoutingModule } from './daily-devotional-routing.module';
 
-import { BibleStudyPage } from './bible-study.page';
+import { DailyDevotionalPage } from './daily-devotional.page';
 import { ComponentsModule } from 'src/app/components/components.module';
 
 @NgModule({
@@ -15,8 +15,8 @@ import { ComponentsModule } from 'src/app/components/components.module';
     FormsModule,
     IonicModule,
     ComponentsModule,
-    BibleStudyPageRoutingModule
+    DailyDevotionalPageRoutingModule
   ],
-  declarations: [BibleStudyPage]
+  declarations: [DailyDevotionalPage]
 })
-export class BibleStudyPageModule {}
+export class DailyDevotionalPageModule {}

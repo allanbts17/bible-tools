@@ -9,22 +9,43 @@ import { Observable } from 'rxjs';
 })
 export class ApiService {
   auxBibles
-  base_url = "https://api.scripture.api.bible"
+  base_api_endpoint = "https://api.scripture.api.bible"
+  spanish_api_endpoint = "https://bible-app-demo.herokuapp.com/api"
   reqHeader = new HttpHeaders({
     'Content-Type': 'application/json',
     'api-key':'30a8f65d4c9d905424846450db90b830'
+  })
+  RV_reqHeader = new HttpHeaders({
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin':'*'
   })
 
   constructor(private http: HttpClient) { }
 
   getAllBibles(){
-    const path = `${this.base_url}`+"/v1/bibles";
+    const path = `${this.base_api_endpoint}`+"/v1/bibles";
     return this.http.get(path,{headers: this.reqHeader});
   }
 
   getBible(id){
-    const path = `${this.base_url}`+"/v1/bibles/"+`${id}`;
+    const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${id}`;
     return this.http.get<Bible>(path,{headers: this.reqHeader});
+  }
+
+  getRVBibleBookList(){
+
+    const path = this.spanish_api_endpoint + "/books"
+    return this.http.get(path,{headers:this.RV_reqHeader});
+  }
+
+  getRVBibleBook(bookId){
+    const path = this.spanish_api_endpoint + "/books/" + `${bookId}`
+    return this.http.get(path);
+  }
+
+  getRVBibleVerses(bookId,verses){
+    const path = this.spanish_api_endpoint + "/books/" + `${bookId}` + "/verses/" + `${verses}`
+    return this.http.get(path);
   }
 
   getAllLanguages(){

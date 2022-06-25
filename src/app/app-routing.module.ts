@@ -10,6 +10,14 @@ const routes: Routes = [
   {
     path: 'bible-study',
     loadChildren: () => import('./pages/bible-study/bible-study.module').then( m => m.BibleStudyPageModule)
+  },
+  {
+    path: 'daily-devotional',
+    loadChildren: () => import('./pages/daily-devotional/daily-devotional.module').then( m => m.DailyDevotionalPageModule)
+  },
+  {
+    path: 'verse-index',
+    loadChildren: () => import('./pages/verse-index/verse-index.module').then( m => m.VerseIndexPageModule)
   }
 ];
 

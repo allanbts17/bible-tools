@@ -11,11 +11,14 @@ export class BibleStudyPage implements OnInit {
   constructor(public apiService: ApiService) { }
 
   ngOnInit() {
-    this.apiService.getAllBibles().subscribe((bibles)=>{
+    this.apiService.getRVBibleBookList().subscribe(bibles => {
+      console.log(bibles)
+    },(err)=> console.log(err))
+   /*this.apiService.getAllBibles().subscribe((bibles)=>{
       console.log(bibles)
     },(error)=>{
       console.log(error)
-    })
+    })*/
     /*this.apiService.getAllLanguages().then(
       (languages) => {
         this.auxLanguages = languages

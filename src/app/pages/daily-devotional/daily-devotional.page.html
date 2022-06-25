@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>daily-devotional</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button id="open-modal" (click)="addNote()">
+        <ion-icon slot="icon-only" name="add-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content>
+  <!-- Scrollable Segment -->
+<ion-segment scrollable value="{{tabs[0]}}">
+  <ion-segment-button (click)="tabSelected(tab)" *ngFor="let tab of tabs" value="{{tab}}">
+    <ion-label>{{tab}}</ion-label>
+  </ion-segment-button>
+</ion-segment>
+
+<ion-card class="rpsp">
+  <ion-card-header>
+    <ion-card-title>RPSP</ion-card-title>
+    <ion-card-subtitle>Números 25</ion-card-subtitle>
+  </ion-card-header>
+
+  <ion-card-content>
+    La protección especial que tenía Israel fue retirada porque ellos cayeron en apostasía, se mezclaron con mujeres moabitas y empezaron a adorar a otros dioses, por eso Dios inició una mortandad hasta que vió el acto valiente de Finees, quien mostró el mismo celo que Dios al atravesar con una lanza a un parte sinvergüenzas.
+  </ion-card-content>
+</ion-card>
+
+<ion-modal #modal trigger="open-modal">
+  <ng-template>
+    <ion-content>
+      <ion-toolbar>
+        <ion-title>Añadir nota</ion-title>
+        <ion-buttons slot="end">
+          <ion-button color="light" (click)="modal.dismiss()">Cerrar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+      <app-color-picker *ngIf="showColorPicker"></app-color-picker>
+      <button type="button" class="w-20 h-20 bg-red border-2 border-black rounded-full">Clickeame</button>
+      <ion-list *ngIf="!showColorPicker">
+        <ion-item>
+          <ion-label>Elige la categoría</ion-label>
+          <ion-select placeholder="Categoría" [multiple]="false" (ionChange)="handleSelectChange($event)">
+            <ion-select-option *ngFor="let tab of getCategories()" value="{{tab}}">{{tab}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item *ngIf="newCategoryInput">
+          <ion-label position="floating">Nueva categoría</ion-label>
+          <ion-input></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="fixed">Título</ion-label>
+          <ion-input></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-textarea placeholder="Texto" auto-grow="true" wrap="hard"></ion-textarea>
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+</ion-content>
