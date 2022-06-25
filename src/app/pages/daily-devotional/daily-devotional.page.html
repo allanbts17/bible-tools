@@ -39,7 +39,7 @@
         </ion-buttons>
       </ion-toolbar>
       <app-color-picker *ngIf="showColorPicker"></app-color-picker>
-      <button type="button" class="w-20 h-20 bg-red border-2 border-black rounded-full">Clickeame</button>
+      <button (click)="showColorPicker=!showColorPicker" class="w-10 h-10 bg-red border-2 border-black rounded-full">Clickeame</button>
       <ion-list *ngIf="!showColorPicker">
         <ion-item>
           <ion-label>Elige la categoría</ion-label>
