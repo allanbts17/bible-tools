@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title>daily-devotional</ion-title>
     <ion-buttons slot="primary">
-      <ion-button id="open-modal" (click)="addNote()">
+      <ion-button id="open-modal">
         <ion-icon slot="icon-only" name="add-circle"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -18,14 +18,14 @@
   </ion-segment-button>
 </ion-segment>
 
-<ion-card class="rpsp">
-  <ion-card-header>
-    <ion-card-title>RPSP</ion-card-title>
-    <ion-card-subtitle>Números 25</ion-card-subtitle>
+<ion-card *ngFor="let note of filteredNoteList">
+  <ion-card-header [style.background]="note.color">
+    <ion-card-title [style.color]="getContrastColor(note.color)">{{note.category}}</ion-card-title>
+    <ion-card-subtitle [style.color]="getContrastColor(note.color)">{{note.title}}</ion-card-subtitle>
   </ion-card-header>
 
-  <ion-card-content>
-    La protección especial que tenía Israel fue retirada porque ellos cayeron en apostasía, se mezclaron con mujeres moabitas y empezaron a adorar a otros dioses, por eso Dios inició una mortandad hasta que vió el acto valiente de Finees, quien mostró el mismo celo que Dios al atravesar con una lanza a un parte sinvergüenzas.
+  <ion-card-content class="mt-2">
+    {{note.text}}
   </ion-card-content>
 </ion-card>
 
@@ -39,30 +39,29 @@
         </ion-buttons>
       </ion-toolbar>
 
-
-      <ion-item>
-        <ion-label>Escoja el color</ion-label>
-        <button (click)="showColorPicker=!showColorPicker"style="background: {{selectedColor}}" class="color-button w-8 h-8 ring-1 mr-1 ring-black rounded-full"></button>
+      <ion-item *ngIf="newCategoryInput">
+        <ion-label>Escoja el color de la categoría</ion-label>
+        <button (click)="showColorPicker=!showColorPicker"style="background: {{newNoteColor}}" class="color-button w-8 h-8 ring-1 mr-1 ring-black rounded-full"></button>
       </ion-item>
       <app-color-picker *ngIf="showColorPicker" (selectColorEvent)="selectColor($event)"></app-color-picker>
 
       <ion-list *ngIf="!showColorPicker">
         <ion-item>
           <ion-label>Elige la categoría</ion-label>
-          <ion-select placeholder="Categoría" [multiple]="false" (ionChange)="handleSelectChange($event)">
-            <ion-select-option *ngFor="let tab of getCategories()" value="{{tab}}">{{tab}}</ion-select-option>
+          <ion-select [(ngModel)]="newNoteCategory" placeholder="Categoría" [multiple]="false" (ionChange)="handleSelectChange($event)">
+            <ion-select-option *ngFor="let tab of getCategoryOptions()" value="{{tab}}">{{tab}}</ion-select-option>
           </ion-select>
         </ion-item>
         <ion-item *ngIf="newCategoryInput">
           <ion-label position="floating">Nueva categoría</ion-label>
-          <ion-input></ion-input>
+          <ion-input [(ngModel)]="newCategory"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label position="fixed">Título</ion-label>
-          <ion-input></ion-input>
+          <ion-input [(ngModel)]="newNoteTitle"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-textarea placeholder="Texto" auto-grow="true" wrap="hard"></ion-textarea>
+          <ion-textarea [(ngModel)]="newNoteText" placeholder="Texto" auto-grow="true" wrap="hard"></ion-textarea>
         </ion-item>
       </ion-list>
       <ion-button (click)="addNote()">Guardar</ion-button>

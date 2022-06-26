@@ -9,6 +9,7 @@ import { DailyDevotionalPageRoutingModule } from './daily-devotional-routing.mod
 import { DailyDevotionalPage } from './daily-devotional.page';
 import { ComponentsModule } from 'src/app/components/components.module';
 
+
 @NgModule({
   imports: [
     CommonModule,

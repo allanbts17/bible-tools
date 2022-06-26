@@ -1,7 +1,9 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IonModal } from '@ionic/angular';
 import { ConfigService } from 'src/app/services/config.service';
-
+import { StorageService } from 'src/app/services/storage.service';
+import  * as moment  from 'moment'
+declare var contrast;
 
 @Component({
   selector: 'app-daily-devotional',
@@ -15,23 +17,84 @@ export class DailyDevotionalPage implements OnInit {
   newNoteSelectedCategory = ""
   newCategoryInput = false
   showColorPicker = false
-  selectedColor = "#ffffff"
 
-  constructor(public config: ConfigService) { }
+  newNoteColor = "#ffffff"
+  newNoteTitle = ""
+  newNoteText = ""
+  newNoteCategory = ""
+
+  categoryList = []
+  noteList = [{category:"rpsp",title:"Mens",text:"este es un texto",color:"#fff",date:""}]
+  filteredNoteList = [{category:"rpsp",title:"Mens",text:"este es un texto",color:"#fff",date:""}]
+  selectedTab = ""
+
+  newCategory = ""
+
+  constructor(public config: ConfigService,public storageService: StorageService) {
+
+  }
 
 
   ngOnInit() {
-    this.fillTabs()
-    this.setCardStyles()
+    this.loadCategories()
 
+    this.setCards()
+    this.filterNotes(this.selectedTab)
+    var d = moment().format('L');
+    console.log(d)
+  }
+
+  getContrastColor(hex){
+    return contrast(hex)
+  }
+
+  getCategoryOptions(){
+    var cat = this.tabs.slice(1)
+    cat.push("Nuevo")
+    return cat
   }
 
   addNote(){
+    var note = {
+      "color":this.newNoteColor,
+      "category":this.newNoteCategory,
+      "title":this.newNoteTitle,
+      "text":this.newNoteText,
+      "date":moment().format('L')
+    }
+
+    if(this.newCategoryInput){
+      this.addCategories(this.newCategory)
+      note.category = this.newCategory
+    } else {
+      note.color = this.categoryList.filter(cat => cat.category == this.newNoteCategory)[0].color
+    }
+    this.addNotes(note)
+    this.resetNoteValues()
     this.modal.dismiss()
   }
 
+  async addNotes(data){
+    await this.storageService.addData('notes',data)
+    this.loadNotes()
+  }
+
+  async addCategories(data){
+    var obj = {
+      category:data,
+      color:this.newNoteColor
+    }
+    await this.storageService.addData('categories',obj)
+    this.loadCategories()
+  }
+
+  async loadCategories(){
+    this.categoryList = await this.storageService.getData("categories")
+    this.fillTabs()
+  }
+
   selectColor(color){
-    this.selectedColor = color
+    this.newNoteColor = color
   }
 
   handleSelectChange(e){
@@ -44,34 +107,47 @@ export class DailyDevotionalPage implements OnInit {
     }
   }
 
-  addCategory(){
-
+  async setCards(){
+    await this.loadNotes()
   }
 
-  getCategories(){
-    var categories = this.tabs.slice(1)
-    categories.push("Nuevo")
-    return categories
-  }
-
-  setCardStyles(){
-    var cards = document.getElementsByTagName("ion-card")
-    cards[0].style.color = '#FFF'
-    cards[0].style.background = 'rgba(216, 20, 20, 0.333)'
-    console.log(cards)
+  async loadNotes(){
+    this.noteList = await this.storageService.getData("notes")
+    this.filterNotes(this.selectedTab)
   }
 
   setAllTab(){
-    this.tabs.push(this.config.getData().daly_devotional.tab)
+
   }
 
   fillTabs(){
-    this.setAllTab()
-    this.testTabs.forEach(tab => this.tabs.push(tab))
+    this.tabs = [this.config.getData().daly_devotional.tab]
+    if(this.categoryList !== null)
+      this.categoryList.forEach(tab => this.tabs.push(tab.category))
+    this.selectedTab = this.tabs[0]
   }
 
   tabSelected(tab){
-    console.log(tab)
+    this.selectedTab = tab
+    this.filterNotes(tab)
+  }
+
+  filterNotes(tab){
+    if(tab === this.config.getData().daly_devotional.tab)
+      this.filteredNoteList = this.noteList
+    else
+      this.filteredNoteList = this.noteList.filter(note => note.category === tab)
+  }
+
+  resetNoteValues(){
+    this.newNoteSelectedCategory = ""
+    this.newCategoryInput = false
+    this.showColorPicker = false
+    this.newNoteColor = "#ffffff"
+    this.newNoteTitle = ""
+    this.newNoteText = ""
+    this.newNoteCategory = ""
+    this.newCategory = ""
   }
 
 
