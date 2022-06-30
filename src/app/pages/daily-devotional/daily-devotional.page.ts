@@ -1,9 +1,11 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { IonModal } from '@ionic/angular';
 import { ConfigService } from 'src/app/services/config.service';
 import { StorageService } from 'src/app/services/storage.service';
 import  * as moment  from 'moment'
-declare var contrast;
+import { AddNoteModalComponent } from 'src/app/components/add-note-modal/add-note-modal.component';
+import { AddCategoryComponent } from 'src/app/components/add-category/add-category.component';
+import { Category } from 'src/app/interfaces/category';
+
 
 @Component({
   selector: 'app-daily-devotional',
@@ -11,81 +13,39 @@ declare var contrast;
   styleUrls: ['./daily-devotional.page.scss'],
 })
 export class DailyDevotionalPage implements OnInit {
-  @ViewChild('modal') modal: IonModal;
+  @ViewChild(AddNoteModalComponent) addNoteModal: AddNoteModalComponent;
+  @ViewChild(AddCategoryComponent) addCategoryModal: AddCategoryComponent;
   tabs = []
-  testTabs = ['RPSP','Matutina','Lección']
-  newNoteSelectedCategory = ""
-  newCategoryInput = false
-  showColorPicker = false
-
-  newNoteColor = "#ffffff"
-  newNoteTitle = ""
-  newNoteText = ""
-  newNoteCategory = ""
-
   categoryList = []
   noteList = [{category:"rpsp",title:"Mens",text:"este es un texto",color:"#fff",date:""}]
   filteredNoteList = [{category:"rpsp",title:"Mens",text:"este es un texto",color:"#fff",date:""}]
   selectedTab = ""
 
-  newCategory = ""
-
-  constructor(public config: ConfigService,public storageService: StorageService) {
-
-  }
+  constructor(public config: ConfigService,
+    public storageService: StorageService) {}
 
 
   ngOnInit() {
     this.loadCategories()
-
-    this.setCards()
-    this.filterNotes(this.selectedTab)
-    var d = moment().format('L');
-    console.log(d)
-  }
-
-  getContrastColor(hex){
-    return contrast(hex)
-  }
-
-  getCategoryOptions(){
-    var cat = this.tabs.slice(1)
-    cat.push("Nuevo")
-    return cat
-  }
-
-  addNote(){
-    var note = {
-      "color":this.newNoteColor,
-      "category":this.newNoteCategory,
-      "title":this.newNoteTitle,
-      "text":this.newNoteText,
-      "date":moment().format('L')
-    }
-
-    if(this.newCategoryInput){
-      this.addCategories(this.newCategory)
-      note.category = this.newCategory
-    } else {
-      note.color = this.categoryList.filter(cat => cat.category == this.newNoteCategory)[0].color
-    }
-    this.addNotes(note)
-    this.resetNoteValues()
-    this.modal.dismiss()
-  }
-
-  async addNotes(data){
-    await this.storageService.addData('notes',data)
     this.loadNotes()
+    this.filterNotes(this.selectedTab)
+
+    let g:any = {}
+
+    g.n = "prueba"
+
   }
 
-  async addCategories(data){
-    var obj = {
-      category:data,
-      color:this.newNoteColor
-    }
-    await this.storageService.addData('categories',obj)
-    this.loadCategories()
+  presentNoteModal(){
+    this.addNoteModal.modal.present()
+  }
+
+  presentCategoryModal(category: Category = null){
+    if(category == null)
+      this.addCategoryModal.setToNewFunction()
+    else
+      this.addCategoryModal.setToEditFunction(category)
+    this.addCategoryModal.modal.present()
   }
 
   async loadCategories(){
@@ -93,31 +53,17 @@ export class DailyDevotionalPage implements OnInit {
     this.fillTabs()
   }
 
-  selectColor(color){
-    this.newNoteColor = color
+  async sortNotes(){
+    await this.storageService.sortData("notes",(a,b)=>{
+      var ma = moment(a.date)
+      var mb = moment(b.date)
+      return mb.diff(ma)
+    })
   }
-
-  handleSelectChange(e){
-    var value = e.detail.value
-    if(value != "Nuevo"){
-      this.newNoteSelectedCategory = value;
-      console.log(value)
-    } else {
-      this.newCategoryInput = true
-    }
-  }
-
-  async setCards(){
-    await this.loadNotes()
-  }
-
   async loadNotes(){
+    await this.sortNotes()
     this.noteList = await this.storageService.getData("notes")
     this.filterNotes(this.selectedTab)
-  }
-
-  setAllTab(){
-
   }
 
   fillTabs(){
@@ -138,18 +84,6 @@ export class DailyDevotionalPage implements OnInit {
     else
       this.filteredNoteList = this.noteList.filter(note => note.category === tab)
   }
-
-  resetNoteValues(){
-    this.newNoteSelectedCategory = ""
-    this.newCategoryInput = false
-    this.showColorPicker = false
-    this.newNoteColor = "#ffffff"
-    this.newNoteTitle = ""
-    this.newNoteText = ""
-    this.newNoteCategory = ""
-    this.newCategory = ""
-  }
-
 
 
 }
