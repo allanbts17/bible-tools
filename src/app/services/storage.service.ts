@@ -4,7 +4,7 @@ import { Note } from '../interfaces/note';
 import { Category } from '../interfaces/category';
 
 const NOTES_KEY = 'notes'
-const NOTES_CATEGORY_KEY = 'categories'
+const CATEGORY_KEY = 'categories'
 const ID = 'id'
 
 @Injectable({
@@ -16,6 +16,7 @@ export class StorageService {
     this.init();
     //setTimeout(()=> this.removeItem('categories',200),4000)
     //setTimeout(() => this.asignID('categories'),4000)
+    //setTimeout(() => this.editNote(),4000)
   }
 
   /*async asignID(key){
@@ -29,6 +30,14 @@ export class StorageService {
     }
     this.storage.set(key,data)
   }*/
+
+  async editNote(){
+    const notes = await this.storage.get(NOTES_KEY) || []
+    const category = await this.storage.get(CATEGORY_KEY) || []
+    notes.forEach(str => str.category = category.find(cat => cat.category == str.category).id)
+    return this.storage.set(NOTES_KEY,notes)
+    console.log(notes)
+  }
 
 
   async init(){
@@ -60,11 +69,9 @@ export class StorageService {
 
   async editItemByID(key: string, item: any){
     var storedData = await this.storage.get(key) || []
-    storedData.forEach(obj => {
-      if(obj.id == item.id){
-        obj = item
-      }
-    })
+    const index = storedData.findIndex(obj => obj.id == item.id)
+    storedData[index] = item
+    console.log('from service data: ',storedData)
     return this.storage.set(key,storedData)
   }
 

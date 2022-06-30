@@ -54,7 +54,7 @@ export class AddCategoryComponent implements OnInit {
   setToEditFunction(category: Category){
     this.newCat = false
     this.setTexts()
-    this.category = category
+    this.category = {...category}
     console.log(this.category)
     this.initialCategoryName = category.category
   }
@@ -83,6 +83,7 @@ export class AddCategoryComponent implements OnInit {
       if(this.newCat){
         await this.storageService.addData('categories',this.category)
       } else {
+        //console.log('enter on save edit: ',this.category)
         await this.storageService.editItemByID('categories',this.category)
       }
       this.addCategoryEvent.emit()

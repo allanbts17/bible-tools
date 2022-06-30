@@ -11,11 +11,18 @@ import  * as moment  from 'moment'
 export class GeneralNoteComponent implements OnInit {
   @Input() note
   @Input() index
+  @Input() categories
   touched = false
 
   constructor(public popoverController: PopoverController) { }
 
   ngOnInit() {}
+
+  getCategoryValues(){
+    //console.log('param: ',prop,'categories: ',this.categories,'note: ',this.note)
+    const category = this.categories.find(cat => cat.id == this.note.category)
+    return category
+  }
 
 
 
@@ -33,8 +40,8 @@ export class GeneralNoteComponent implements OnInit {
     return localMoment.format('LL')
   }
 
-  getContrastColor(hex){
-    return contrast(hex)
+  getContrastColor(){
+    return contrast(this.getCategoryValues()?.color)
   }
 
 }

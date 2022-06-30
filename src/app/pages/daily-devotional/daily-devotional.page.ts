@@ -79,10 +79,17 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   filterNotes(tab){
-    if(tab === this.config.getData().daly_devotional.tab)
+    if(tab === this.config.getData().daly_devotional.tab){
       this.filteredNoteList = this.noteList
-    else
-      this.filteredNoteList = this.noteList.filter(note => note.category === tab)
+    } else {
+      //this.filteredNoteList = this.noteList.filter(note => note.category === tab)
+      this.filteredNoteList = this.noteList.filter(note => {
+        var cat = this.categoryList.find(cat => {
+          return cat.id == note.category
+        })?.category
+        return cat === tab
+      })
+    }
   }
 
 

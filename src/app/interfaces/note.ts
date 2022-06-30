@@ -1,6 +1,6 @@
 export interface Note {
   id?:number;
-  category:string;
+  category:number;
   color:string;
   date:string;
   title:string;
