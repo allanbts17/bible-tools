@@ -75,8 +75,8 @@
   <app-general-note [categories]="categoryList"  *ngFor="let note of filteredNoteList; let i = index" [index]="'note-popover-'+i" [note]="note"></app-general-note>
 
   <!-- Modals -->
-  <app-add-note-modal (addCategoryEvent)="loadCategories()" (addNoteEvent)="loadNotes()"></app-add-note-modal>
-  <app-add-category (addCategoryEvent)="loadCategories()"></app-add-category>
+  <app-add-note-modal [categoryList]="categoryList" (addCategoryEvent)="loadCategories()" (addNoteEvent)="loadNotes()"></app-add-note-modal>
+  <app-add-category [categoryList]="categoryList" (addCategoryEvent)="loadCategories()"></app-add-category>
 
   <!-- Alert -->
   <app-custom-alert (notesChangedEvent)="loadNotes()" (categoryErasedEvent)="loadCategories()" [categories]="categoryList" [notes]="noteList"></app-custom-alert>

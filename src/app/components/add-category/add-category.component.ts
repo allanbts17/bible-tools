@@ -12,13 +12,13 @@ import { Category } from 'src/app/interfaces/category';
 export class AddCategoryComponent implements OnInit {
   @ViewChild('catModal') modal: IonModal;
   @Output() addCategoryEvent = new EventEmitter<any>()
+  @Input() categoryList
   newCat = true
   category: Category = {
     category:"",
     color:"#fff"
   }
 
-  categoryList = []
   showColorPicker = false
   showEmptyMsg = false
   showUsedMsg = false
@@ -36,7 +36,7 @@ export class AddCategoryComponent implements OnInit {
   initialCategoryName = ""
 
   constructor(public config: ConfigService, public storageService: StorageService) {
-    this.loadCategories()
+    //this.loadCategories()
   }
 
   ngOnInit() {

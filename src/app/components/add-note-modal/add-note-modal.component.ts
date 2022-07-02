@@ -16,11 +16,11 @@ export class AddNoteModalComponent implements OnInit {
   @ViewChild('modal') modal: IonModal;
   @Output() addNoteEvent = new EventEmitter<any>()
   @Output() addCategoryEvent = new EventEmitter<any>()
+  @Input() categoryList
   showNewCategoryInput = false
   showColorPicker = false
   showRedText = false
 
-  categoryList = []
   selectCategoryName = ""
   newCategory: Category = {
     category:"",
@@ -34,7 +34,7 @@ export class AddNoteModalComponent implements OnInit {
   }
 
   constructor(public config: ConfigService, public storageService: StorageService) {
-    this.loadCategories()
+    //this.loadCategories()
   }
 
   ngOnInit() {}
