@@ -16,7 +16,8 @@ export class AddNoteModalComponent implements OnInit {
   @ViewChild('modal') modal: IonModal;
   @Output() addNoteEvent = new EventEmitter<any>()
   @Output() addCategoryEvent = new EventEmitter<any>()
-  @Input() categoryList
+  @Input() categoryList: Category[]
+  newNote = true
   showNewCategoryInput = false
   showColorPicker = false
   showRedText = false
@@ -33,21 +34,48 @@ export class AddNoteModalComponent implements OnInit {
     text:""
   }
 
+  titleText = {
+    new:"Añadir nota",
+    edit:"Editar nota"
+  }
+  actualTitle
+
   constructor(public config: ConfigService, public storageService: StorageService) {
     //this.loadCategories()
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.setTitle()
+  }
+
+  setTitle(){
+    if(this.newNote){
+      this.actualTitle = this.titleText.new
+    } else {
+      this.actualTitle = this.titleText.edit
+    }
+  }
+
+  setToNewFunction(){
+    this.newNote = true
+    this.setTitle()
+    this.resetValues()
+  }
+
+  setToEditFunction(note: Note){
+    this.newNote = false
+    this.setTitle()
+    this.showNewCategoryInput = false
+    this.selectCategoryName = this.categoryList.find(cat => cat.id == note.category).category
+    this.note = {...note}
+    console.log(this.note)
+   // this.initialCategoryName = category.category
+  }
 
 
   async saveNote(){
-   /* var note = {
-      "category":this.noteCategory,
-      "title":this.noteTitle,
-      "text":this.noteText,
-      "date":moment().format('L')
-    }*/
-    this.note.date = moment().format('L')
+    if(this.newNote)
+      this.note.date = moment().format('L')
 
     if(this.showNewCategoryInput){
       if(this.newCategory.category != ""){
@@ -60,9 +88,15 @@ export class AddNoteModalComponent implements OnInit {
       }
     }
 
+    console.log('Before save',this.note)
+
     if(this.validateNote()){
-      this.addNotes(this.note)
-      this.resetNoteValues()
+      console.log('enter, newNote',this.newNote)
+      if(this.newNote)
+        this.addNote(this.note)
+      else
+        this.editNote(this.note)
+      this.resetValues()
       this.modal.dismiss()
     } else {
       this.showRedText = true
@@ -83,12 +117,17 @@ export class AddNoteModalComponent implements OnInit {
   }
   getCategoryOptions(){
     var array = this.categoryList.slice()
-    array.push({category:"Nuevo"})
+    array.push({category:"Nuevo",color:""})
     return array
   }
 
-  async addNotes(data){
+  async addNote(data){
     await this.storageService.addData('notes',data)
+    this.addNoteEvent.emit()
+  }
+
+  async editNote(data){
+    await this.storageService.editItemByID('notes',data)
     this.addNoteEvent.emit()
   }
 
@@ -108,7 +147,7 @@ export class AddNoteModalComponent implements OnInit {
     this.showNewCategoryInput = value == "Nuevo"
   }
 
-  resetNoteValues(){
+  resetValues(){
     this.showNewCategoryInput = false
     this.showColorPicker = false
     this.showRedText = false

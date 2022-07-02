@@ -73,8 +73,36 @@ export class CustomAlertComponent implements OnInit {
           text: 'Eliminar',
           id: 'confirm-button',
           handler: async () => {
-            await this.storageService.removeItemByID('categories',cat.id)
+            await this.storageService.removeItemByID('categories',cat)
             this.categoryErasedEvent.emit()
+            this.notesChangedEvent.emit()
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  async noteDeleteConfirmationAlert(note){
+    //console.log('confirm',cat)
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Confirmación',
+      message: 'Está seguro que desea eliminar '+note.title+'?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          id: 'cancel-button',
+          handler: (blah) => {}
+        }, {
+          text: 'Eliminar',
+          id: 'confirm-button',
+          handler: async () => {
+            console.log(note)
+            await this.storageService.removeItemByID('notes',note)
             this.notesChangedEvent.emit()
           }
         }

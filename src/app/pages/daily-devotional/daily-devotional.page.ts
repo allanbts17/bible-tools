@@ -6,6 +6,7 @@ import { AddNoteModalComponent } from 'src/app/components/add-note-modal/add-not
 import { AddCategoryComponent } from 'src/app/components/add-category/add-category.component';
 import { Category } from 'src/app/interfaces/category';
 import { CustomAlertComponent } from 'src/app/components/custom-alert/custom-alert.component';
+import { Note } from 'src/app/interfaces/note';
 
 
 @Component({
@@ -19,8 +20,8 @@ export class DailyDevotionalPage implements OnInit {
   @ViewChild(CustomAlertComponent) alert: CustomAlertComponent;
   tabs = []
   categoryList = []
-  noteList = [{category:"rpsp",title:"Mens",text:"este es un texto",color:"#fff",date:""}]
-  filteredNoteList = [{category:"rpsp",title:"Mens",text:"este es un texto",color:"#fff",date:""}]
+  noteList = [{category:0,title:"Mens",text:"este es un texto",color:"#fff",date:""}]
+  filteredNoteList = [{category:0,title:"Mens",text:"este es un texto",color:"#fff",date:""}]
   selectedTab = ""
 
   constructor(public config: ConfigService,
@@ -33,9 +34,18 @@ export class DailyDevotionalPage implements OnInit {
     this.filterNotes(this.selectedTab)
   }
 
-  presentNoteModal(){
+  presentNoteModal(note: Note = null){
+    if(note == null)
+      this.addNoteModal.setToNewFunction()
+    else
+      this.addNoteModal.setToEditFunction(note)
     this.addNoteModal.modal.present()
   }
+
+  deleteNote(note: Note){
+    this.alert.noteDeleteConfirmationAlert(note)
+  }
+
 
   presentCategoryModal(category: Category = null){
     if(category == null)

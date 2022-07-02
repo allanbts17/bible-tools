@@ -72,7 +72,7 @@
   </ion-segment>
 
   <!-- Notes-->
-  <app-general-note [categories]="categoryList"  *ngFor="let note of filteredNoteList; let i = index" [index]="'note-popover-'+i" [note]="note"></app-general-note>
+  <app-general-note (noteDeleteEvent)="deleteNote($event)" (noteEditEvent)="presentNoteModal($event)" [categories]="categoryList"  *ngFor="let note of filteredNoteList; let i = index" [index]="'note-popover-'+i" [note]="note"></app-general-note>
 
   <!-- Modals -->
   <app-add-note-modal [categoryList]="categoryList" (addCategoryEvent)="loadCategories()" (addNoteEvent)="loadNotes()"></app-add-note-modal>

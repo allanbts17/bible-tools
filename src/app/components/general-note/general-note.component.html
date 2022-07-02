@@ -2,7 +2,9 @@
   <ion-card-header class="flex justify-between" [style.background]="getCategoryValues()?.color">
     <div>
       <ion-card-title class="font-semibold" [style.color]="getContrastColor()">{{getCategoryValues()?.category}}</ion-card-title>
-    <ion-card-subtitle class="font-medium" [style.color]="getContrastColor()">{{formatCardDate(note.date)}}<br>{{note.title}}</ion-card-subtitle>
+      <ion-card-subtitle class="font-medium " [style.color]="getContrastColor()">{{formatCardDate(note.date)}}<br>
+        <p class="text-lg">{{note.title}}</p>
+      </ion-card-subtitle>
     </div>
 
     <button id="{{index}}" class="w-8 h-8 pt-1 rounded-md card-button" [ngClass]="{'card-button-active':touched}" (touchstart)="menuPressed()" (touchend)="menuReleased()">
@@ -12,19 +14,8 @@
       <ng-template>
         <ion-content>
           <ion-list>
-            <ion-item [button]="true" [detail]="false">Editar</ion-item>
-            <ion-item [button]="true" [detail]="false">Eliminar</ion-item>
-            <ion-item [button]="true" id="nested-trigger">More options...</ion-item>
-
-            <ion-popover trigger="nested-trigger" [dismissOnSelect]="true" side="end">
-              <ng-template>
-                <ion-content>
-                  <ion-list>
-                    <ion-item [button]="true" [detail]="false">Nested option</ion-item>
-                  </ion-list>
-                </ion-content>
-              </ng-template>
-            </ion-popover>
+            <ion-item (click)="noteEditEvent.emit(note)" [button]="true" [detail]="false">Editar</ion-item>
+            <ion-item (click)="noteDeleteEvent.emit(note)" [button]="true" [detail]="false">Eliminar</ion-item>
           </ion-list>
         </ion-content>
       </ng-template>

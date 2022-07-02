@@ -76,6 +76,7 @@ export class StorageService {
   }
 
   async removeItemByID(key: string, item: any){
+    
     const storedData = await this.storage.get(key) || []
     var index = storedData.findIndex(obj => obj.id == item.id)
     storedData.splice(index,1)

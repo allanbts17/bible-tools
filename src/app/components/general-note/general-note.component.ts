@@ -1,7 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
 declare var contrast;
 import  * as moment  from 'moment'
+import { Note } from 'src/app/interfaces/note';
 
 @Component({
   selector: 'app-general-note',
@@ -9,9 +10,12 @@ import  * as moment  from 'moment'
   styleUrls: ['./general-note.component.scss'],
 })
 export class GeneralNoteComponent implements OnInit {
-  @Input() note
+  @Input() note: Note
   @Input() index
   @Input() categories
+  @Output() noteDeleteEvent = new EventEmitter<Note>()
+  @Output() noteEditEvent = new EventEmitter<Note>()
+
   touched = false
 
   constructor(public popoverController: PopoverController) { }
