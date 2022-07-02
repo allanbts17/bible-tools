@@ -3,6 +3,8 @@ import { IonModal } from '@ionic/angular';
 import { ConfigService } from 'src/app/services/config.service';
 import { StorageService } from 'src/app/services/storage.service';
 import  * as moment  from 'moment'
+import { Category } from 'src/app/interfaces/category';
+import { Note } from 'src/app/interfaces/note';
 
 
 @Component({
@@ -16,15 +18,21 @@ export class AddNoteModalComponent implements OnInit {
   @Output() addCategoryEvent = new EventEmitter<any>()
   showNewCategoryInput = false
   showColorPicker = false
-
-  noteColor = "#ffffff"
-  noteTitle = ""
-  noteText = ""
-  noteCategory = ""
   showRedText = false
 
   categoryList = []
-  newCategory = ""
+  selectCategoryName = ""
+  newCategory: Category = {
+    category:"",
+    color:"#fff"
+  }
+  note: Note = {
+    category:0,
+    date:"",
+    title:"",
+    text:""
+  }
+
   constructor(public config: ConfigService, public storageService: StorageService) {
     this.loadCategories()
   }
@@ -32,24 +40,28 @@ export class AddNoteModalComponent implements OnInit {
   ngOnInit() {}
 
 
-  saveNote(){
-    var note = {
-      "color":this.noteColor,
+  async saveNote(){
+   /* var note = {
       "category":this.noteCategory,
       "title":this.noteTitle,
       "text":this.noteText,
       "date":moment().format('L')
-    }
+    }*/
+    this.note.date = moment().format('L')
 
-    if(this.showNewCategoryInput && this.newCategory != ""){
-      this.addCategories(this.newCategory)
-      note.category = this.newCategory
+    if(this.showNewCategoryInput){
+      if(this.newCategory.category != ""){
+        var cat = await this.addCategories(this.newCategory)
+        this.note.category = cat.id
+      }
     } else {
-      if(this.noteCategory != "") note.color = this.categoryList.filter(cat => cat.category == this.noteCategory)[0].color
+      if(this.selectCategoryName != ""){
+        this.note.category = this.categoryList.find(cat => cat.category == this.selectCategoryName).id
+      }
     }
 
-    if(this.validateNote(note)){
-      this.addNotes(note)
+    if(this.validateNote()){
+      this.addNotes(this.note)
       this.resetNoteValues()
       this.modal.dismiss()
     } else {
@@ -58,15 +70,16 @@ export class AddNoteModalComponent implements OnInit {
 
   }
 
-  validateNote(note){
-    var validTitle = note.title != ""
-    var validText = note.text != ""
-    var validCategory = note.category != ""
+  validateNote(){
+    var validTitle = this.note.title != ""
+    var validText = this.note.text != ""
+    var validCategory = this.note.category != 0
+    //var validNewCategory = !(this.showNewCategoryInput && this.newCategory.category == "")
     return validTitle && validText && validCategory
   }
 
   selectColor(color){
-    this.noteColor = color
+    this.newCategory.color = color
   }
   getCategoryOptions(){
     var array = this.categoryList.slice()
@@ -80,13 +93,10 @@ export class AddNoteModalComponent implements OnInit {
   }
 
   async addCategories(data){
-    var obj = {
-      category:data,
-      color:this.noteColor
-    }
-    await this.storageService.addData('categories',obj)
+    var catArr = await this.storageService.addData('categories',data)
     this.addCategoryEvent.emit()
     this.loadCategories()
+    return catArr.slice(-1)[0]
   }
 
   async loadCategories(){
@@ -101,12 +111,18 @@ export class AddNoteModalComponent implements OnInit {
   resetNoteValues(){
     this.showNewCategoryInput = false
     this.showColorPicker = false
-    this.noteColor = "#ffffff"
-    this.noteTitle = ""
-    this.noteText = ""
-    this.noteCategory = ""
-    this.newCategory = ""
     this.showRedText = false
+    this.selectCategoryName = ""
+    this.newCategory = {
+      category:"",
+      color:"#fff"
+    }
+    this.note = {
+      category:0,
+      date:"",
+      title:"",
+      text:""
+    }
   }
 
 }

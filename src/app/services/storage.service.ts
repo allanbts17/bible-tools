@@ -71,7 +71,7 @@ export class StorageService {
     var storedData = await this.storage.get(key) || []
     const index = storedData.findIndex(obj => obj.id == item.id)
     storedData[index] = item
-    console.log('from service data: ',storedData)
+    //console.log('from service data: ',storedData)
     return this.storage.set(key,storedData)
   }
 

@@ -35,10 +35,24 @@
                   </ion-content>
                 </ng-template>
               </ion-popover>
-              <ion-item (click)="presentNoteModal()" [button]="true" [detail]="false">
+
+              <ion-item id="category-delete" [button]="true" [detail]="false">
                 <ion-icon name="trash" slot="start"></ion-icon>
                 <ion-label>Eliminar categoría</ion-label>
               </ion-item>
+
+              <ion-popover trigger="category-delete"  [dismissOnSelect]="true">
+                <ng-template>
+                  <ion-content>
+                    <ion-list>
+                      <ion-item *ngFor="let cat of categoryList" (click)="deleteCategory(cat)" [button]="true" [detail]="false">
+                        <ion-icon [style.color]="cat.color" name="ellipse" slot="start"></ion-icon>
+                        <ion-label>{{cat.category}}</ion-label>
+                      </ion-item>
+                    </ion-list>
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
             </ion-list>
           </ion-content>
         </ng-template>
@@ -63,4 +77,7 @@
   <!-- Modals -->
   <app-add-note-modal (addCategoryEvent)="loadCategories()" (addNoteEvent)="loadNotes()"></app-add-note-modal>
   <app-add-category (addCategoryEvent)="loadCategories()"></app-add-category>
+
+  <!-- Alert -->
+  <app-custom-alert (notesChangedEvent)="loadNotes()" (categoryErasedEvent)="loadCategories()" [categories]="categoryList" [notes]="noteList"></app-custom-alert>
 </ion-content>

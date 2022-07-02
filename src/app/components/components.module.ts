@@ -6,9 +6,10 @@ import { IonicModule } from '@ionic/angular';
 import { AddNoteModalComponent } from './add-note-modal/add-note-modal.component';
 import { GeneralNoteComponent } from './general-note/general-note.component';
 import { AddCategoryComponent } from './add-category/add-category.component';
+import { CustomAlertComponent } from './custom-alert/custom-alert.component';
 
 const components = [ColorPickerComponent,AddNoteModalComponent,GeneralNoteComponent,
-AddCategoryComponent]
+AddCategoryComponent,CustomAlertComponent]
 
 @NgModule({
   declarations: [components],

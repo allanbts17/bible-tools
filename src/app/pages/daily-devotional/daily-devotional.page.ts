@@ -5,6 +5,7 @@ import  * as moment  from 'moment'
 import { AddNoteModalComponent } from 'src/app/components/add-note-modal/add-note-modal.component';
 import { AddCategoryComponent } from 'src/app/components/add-category/add-category.component';
 import { Category } from 'src/app/interfaces/category';
+import { CustomAlertComponent } from 'src/app/components/custom-alert/custom-alert.component';
 
 
 @Component({
@@ -15,6 +16,7 @@ import { Category } from 'src/app/interfaces/category';
 export class DailyDevotionalPage implements OnInit {
   @ViewChild(AddNoteModalComponent) addNoteModal: AddNoteModalComponent;
   @ViewChild(AddCategoryComponent) addCategoryModal: AddCategoryComponent;
+  @ViewChild(CustomAlertComponent) alert: CustomAlertComponent;
   tabs = []
   categoryList = []
   noteList = [{category:"rpsp",title:"Mens",text:"este es un texto",color:"#fff",date:""}]
@@ -29,11 +31,6 @@ export class DailyDevotionalPage implements OnInit {
     this.loadCategories()
     this.loadNotes()
     this.filterNotes(this.selectedTab)
-
-    let g:any = {}
-
-    g.n = "prueba"
-
   }
 
   presentNoteModal(){
@@ -46,6 +43,11 @@ export class DailyDevotionalPage implements OnInit {
     else
       this.addCategoryModal.setToEditFunction(category)
     this.addCategoryModal.modal.present()
+  }
+
+  deleteCategory(cat){
+    this.alert.deleteCategoryAlert(cat)
+    //this.alert.moveNotesAlert(cat)
   }
 
   async loadCategories(){
