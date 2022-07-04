@@ -1,6 +1,13 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Diario devocional</ion-title>
+    <ion-title *ngIf="!filterOn" slot="">Diario devocional</ion-title>
+   <!-- <ion-buttons slot="start">
+      <ion-button>
+        <ion-icon name="filter"></ion-icon>
+      </ion-button>
+    </ion-buttons>-->
+
+    <ion-searchbar *ngIf="filterOn" (ionChange)="searchbarChange($event)" animated placeholder=""></ion-searchbar>
     <ion-buttons slot="primary">
       <ion-button id="daily-dev-menu" >
         <ion-icon slot="icon-only" name="add-circle"></ion-icon>
@@ -53,6 +60,11 @@
                   </ion-content>
                 </ng-template>
               </ion-popover>
+
+              <ion-item (click)="filterOn=!filterOn" [button]="true" [detail]="false">
+                <ion-icon name="filter" slot="start"></ion-icon>
+                <ion-label>Filtar notas</ion-label>
+              </ion-item>
             </ion-list>
           </ion-content>
         </ng-template>
@@ -65,11 +77,31 @@
 
 <ion-content>
   <!-- Scrollable Segment -->
-  <ion-segment class="sticky top-0 z-10 bg-white" scrollable value="{{tabs[0]}}">
-    <ion-segment-button (click)="tabSelected(tab)" *ngFor="let tab of tabs" value="{{tab}}">
-      <ion-label>{{tab}}</ion-label>
-    </ion-segment-button>
-  </ion-segment>
+  <div class="sticky top-0 z-10 bg-white">
+    <ion-segment  scrollable value="{{tabs[0]}}">
+      <ion-segment-button (click)="tabSelected(tab)" *ngFor="let tab of tabs" value="{{tab}}">
+        <ion-label>{{tab}}</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <div *ngIf="filterOn" class="mx-2 mt-1 flex justify-center items-center relative">
+      <ion-label>Filtrar por:</ion-label>
+      <ion-select [(ngModel)]="filterType" [multiple]="false" (ionChange)="filterTypeSelect($event)">
+        <ion-select-option value="all">Todo</ion-select-option>
+        <ion-select-option value="title">Título</ion-select-option>
+        <ion-select-option value="text">Texto</ion-select-option>
+        <ion-select-option value="date">Fecha</ion-select-option>
+      </ion-select>
+      <button (click)="filterOn = false" class="absolute top-1 right-2 w-10">
+        <ion-icon class="text-3xl" name="close-outline"></ion-icon>
+      </button>
+    </div>
+
+  </div>
+
+
+
+
 
   <!-- Notes-->
   <app-general-note (noteDeleteEvent)="deleteNote($event)" (noteEditEvent)="presentNoteModal($event)" [categories]="categoryList"  *ngFor="let note of filteredNoteList; let i = index" [index]="'note-popover-'+i" [note]="note"></app-general-note>

@@ -23,6 +23,9 @@ export class DailyDevotionalPage implements OnInit {
   noteList = [{category:0,title:"Mens",text:"este es un texto",color:"#fff",date:""}]
   filteredNoteList = [{category:0,title:"Mens",text:"este es un texto",color:"#fff",date:""}]
   selectedTab = ""
+  filterType: 'all' | 'date' | 'title' | 'text' = 'all'
+  searchTerm = ""
+  filterOn = false
 
   constructor(public config: ConfigService,
     public storageService: StorageService) {}
@@ -32,6 +35,17 @@ export class DailyDevotionalPage implements OnInit {
     this.loadCategories()
     this.loadNotes()
     this.filterNotes(this.selectedTab)
+  }
+
+  filterTypeSelect(e){
+   // var value = e.detail.value
+  //  this.showNewCategoryInput = value == "Nuevo"
+  }
+
+  searchbarChange(e){
+    this.searchTerm = e.detail.value
+    if(this.filterType != 'date') this.filterNotes()
+    console.log(this.searchTerm)
   }
 
   presentNoteModal(note: Note = null){
@@ -90,18 +104,53 @@ export class DailyDevotionalPage implements OnInit {
     this.filterNotes(tab)
   }
 
-  filterNotes(tab){
+  filterNotes(tab=this.selectedTab){
+    if(this.filterOn){
+      var tabFilteredList = this.filterByCategory(tab)
+      console.log("filtered by cat: ",tabFilteredList)
+      this.filteredNoteList = this.filterByCustomType(tabFilteredList)
+    } else{
+      this.filteredNoteList = this.filterByCategory(tab)
+    }
+
+  }
+
+  filterByCategory(tab){
+    var filtered
     if(tab === this.config.getData().daly_devotional.tab){
-      this.filteredNoteList = this.noteList
+      filtered = this.noteList
     } else {
       //this.filteredNoteList = this.noteList.filter(note => note.category === tab)
-      this.filteredNoteList = this.noteList.filter(note => {
+      filtered = this.noteList.filter(note => {
         var cat = this.categoryList.find(cat => {
           return cat.id == note.category
         })?.category
         return cat === tab
       })
     }
+    return filtered
+  }
+
+  filterByCustomType(tabFilteredList){
+    var filtered
+    switch (this.filterType) {
+      case 'title':
+        filtered = tabFilteredList.filter(note => note.title.toUpperCase().includes(this.searchTerm.toUpperCase()))
+        break;
+      case 'text':
+        filtered = tabFilteredList.filter(note => note.text.toUpperCase().includes(this.searchTerm.toUpperCase()))
+        break;
+      case 'date':
+          break;
+      case 'all':
+        filtered = tabFilteredList.filter(note => {
+          note.title.toUpperCase().includes(this.searchTerm.toUpperCase()) ||
+          note.text.toUpperCase().includes(this.searchTerm.toUpperCase()) ||
+          note.date.toUpperCase().includes(this.searchTerm.toUpperCase())
+        })
+        break;
+    }
+    return filtered
   }
 
 
