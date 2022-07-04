@@ -9,6 +9,7 @@ import { CustomAlertComponent } from 'src/app/components/custom-alert/custom-ale
 import { Note } from 'src/app/interfaces/note';
 
 
+
 @Component({
   selector: 'app-daily-devotional',
   templateUrl: './daily-devotional.page.html',
@@ -26,6 +27,7 @@ export class DailyDevotionalPage implements OnInit {
   filterType: 'all' | 'date' | 'title' | 'text' = 'all'
   searchTerm = ""
   filterOn = false
+  showDate = false
 
   constructor(public config: ConfigService,
     public storageService: StorageService) {}
@@ -38,14 +40,42 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   filterTypeSelect(e){
-   // var value = e.detail.value
+    var value = e.detail.value
+    //if(value == 'date') this.showDate = true
   //  this.showNewCategoryInput = value == "Nuevo"
   }
 
   searchbarChange(e){
     this.searchTerm = e.detail.value
-    if(this.filterType != 'date') this.filterNotes()
+    this.filterNotes()
     console.log(this.searchTerm)
+  }
+
+  searchbarFocus(){
+    if(this.filterType == 'date')
+      this.showDate = true
+  }
+
+  clearSearchTerm(){
+    this.searchTerm = ""
+    this.filterNotes()
+  }
+
+  cancelFilter(){
+    this.clearSearchTerm()
+    this.filterOn = false
+    this.showDate = false
+  }
+
+  dateSelectionChange(e){
+    var date = e.detail.value
+    var localMoment = moment(date)
+    localMoment.locale('es');
+    var formattedDate = localMoment.format('LL')
+    this.searchTerm = formattedDate
+    console.log(this.searchTerm)
+    this.filterNotes()
+    if(this.filteredNoteList.length > 0) this.showDate = false
   }
 
   presentNoteModal(note: Note = null){
@@ -107,7 +137,6 @@ export class DailyDevotionalPage implements OnInit {
   filterNotes(tab=this.selectedTab){
     if(this.filterOn){
       var tabFilteredList = this.filterByCategory(tab)
-      console.log("filtered by cat: ",tabFilteredList)
       this.filteredNoteList = this.filterByCustomType(tabFilteredList)
     } else{
       this.filteredNoteList = this.filterByCategory(tab)
@@ -141,16 +170,24 @@ export class DailyDevotionalPage implements OnInit {
         filtered = tabFilteredList.filter(note => note.text.toUpperCase().includes(this.searchTerm.toUpperCase()))
         break;
       case 'date':
+          filtered = tabFilteredList.filter(note => this.formatCardDate(note.date).toUpperCase().includes(this.searchTerm.toUpperCase()))
           break;
       case 'all':
         filtered = tabFilteredList.filter(note => {
-          note.title.toUpperCase().includes(this.searchTerm.toUpperCase()) ||
+          var found = note.title.toUpperCase().includes(this.searchTerm.toUpperCase()) ||
           note.text.toUpperCase().includes(this.searchTerm.toUpperCase()) ||
-          note.date.toUpperCase().includes(this.searchTerm.toUpperCase())
+          this.formatCardDate(note.date).toUpperCase().includes(this.searchTerm.toUpperCase())
+          return found
         })
         break;
     }
     return filtered
+  }
+
+  formatCardDate(date){
+    var localMoment = moment(date)
+    localMoment.locale('es');
+    return localMoment.format('LL')
   }
 
 

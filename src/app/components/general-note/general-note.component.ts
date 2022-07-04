@@ -20,7 +20,8 @@ export class GeneralNoteComponent implements OnInit {
 
   constructor(public popoverController: PopoverController) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   getCategoryValues(){
     //console.log('param: ',prop,'categories: ',this.categories,'note: ',this.note)

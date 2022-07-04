@@ -7,7 +7,7 @@
       </ion-button>
     </ion-buttons>-->
 
-    <ion-searchbar *ngIf="filterOn" (ionChange)="searchbarChange($event)" animated placeholder=""></ion-searchbar>
+    <ion-searchbar *ngIf="filterOn" (ionFocus)="searchbarFocus()" (ionCancel)="clearSearchTerm()" [(ngModel)]="searchTerm" (ionChange)="searchbarChange($event)" animated placeholder=""></ion-searchbar>
     <ion-buttons slot="primary">
       <ion-button id="daily-dev-menu" >
         <ion-icon slot="icon-only" name="add-circle"></ion-icon>
@@ -92,10 +92,17 @@
         <ion-select-option value="text">Texto</ion-select-option>
         <ion-select-option value="date">Fecha</ion-select-option>
       </ion-select>
-      <button (click)="filterOn = false" class="absolute top-1 right-2 w-10">
+      <button (click)="cancelFilter()" class="absolute top-1 right-2 w-10">
         <ion-icon class="text-3xl" name="close-outline"></ion-icon>
       </button>
+      <!--<button *ngIf="filterType == 'date'" (click)="showDate = !showDate" class="absolute top-1 left-2 w-10">
+        <ion-icon class="text-3xl" name="calendar"></ion-icon>
+      </button>-->
     </div>
+
+    <ion-datetime *ngIf="showDate" (ionCancel)="showDate=false" (ionChange)="dateSelectionChange($event)" presentation="date" locale="es-ES" [showDefaultButtons]="false"
+    doneText="Ok"
+    cancelText="Ocultar"></ion-datetime>
 
   </div>
 
@@ -105,7 +112,8 @@
 
   <!-- Notes-->
   <app-general-note (noteDeleteEvent)="deleteNote($event)" (noteEditEvent)="presentNoteModal($event)" [categories]="categoryList"  *ngFor="let note of filteredNoteList; let i = index" [index]="'note-popover-'+i" [note]="note"></app-general-note>
-
+  <p class="text-slate-500 w-full text-center mt-2" *ngIf="filteredNoteList.length == 0 && filterOn">No existen notas para este filtro</p>
+  <p class="text-slate-500 w-full text-center mt-2" *ngIf="filteredNoteList.length == 0 && !filterOn">No existen notas para esta categoría</p>
   <!-- Modals -->
   <app-add-note-modal [categoryList]="categoryList" (addCategoryEvent)="loadCategories()" (addNoteEvent)="loadNotes()"></app-add-note-modal>
   <app-add-category [categoryList]="categoryList" (addCategoryEvent)="loadCategories()"></app-add-category>
