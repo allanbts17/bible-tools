@@ -5,6 +5,7 @@ import { Category } from '../interfaces/category';
 
 const NOTES_KEY = 'notes'
 const CATEGORY_KEY = 'categories'
+const SETTINGS_KEY = 'settings'
 const ID = 'id'
 
 @Injectable({
@@ -36,7 +37,7 @@ export class StorageService {
     const category = await this.storage.get(CATEGORY_KEY) || []
     notes.forEach(str => str.category = category.find(cat => cat.category == str.category).id)
     return this.storage.set(NOTES_KEY,notes)
-    console.log(notes)
+    //console.log(notes)
   }
 
 
@@ -50,8 +51,22 @@ export class StorageService {
     return extractedID
   }
 
-  getData(key){
-    return this.storage.get(key) || []
+  setSettings(settings){
+    return this.storage.set(SETTINGS_KEY,settings)
+  }
+
+  async getSettings(){
+    var default_settings = {
+      darkMode: false,
+      lang: 'es'
+    }
+    const storedData = await this.storage.get(SETTINGS_KEY)
+    if(storedData == null) this.setSettings(default_settings)
+    return storedData || default_settings
+  }
+
+  async getData(key){
+    return await this.storage.get(key) || []
   }
 
   async sortData(key,func){
@@ -76,7 +91,7 @@ export class StorageService {
   }
 
   async removeItemByID(key: string, item: any){
-    
+
     const storedData = await this.storage.get(key) || []
     var index = storedData.findIndex(obj => obj.id == item.id)
     storedData.splice(index,1)

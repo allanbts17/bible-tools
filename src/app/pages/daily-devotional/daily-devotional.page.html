@@ -10,7 +10,7 @@
     <ion-searchbar *ngIf="filterOn" (ionFocus)="searchbarFocus()" (ionCancel)="clearSearchTerm()" [(ngModel)]="searchTerm" (ionChange)="searchbarChange($event)" animated placeholder=""></ion-searchbar>
     <ion-buttons slot="primary">
       <ion-button id="daily-dev-menu" >
-        <ion-icon slot="icon-only" name="add-circle"></ion-icon>
+        <ion-icon slot="icon-only" name="list"></ion-icon>
       </ion-button>
 
      <ion-popover trigger="daily-dev-menu"  [dismissOnSelect]="true">

@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { ConfigService } from './services/config.service';
+import { StorageService } from './services/storage.service';
+import { ThemeService } from './services/theme.service';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -13,9 +15,37 @@ export class AppComponent {
   ];
   header_title = ""
   header_subtitle = ""
+  darkMode = false
+  settings
 
-  constructor(public config: ConfigService) {
+  constructor(public config: ConfigService,
+    public storage: StorageService,
+    public theme: ThemeService) {
+    this.init()
+    var jalo = {}
+    console.log(Object.keys(jalo).length)
+  }
+
+  async init(){
+    await this.getSettings()
     this.setText()
+  }
+
+  async getSettings(){
+    this.settings = await this.storage.getSettings()
+    console.log('set: ',this.settings)
+
+    this.darkMode = this.settings.darkMode
+    this.config.lang = this.settings.lang
+    this.darkMode? this.theme.applyDark():this.theme.removeDark()
+
+  }
+
+  changeTheme(){
+    this.darkMode = !this.darkMode
+    this.darkMode? this.theme.applyDark():this.theme.removeDark()
+    this.settings.darkMode = this.darkMode
+    this.storage.setSettings(this.settings)
   }
 
   setText(){

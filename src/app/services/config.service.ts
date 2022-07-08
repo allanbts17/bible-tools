@@ -4,14 +4,16 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class ConfigService {
-  lang: "es"|"en" = "es"
+  lang = "es"
+  settings
 
   text_data = {
     en:{
       menu:{
         header:"Bible Tools",
         note:"Choose a section",
-        items:["Bible","Daily devoctional","Verse index"]
+        items:["Bible","Daily devoctional","Verse index"],
+        theme:["Light theme","Dark theme"]
       },
       daly_devotional:{
         tab:"All",
@@ -22,7 +24,8 @@ export class ConfigService {
       menu:{
         header:"Herramientas bíblicas",
         note:"Escoje una sección",
-        items:["Biblia","Diario devocional","Índice de versículos"]
+        items:["Biblia","Diario devocional","Índice de versículos"],
+        theme:["Modo claro","Modo oscuro"]
       },
       daly_devotional:{
         tab:"Todo"

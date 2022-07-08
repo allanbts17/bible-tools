@@ -13,6 +13,10 @@
             </ion-item>
           </ion-menu-toggle>
         </ion-list>
+        <ion-item>
+          <ion-label>{{darkMode? config.getData().menu.theme[1]:config.getData().menu.theme[0]}}</ion-label>
+          <ion-toggle [ngModel]="darkMode" (ngModelChange)="changeTheme()"></ion-toggle>
+        </ion-item>
       </ion-content>
     </ion-menu>
     <ion-router-outlet id="main-content"></ion-router-outlet>

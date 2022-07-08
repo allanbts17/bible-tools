@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "Bible Tools",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}
