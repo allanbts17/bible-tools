@@ -1,9 +1,28 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>bible-study</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-toggle>
+        <ion-button>
+          <ion-icon slot="icon-only" name="menu"></ion-icon>
+        </ion-button>
+      </ion-menu-toggle>
+    </ion-buttons>
+    <ion-buttons >
+
+        <ion-button color="dark" strong="true" shape="round" id="open-select-passage-modal">
+          {{passageText}}
+        </ion-button>
+        <ion-button slot="end" color="dark" strong="true" shape="round" id="open-select-bible-modal">
+          {{selectedBible?.abbreviationLocal}}
+        </ion-button>
+    </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div class="px-4 pt-4" [innerHtml]="bibleText?.data.content"></div>
+
+  <app-select-bible-modal [availableBibles]="bibles" (bibleSelectedEvent)="bibleChange($event)"></app-select-bible-modal>
+  <app-select-passage-modal [bible]="selectedBible" (passageSelectedEvent)="chapterChange($event)"></app-select-passage-modal>
 </ion-content>

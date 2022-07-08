@@ -7,9 +7,17 @@ import { AddNoteModalComponent } from './add-note-modal/add-note-modal.component
 import { GeneralNoteComponent } from './general-note/general-note.component';
 import { AddCategoryComponent } from './add-category/add-category.component';
 import { CustomAlertComponent } from './custom-alert/custom-alert.component';
+import { SelectBibleModalComponent } from './select-bible-modal/select-bible-modal.component';
+import { SelectPassageModalComponent } from './select-passage-modal/select-passage-modal.component';
+import { SwiperModule } from 'swiper/angular';
+import SwiperCore, { Autoplay, Keyboard, Pagination, Scrollbar, Zoom } from 'swiper';
+import { IonicSlides } from '@ionic/angular';
 
 const components = [ColorPickerComponent,AddNoteModalComponent,GeneralNoteComponent,
-AddCategoryComponent,CustomAlertComponent]
+AddCategoryComponent,CustomAlertComponent,SelectBibleModalComponent,SelectPassageModalComponent,
+]
+
+SwiperCore.use([Autoplay, Keyboard, Pagination, Scrollbar, Zoom, IonicSlides]);
 
 @NgModule({
   declarations: [components],
@@ -17,6 +25,7 @@ AddCategoryComponent,CustomAlertComponent]
   imports: [
     CommonModule,
     FormsModule,
+    SwiperModule,
     IonicModule
   ]
 })

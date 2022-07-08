@@ -1,0 +1,26 @@
+<ion-modal #modal trigger="open-select-bible-modal">
+  <ng-template>
+    <ion-content>
+      <ion-toolbar>
+        <ion-title>Seleccione la biblia</ion-title>
+        <ion-buttons slot="end">
+          <ion-button color="light" (click)="modal.dismiss()">Cerrar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+
+      <!-- List of Text Items -->
+      <ion-list>
+        <ion-item-group *ngFor="let langCat of availableBibles">
+          <ion-item-divider>
+            <ion-label>{{langCat.lang.name}}</ion-label>
+          </ion-item-divider>
+          <ion-item *ngFor="let bible of langCat.bibles" button (click)="select(bible)">
+            <ion-label>{{bible.nameLocal}}</ion-label>
+          </ion-item>
+        </ion-item-group>
+      </ion-list>
+
+
+    </ion-content>
+  </ng-template>
+</ion-modal>

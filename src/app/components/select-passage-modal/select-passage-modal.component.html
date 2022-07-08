@@ -1,0 +1,30 @@
+<ion-modal #modal trigger="open-select-passage-modal">
+  <ng-template>
+    <ion-content>
+      <ion-toolbar>
+        <ion-title>{{title}}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button color="light" (click)="modal.dismiss()">Cerrar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+
+      <ion-slides #slide [options]="myOptions">
+        <ion-slide>
+          <div class="flex flex-wrap justify-around">
+            <ion-button class="w-5/12" shape="round" color="medium" fill="" *ngFor="let book of bookList" (click)="setBook(book)">
+              {{book.name}}
+            </ion-button>
+          </div>
+        </ion-slide>
+        <ion-slide >
+          <div class="flex flex-wrap justify-around">
+            <ion-button class="w-3/12" shape="round" color="medium" fill="" *ngFor="let chapter of chapterList" (click)="setChapter(chapter)">
+              {{chapter.number}}
+            </ion-button>
+          </div>
+        </ion-slide>
+      </ion-slides>
+
+    </ion-content>
+  </ng-template>
+</ion-modal>
