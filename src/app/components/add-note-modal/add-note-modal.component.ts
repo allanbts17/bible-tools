@@ -42,6 +42,18 @@ export class AddNoteModalComponent implements OnInit {
 
   constructor(public config: ConfigService, public storageService: StorageService) {
     //this.loadCategories()
+    /*var today = moment().format('ll')
+    var alsoToday  = moment().format('lll')
+    console.log('today: ',today)
+    console.log('today another hour: ',alsoToday)
+
+    var ma = moment(today)
+    var mb = moment(alsoToday)
+    console.log('difference: ',ma.diff(mb))
+
+    var localMoment = moment(today)
+    localMoment.locale('es');
+    console.log('Hoy: ',localMoment.format('LL'))*/
   }
 
   ngOnInit() {
@@ -75,7 +87,7 @@ export class AddNoteModalComponent implements OnInit {
 
   async saveNote(){
     if(this.newNote)
-      this.note.date = moment().format('L')
+      this.note.date = moment().format('lll')
 
     if(this.showNewCategoryInput){
       if(this.newCategory.category != ""){
