@@ -22,8 +22,6 @@ export class AppComponent {
     public storage: StorageService,
     public theme: ThemeService) {
     this.init()
-    var jalo = {}
-    console.log(Object.keys(jalo).length)
   }
 
   async init(){
@@ -33,7 +31,7 @@ export class AppComponent {
 
   async getSettings(){
     this.settings = await this.storage.getSettings()
-    console.log('set: ',this.settings)
+    //console.log('set: ',this.settings)
 
     this.darkMode = this.settings.darkMode
     this.config.lang = this.settings.lang

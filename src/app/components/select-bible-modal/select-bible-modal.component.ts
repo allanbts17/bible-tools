@@ -15,9 +15,9 @@ export class SelectBibleModalComponent implements OnInit {
 
   ngOnInit() {}
 
-  ngOnChanges(e){
-    console.log(e)
-  }
+  /*ngOnChanges(e){
+    //console.log(e)
+  }*/
 
   select(bible){
     this.bibleSelectedEvent.emit(bible)

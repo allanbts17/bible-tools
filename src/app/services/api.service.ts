@@ -38,6 +38,27 @@ export class ApiService {
     return this.http.get(path,{headers: this.reqHeader});
   }
 
+  getBibleFirstChapter(bibleId){
+    var aux
+    return new Promise((resolve, reject) => {
+      var bookList
+      var chapterList
+      this.getBibleBookList(bibleId).subscribe(books => {
+        aux = books
+        bookList = aux.data
+        this.getChapterList(bibleId,bookList[0].id).subscribe(chapters => {
+          aux = chapters
+          chapterList = aux.data
+          resolve(chapterList[1])
+        },error => {
+          reject(error)
+        })
+      },error => {
+        reject(error)
+      })
+    })
+  }
+
   getChapterList(bibleId,bookId){
     const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/books/"+`${bookId}`+"/chapters";
     return this.http.get(path,{headers: this.reqHeader});

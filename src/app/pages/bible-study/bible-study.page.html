@@ -10,7 +10,7 @@
     <ion-buttons >
 
         <ion-button color="dark" strong="true" shape="round" id="open-select-passage-modal">
-          {{passageText}}
+          {{selectedChapter?.reference}}
         </ion-button>
         <ion-button slot="end" color="dark" strong="true" shape="round" id="open-select-bible-modal">
           {{selectedBible?.abbreviationLocal}}
@@ -19,9 +19,13 @@
 
   </ion-toolbar>
 </ion-header>
-
-<ion-content>
-  <div class="px-4 pt-4" [innerHtml]="bibleText?.data.content"></div>
+<!--<div class="px-4 pt-4 h-full overflow-y-scroll" [innerHtml]="bibleText?.data.content"></div>-->
+<ion-slides #slide [options]="myOptions" class="h-full w-full" (ionSlideTransitionEnd)="transitionFinished()">
+  <ion-slide class="h-full px-4 pt-4">
+    <ion-text class="h-full overflow-y-scroll text-left" [innerHtml]="bibleText?.data.content"></ion-text>
+  </ion-slide>
+</ion-slides>
+<ion-content scroll-y="false">
 
   <app-select-bible-modal [availableBibles]="bibles" (bibleSelectedEvent)="bibleChange($event)"></app-select-bible-modal>
   <app-select-passage-modal [bible]="selectedBible" (passageSelectedEvent)="chapterChange($event)"></app-select-passage-modal>

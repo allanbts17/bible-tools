@@ -21,24 +21,46 @@ export class SelectPassageModalComponent implements OnInit {
   defaultTitle = "Seleccione el libro"
 
   myOptions: SwiperOptions = {
-    allowTouchMove: false
+    //allowTouchMove: false
 };
 
   constructor(public apiService: ApiService) { }
 
   ngOnInit() {
-    console.log(this.bible)
+    //console.log(this.bible)
   }
 
   ngOnChanges(e){
     this.bible = e?.bible?.currentValue
-    console.log('ch: ',this.bible)
+    //console.log('ch: ',this.bible)
     this.getBookList(this.bible?.id)
+  }
 
-    //this.slides.lockSwipeToPrev(true)
+  modalPresented(){
+    this.slides.lockSwipes(true)
+   /* this.myOptions.allowTouchMove = false
+    console.log(this.myOptions)
+    this.slides.options = this.myOptions
+    this.slides.update()*/
+  }
+
+  async transitionFinished(){
+    let index = await this.slides.getActiveIndex()
+    console.log(index)
+    if(index == 0){
+      this.slides.lockSwipes(true)
+    } else {
+      this.slides.lockSwipes(false)
+      this.slides.lockSwipeToNext(true)
+      /*this.slides.lockSwipeToPrev(false)
+      this.slides.lockSwipeToNext(true)*/
+    }
+
   }
 
   setBook(book){
+    this.slides.lockSwipeToNext(false)
+    this.slides.slideNext()
     this.selectedBook = book
     this.getChapterList(this.bible?.id,book.id)
   }
@@ -55,9 +77,9 @@ export class SelectPassageModalComponent implements OnInit {
     this.apiService.getChapterList(bibleId,chapterId).subscribe((chapters)=>{
       data = chapters
       this.chapterList = data.data
-      console.log(this.chapterList)
+      //console.log(this.chapterList)
       this.title = this.selectedBook.name
-      this.slides.slideNext()
+
 
     })
   }
@@ -69,8 +91,8 @@ export class SelectPassageModalComponent implements OnInit {
       this.apiService.getBibleBookList(bibleId).subscribe((books)=>{
         data = books
         this.bookList = data.data
-        console.log(this.slides)
-        console.log(this.bookList)
+        //console.log(this.bookList)
+
       })
     }
   }
