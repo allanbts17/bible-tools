@@ -76,7 +76,7 @@ export class SelectPassageModalComponent implements OnInit {
     let data
     this.apiService.getChapterList(bibleId,chapterId).subscribe((chapters)=>{
       data = chapters
-      this.chapterList = data.data
+      this.chapterList = data.data.slice(1)
       //console.log(this.chapterList)
       this.title = this.selectedBook.name
 

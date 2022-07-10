@@ -20,12 +20,13 @@
   </ion-toolbar>
 </ion-header>
 <!--<div class="px-4 pt-4 h-full overflow-y-scroll" [innerHtml]="bibleText?.data.content"></div>-->
-<ion-slides #slide [options]="myOptions" class="h-full w-full" (ionSlideTransitionEnd)="transitionFinished()">
-  <ion-slide class="h-full px-4 pt-4">
-    <ion-text class="h-full overflow-y-scroll text-left" [innerHtml]="bibleText?.data.content"></ion-text>
-  </ion-slide>
-</ion-slides>
+
 <ion-content scroll-y="false">
+  <ion-slides id="bible-slides" #slide [options]="myOptions" class="h-full w-full" (ionSlideTransitionEnd)="transitionFinished()">
+    <ion-slide class="h-full " *ngFor="let slide of showedChapters">
+      <ion-text class="h-full overflow-y-scroll px-4 py-4 text-left" [innerHtml]="slide.content"></ion-text>
+    </ion-slide>
+  </ion-slides>
 
   <app-select-bible-modal [availableBibles]="bibles" (bibleSelectedEvent)="bibleChange($event)"></app-select-bible-modal>
   <app-select-passage-modal [bible]="selectedBible" (passageSelectedEvent)="chapterChange($event)"></app-select-passage-modal>
