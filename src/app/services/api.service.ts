@@ -49,7 +49,7 @@ export class ApiService {
         this.getChapterList(bibleId,bookList[0].id).subscribe(chapters => {
           aux = chapters
           chapterList = aux.data
-          resolve(chapterList[1])
+          resolve(chapterList[0].number === 'intro'? chapterList[1]:chapterList[0])
         },error => {
           reject(error)
         })

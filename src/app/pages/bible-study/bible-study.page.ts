@@ -26,6 +26,8 @@ export class BibleStudyPage implements OnInit {
   myOptions: SwiperOptions = {
     //allowTouchMove: false,
     loop:true,
+    //touchAngle: 45 May help to not slide accidentaly when scrolling down/up
+    //longSwipes:false
    // loopPreventsSlide:false
 };
   swipeLeftLock = false
@@ -38,6 +40,7 @@ export class BibleStudyPage implements OnInit {
   }
 
   ngOnInit() {
+
 
    /* setTimeout(() => {
       var dup = document.getElementsByClassName('swiper-slide-duplicate')
@@ -55,14 +58,47 @@ export class BibleStudyPage implements OnInit {
       bookId: data.bookId
     }
   }
-
+/**
+ * if(index === 1){
+          document.getElementsByClassName('swiper-slide-next')[0].children[0].innerHTML = this.showedChapters[2].content
+        }
+ */
   setChapter(bibleId,chapterId){
-    var aux
-    this.apiService.getChapter(bibleId,chapterId).subscribe((chapterContent)=>{
+    var aux, chapter
+    this.apiService.getChapter(bibleId,chapterId).subscribe(async (chapterContent)=>{
       aux = chapterContent
+      chapter = aux.data
+      this.chapterToSlideDistribution(this.slideIndex,chapter,'actual')
 
-    },err =>{
 
+      if(chapter?.next != undefined){
+        this.apiService.getChapter(chapter.bibleId,chapter.next.id).subscribe((chapterContent)=>{
+          aux = chapterContent
+          this.chapterToSlideDistribution(this.slideIndex,aux.data,'next')
+          if(this.swipeRightLock) this.slides.lockSwipeToNext(false)
+        })
+      } else {
+        await this.slides.lockSwipeToNext(true)
+        this.swipeRightLock = true
+      }
+
+      if(chapter?.previous != undefined && chapter?.previous.number != 'intro'){
+        this.apiService.getChapter(chapter.bibleId,chapter.previous.id).subscribe((chapterContent)=>{
+          aux = chapterContent
+          this.chapterToSlideDistribution(this.slideIndex,aux.data,'previous')
+          if(this.swipeLeftLock) this.slides.lockSwipeToPrev(false)
+        })
+    } else {
+      await this.slides.lockSwipeToPrev(true)
+      this.swipeLeftLock = true
+    }
+
+    },error =>{
+      if(error.error.statusCode === 404){
+        this.getBibleFirstChapter()
+      } else {
+        console.log(error)
+      }
     })
   }
   setChapterFirstTime(bibleId,chapterId){
@@ -78,15 +114,6 @@ export class BibleStudyPage implements OnInit {
         this.chapterToSlideDistribution(this.slideIndex,aux.data,'next')
         if(this.swipeRightLock) this.slides.lockSwipeToNext(false)
       })
-      /*setTimeout(() => {
-      var len = document.getElementsByTagName("span").length
-      for(let i=0;i<len;i++){
-        /*document.getElementsByTagName("span")[i].style.fontWeight = "500"
-        document.getElementsByTagName("span")[i].style.marginRight = "5px"*
-        document.getElementsByTagName("span")[i].style.color = 'red'
-      }
-    })*/
-
     },error => {
 
       if(error.error.statusCode === 404){
@@ -97,8 +124,9 @@ export class BibleStudyPage implements OnInit {
     })
   }
 
-
-
+  /** When index changes have 1,2 difference is 1
+   * when changes have 1,3 diference is 2
+  */
   swipeDirection(index): 'right'|'left'|'stay'{
     var diff = index - this.slideIndex
     if(diff === 1 || diff === -2){
@@ -110,6 +138,20 @@ export class BibleStudyPage implements OnInit {
     }
   }
 
+  async unlockSwipe(direction: 'right'|'left'){
+    if(direction === 'right'){
+      if(this.swipeLeftLock) {
+        await this.slides.lockSwipeToPrev(false)
+        this.swipeLeftLock = false
+      }
+    } else {
+      if(this.swipeRightLock) {
+        await this.slides.lockSwipeToNext(false)
+        this.swipeRightLock = false
+      }
+    }
+  }
+
   async getActiveIndex(){
     let index = await this.slides.getActiveIndex()
     index = index === 4? 1:index
@@ -117,17 +159,25 @@ export class BibleStudyPage implements OnInit {
     return index
   }
 
-  async transitionFinished(){
+  /*TODO: Bug if swipe is too fast
+   * If I swipe many times too fast, it returns to the loop's start
+   * too soon, before data updates
+   */
+  async transitionFinished(): Promise<void>{
     if(this.start){
       let index = await this.getActiveIndex()
       let direction = this.swipeDirection(index)
       this.setSelectedChapterInfo(this.showedChapters[index-1])
-      console.log('ind: ',index,'prev: ',this.slideIndex)
+      console.log('ind: ',index)//'prev: ',this.slideIndex)
       this.slideIndex = index
-      var dup = document.getElementsByClassName('swiper-slide-duplicate')
+
+      //var dup = document.getElementsByClassName('swiper-slide-duplicate')
       //console.log(dup)
-      if(direction !== 'stay')
+      if(direction !== 'stay'){
+        this.unlockSwipe(direction)
         this.updateText(this.showedChapters[index-1],direction,index)
+      }
+
     }
   }
 
@@ -139,7 +189,6 @@ export class BibleStudyPage implements OnInit {
 
     if(direction === 'right'){
       if(index === 1){
-        //console.log('entered',document.getElementsByClassName('swiper-slide-duplicate'))
         document.getElementsByClassName('swiper-slide-next')[0].children[0].innerHTML = this.showedChapters[2].content
       }
       if(textData?.next != undefined){
@@ -149,7 +198,7 @@ export class BibleStudyPage implements OnInit {
           if(this.swipeRightLock) this.slides.lockSwipeToNext(false)
         })
       } else {
-        //this.slides.lockSwipeToNext(true)
+        this.slides.lockSwipeToNext(true)
         this.swipeRightLock = true
       }
     } else {
@@ -164,7 +213,7 @@ export class BibleStudyPage implements OnInit {
           if(this.swipeLeftLock) this.slides.lockSwipeToPrev(false)
         })
     } else {
-      //await this.slides.lockSwipeToPrev(true)
+      await this.slides.lockSwipeToPrev(true)
       this.swipeLeftLock = true
     }
     }
@@ -207,7 +256,12 @@ export class BibleStudyPage implements OnInit {
   }
 
 
-
+  /*TODO: Updatating chapter issue
+  * If I am in a spanish bible on Genesis, and I change to an English(or maybe Spanish?)
+  * bible with only New Testament, I can't see Mattew until I touch and move the slide,
+  * seems like the duplicate slide is not updated well, but its not the duplicated slide.
+  * Allan Bennett. July 10, 2022
+  */
   bibleChange(bible){
     this.selectedBible = bible
     this.setChapter(bible.id,this.selectedChapter?.id || 'GEN.1')
@@ -251,6 +305,8 @@ export class BibleStudyPage implements OnInit {
       this.start = true
       //var ind = await this.slides.getActiveIndex()
       //console.log('first ind: ',ind)
+      await this.slides.lockSwipeToPrev(true)
+      this.swipeLeftLock = true
       this.setChapterFirstTime(this.selectedBible.id,auxCh.id)
     },err => console.log(err))
   }

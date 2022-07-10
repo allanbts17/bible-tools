@@ -1,6 +1,76 @@
-p.p span.v {
-  margin-right: 5px;
-  font-weight: 500;
- }
+#bible-slides{
+  font-size: 1rem;
+  font-weight: 400;
 
+  /*TODO: Change color for dark mode*/
+  /** Verses number */
+  span.v {
+    margin-right: 5px;
+    font-weight: 450;
+    font-size: 0.8rem;
+    color: rgb(55, 55, 55)
+    //color: red
+   }
+
+   /* Paragraphs*/
+   .p{
+    margin-bottom: 0.3rem;
+    margin-bottom: 0.3rem;
+   }
+
+  /** Titles*/
+  .s1{
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+  }
+   /** Subtitles */
+  .s2{
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+  }
+
+  /**Reference*/
+  .r{
+    font-size: 0.9rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+  }
+
+  /** A little space */
+  .b {
+    margin-bottom: 0.3rem;
+  }
+
+  /** Indentation*/
+  .li1{
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  /** Indentation for quotes q1 and q2*/
+  .q1 {
+    margin-left: 5%;
+  }
+  .q2{
+    margin-left: 10%;
+  }
+
+  /*TODO: Change color for dark mode*/
+  /** Red text */
+  .wj{
+    color: red
+  }
+
+  /** God's name highlight*/
+  .nd {
+    font-size: 1.05rem;
+    font-weight: 440;
+    font-style: italic;
+  }
+
+}
 
