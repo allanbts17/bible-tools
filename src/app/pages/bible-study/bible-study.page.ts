@@ -42,11 +42,60 @@ export class BibleStudyPage implements OnInit {
   ngOnInit() {
 
 
-   /* setTimeout(() => {
-      var dup = document.getElementsByClassName('swiper-slide-duplicate')
-      dup[0].innerHTML = "Hola mundo"
-      console.log(dup)
-    },2000)*/
+   setTimeout(() => {
+
+    const ele = document.querySelector('[data-verse-id="GEN.1.1"]');
+    console.log(ele);
+
+    var n = []
+    var paragraphArray = Array.from(document.querySelectorAll('p.test'))
+    var parrElementArray = <HTMLParagraphElement[]>paragraphArray
+    parrElementArray.forEach(parr => {
+      let chn = parr.childNodes
+      chn.forEach(nod => {
+        //console.log(nod.nodeType)
+
+        n.push(<HTMLParagraphElement>nod)
+      })
+    })
+    console.log(n)
+    n.forEach(nc => {
+      //nc.textContent = 'changee'
+      nc.addEventListener('click',(clickEvent: MouseEvent)=>{
+        nc.style.textDecoration = "underline dotted"
+        console.log(clickEvent)
+      })
+    })
+
+    var g: ChildNode
+    //g.nodeType
+    var b = <HTMLParagraphElement>g
+    //b.style
+
+
+
+    //var dup = document.getElementsByTagName('p')
+    var dap = document.querySelectorAll('ion-slides#bible-slides p')
+    var il = Array.from(dap);
+    var dup = <HTMLParagraphElement[]>il
+    //var dfd = dup[0].childNodes
+
+    //var dup = <HTMLParagraphElement[]>Array.from(document.querySelectorAll('ion-slides#bible-slides p'));
+    //var dup = <HTMLParagraphElement>document.querySelector('ion-slides#bible-slides p')
+    //console.log(dup)
+    var el
+    for(let i=0;i<dup.length;i++){
+
+      dup[i].addEventListener('click',(clickEvent: MouseEvent)=>{
+
+        dup[i].style.textDecoration = "underline dotted"
+        //console.log('Click Event Details: ', clickEvent)
+      })
+    }
+
+
+      //console.log(dup)
+    },2000)
 
   }
 
@@ -65,9 +114,12 @@ export class BibleStudyPage implements OnInit {
  */
   setChapter(bibleId,chapterId){
     var aux, chapter
+
     this.apiService.getChapter(bibleId,chapterId).subscribe(async (chapterContent)=>{
       aux = chapterContent
       chapter = aux.data
+      //console.log(chapter)
+
       this.chapterToSlideDistribution(this.slideIndex,chapter,'actual')
 
 
@@ -106,6 +158,9 @@ export class BibleStudyPage implements OnInit {
     this.apiService.getChapter(bibleId,chapterId).subscribe((chapterContent)=>{
       console.log(chapterContent)
       aux = chapterContent
+
+      //this.apiService.getChapterInVerses(bibleId,chapterId)
+
       this.bibleText = aux.data
       this.setSelectedChapterInfo(this.bibleText)
       this.chapterToSlideDistribution(this.slideIndex,this.bibleText,'actual')
@@ -189,7 +244,8 @@ export class BibleStudyPage implements OnInit {
 
     if(direction === 'right'){
       if(index === 1){
-        document.getElementsByClassName('swiper-slide-next')[0].children[0].innerHTML = this.showedChapters[2].content
+        //document.getElementsByClassName('swiper-slide-next')[0].children[0].innerHTML = this.showedChapters[2].content
+        this.setSlideContent(0,this.showedChapters[2])
       }
       if(textData?.next != undefined){
         this.apiService.getChapter(textData.bibleId,textData.next.id).subscribe((chapterContent)=>{
@@ -203,8 +259,9 @@ export class BibleStudyPage implements OnInit {
       }
     } else {
         if(index === 3){
-          console.log('entered',document.getElementsByClassName('swiper-slide-duplicate'))
-          document.getElementsByClassName('swiper-slide-prev')[0].children[0].innerHTML = this.showedChapters[0].content
+          //console.log('entered',document.getElementsByClassName('swiper-slide-duplicate'))
+          //document.getElementsByClassName('swiper-slide-prev')[0].children[0].innerHTML = this.showedChapters[0].content
+          this.setSlideContent(4,this.showedChapters[0])
         }
       if(textData?.previous != undefined && textData?.previous.number != 'intro'){
         this.apiService.getChapter(textData.bibleId,textData.previous.id).subscribe((chapterContent)=>{
@@ -219,22 +276,71 @@ export class BibleStudyPage implements OnInit {
     }
   }
 
+  /*TODO: Store click verses to use the info */
+  setSlideContent(index,data){
+    setTimeout(() => {
+      var slideNodeList = document.querySelectorAll('ion-slides#bible-slides ion-text')
+      var slideArray = Array.from(slideNodeList);
+      var slideElements = <HTMLIonTextElement[]>slideArray
+      this.removeAllChild(slideElements[index])
+      //console.log(data,index)
+      slideElements[index].insertAdjacentHTML('beforeend', data.content )
+
+      //var verse = document.querySelectorAll('[data-verse-id="GEN.1.2"]')
+      var spanArray = Array.from(document.querySelectorAll('span.verse-span'))
+      var spanElementArray = <HTMLParagraphElement[]>spanArray
+      spanElementArray.forEach((span => {
+        //let att = span.getAttribute('data-verse-id')
+        //console.log(att)
+        span.addEventListener('click',(clickEvent: MouseEvent)=>{
+          span.style.textDecoration = "underline dotted"
+          console.log(clickEvent)
+        })
+      }))
+      //console.log(verses)
+
+    /*  var paragraphArray = Array.from(document.querySelectorAll('p.test'))
+    var parrElementArray = <HTMLParagraphElement[]>paragraphArray
+    parrElementArray.forEach(parr => {
+      let chn = parr.childNodes
+      chn.forEach(nod => {
+        //console.log(nod.nodeType)
+
+        n.push(<HTMLParagraphElement>nod)
+      })
+    })
+    console.log(n)
+    n.forEach(nc => {
+      //nc.textContent = 'changee'
+      nc.addEventListener('click',(clickEvent: MouseEvent)=>{
+        nc.style.textDecoration = "underline dotted"
+        console.log(clickEvent)
+      })
+    })*/
+    })
+  }
+
   chapterToSlideDistribution(activeIndex,data,dataType: 'actual'|'next'|'previous'){
     switch(dataType){
       case 'actual':
         this.showedChapters[activeIndex-1] = data
+        this.setSlideContent(activeIndex,data)
         this.activeChapter = data
         break
       case 'next':
         this.showedChapters[this.loopIn3Next(activeIndex)-1] = data
+        this.setSlideContent(this.loopIn3Next(activeIndex),data)
         if(activeIndex === 3){
-          document.getElementsByClassName('swiper-slide-next')[0].children[0].innerHTML = data.content
+          //document.getElementsByClassName('swiper-slide-next')[0].children[0].innerHTML = data.content
+          this.setSlideContent(4,data)
         }
         break
       case 'previous':
         this.showedChapters[this.loopIn3Prev(activeIndex)-1] = data
+        this.setSlideContent(this.loopIn3Prev(activeIndex),data)
         if(activeIndex === 1){
-          document.getElementsByClassName('swiper-slide-prev')[0].children[0].innerHTML = data.content
+          //document.getElementsByClassName('swiper-slide-prev')[0].children[0].innerHTML = data.content
+          this.setSlideContent(0,data)
         }
         break
     }
@@ -322,6 +428,13 @@ export class BibleStudyPage implements OnInit {
       },
       (err) => console.error(err)
     );
+  }
+
+  removeAllChild(myNode){
+    //console.log(myNode.children)
+    while (myNode.firstChild) {
+      myNode.removeChild(myNode.lastChild);
+    }
   }
 
 

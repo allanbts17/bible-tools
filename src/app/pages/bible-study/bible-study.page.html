@@ -20,11 +20,48 @@
   </ion-toolbar>
 </ion-header>
 <!--<div class="px-4 pt-4 h-full overflow-y-scroll" [innerHtml]="bibleText?.data.content"></div>-->
-
+<!--<p id="testId">
+  <span class="verse-span" data-verse-id="GEN.1.1" data-verse-org-ids="GEN.1.1">
+    <span data-number="1" data-sid="GEN 1:1" class="v">1</span>
+</span>
+</p>-->
 <ion-content scroll-y="false">
+  <!--<p class="test">
+    <span class="v">4</span>
+    <span>Esto es una prueba especial je</span>
+    <span>Esto es una prueba especial je</span>
+    <span class="v">5</span>
+    <span>Hola a todos jaja como están</span>
+    <span>Hola a todos jaja como están</span>
+  </p>
+  <p class="test">
+    <span class="verse-span">
+      <span class="v">6</span>
+    </span>
+
+    <span>Me gusta la comida</span>
+    <span>Me gusta la comida</span>
+    <span class="verse-span">
+      <span class="v">7</span>
+    </span>
+    <span>Y tocar el piano</span>
+    <span>Y tocar el piano</span>
+  </p>
+  <p class="test">
+    <span class="verse-span">
+      <span class="v">8</span>
+    </span>
+    <span>La guitarra tambipen</span>
+    <span>La guitarra tambipen</span>
+    <span class="verse-span">
+      <span class="v">9</span>
+    </span>
+    <span> la flauta por qué no</span>
+    <span> la flauta por qué no</span>
+  </p>-->
   <ion-slides id="bible-slides" #slide [options]="myOptions" class="h-full w-full" (ionSlideTransitionEnd)="transitionFinished()">
     <ion-slide class="h-full " *ngFor="let slide of showedChapters">
-      <ion-text class="h-full overflow-y-scroll px-4 py-4 text-left" [innerHtml]="slide.content"></ion-text>
+      <ion-text class="h-full overflow-y-scroll px-4 py-4 text-left"></ion-text>
     </ion-slide>
   </ion-slides>
 

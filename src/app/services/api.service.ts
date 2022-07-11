@@ -17,6 +17,11 @@ export class ApiService {
     'Content-Type': 'application/json',
     'api-key':'30a8f65d4c9d905424846450db90b830'
   })
+  chapterHeader = new HttpHeaders({
+    'Content-Type': 'application/json',
+    'api-key':'30a8f65d4c9d905424846450db90b830',
+
+  })
   RV_reqHeader = new HttpHeaders({
     'Content-Type': 'application/html',
     'Access-Control-Allow-Origin':'*'
@@ -65,9 +70,68 @@ export class ApiService {
   }
 
   getChapter(bibleId,chapterId){
-    const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/chapters/"+`${chapterId}`;
+
+    const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/chapters/"+`${chapterId}`+'?include-verse-spans=true&';
+    const url = path
+    var includeNotes = true
+    const ur = `${url}include-notes=${includeNotes}&`;
+    /*this.getVerses(bibleId,chapterId).subscribe(ver => {
+      console.log(ver)
+    })*/
+    return this.http.get(path,{headers: this.chapterHeader});
+  }
+
+  getVerses(bibleId,chapterId){
+    const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/chapters/"+`${chapterId}`+"/verses";
     return this.http.get(path,{headers: this.reqHeader});
   }
+
+  getVerse(bibleId,verseId){
+    const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/verses/"+`${verseId}`;
+    return new Promise((resolve, reject) => {
+      this.http.get(path,{headers: this.reqHeader}).subscribe(verse =>{
+        resolve(verse)
+      },err=>reject(err))
+    })
+    //return this.http.get(path,{headers: this.reqHeader});
+  }
+
+  getChapterInVerses(bibleId,chapterId){
+
+    let aux, vaux, verseArray = []
+    this.getVerses(bibleId,chapterId).subscribe(async verses => {
+      aux = verses
+
+      for(let i=0;i<aux.data.length;i++){
+        //console.log(aux.data[i])
+        vaux = await this.getVerse(bibleId,aux.data[i].id)
+        document.getElementById('testId').innerHTML = vaux.data.content
+        verseArray.push(vaux.data)
+      }
+      /*aux.data.forEach(async verseInfo => {
+        vaux = await this.getVerse(bibleId,verseInfo.id)
+        verseArray.push(aux)
+      })*/
+
+      console.log('array',verseArray)
+    })
+  }
+
+  /*getAllLanguages(){
+    return new Promise((resolve, reject) => {
+      this.getAllBibles().subscribe((bibles)=>{
+        this.auxBibles = bibles
+        var languages = []
+        this.auxBibles.data.forEach(bible => {
+          languages.push(bible.language)
+        });
+        resolve(languages)
+      },(error)=>{
+        reject(error)
+      })
+    });
+
+  }*/
 
   getBookSectionList(bibleId,bookId){
     const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/books/"+`${bookId}`+"/sections";
