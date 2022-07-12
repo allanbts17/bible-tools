@@ -81,6 +81,12 @@ export class ApiService {
     return this.http.get(path,{headers: this.chapterHeader});
   }
 
+  /**passageId example: REV.10.3-REV.10.6 */
+  getPassage(bibleId,passageId){
+    const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/passages/"+`${passageId}`;
+    return this.http.get(path,{headers: this.reqHeader});
+  }
+
   getVerses(bibleId,chapterId){
     const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/chapters/"+`${chapterId}`+"/verses";
     return this.http.get(path,{headers: this.reqHeader});
@@ -93,45 +99,8 @@ export class ApiService {
         resolve(verse)
       },err=>reject(err))
     })
-    //return this.http.get(path,{headers: this.reqHeader});
   }
 
-  getChapterInVerses(bibleId,chapterId){
-
-    let aux, vaux, verseArray = []
-    this.getVerses(bibleId,chapterId).subscribe(async verses => {
-      aux = verses
-
-      for(let i=0;i<aux.data.length;i++){
-        //console.log(aux.data[i])
-        vaux = await this.getVerse(bibleId,aux.data[i].id)
-        document.getElementById('testId').innerHTML = vaux.data.content
-        verseArray.push(vaux.data)
-      }
-      /*aux.data.forEach(async verseInfo => {
-        vaux = await this.getVerse(bibleId,verseInfo.id)
-        verseArray.push(aux)
-      })*/
-
-      console.log('array',verseArray)
-    })
-  }
-
-  /*getAllLanguages(){
-    return new Promise((resolve, reject) => {
-      this.getAllBibles().subscribe((bibles)=>{
-        this.auxBibles = bibles
-        var languages = []
-        this.auxBibles.data.forEach(bible => {
-          languages.push(bible.language)
-        });
-        resolve(languages)
-      },(error)=>{
-        reject(error)
-      })
-    });
-
-  }*/
 
   getBookSectionList(bibleId,bookId){
     const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/books/"+`${bookId}`+"/sections";

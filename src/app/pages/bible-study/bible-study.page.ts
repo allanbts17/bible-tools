@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild, ViewEncapsulation  } from '@angular/core'
 import { ApiService } from 'src/app/services/api.service';
 import { IonSlides } from '@ionic/angular';
 import { SwiperOptions } from 'swiper';
+import { NoteSelectionSheetComponent } from 'src/app/components/note-selection-sheet/note-selection-sheet.component';
+
 
 @Component({
   selector: 'app-bible-study',
@@ -11,6 +13,7 @@ import { SwiperOptions } from 'swiper';
 })
 export class BibleStudyPage implements OnInit {
   @ViewChild('slide') slides: IonSlides;
+  @ViewChild('sheet') noteSelectionSheet: NoteSelectionSheetComponent;
   availableBibleLanguages = [{id:"spa",name:"Español"},{id:"eng",name:"English"}]
   bibles = []
   selectedBible
@@ -34,6 +37,7 @@ export class BibleStudyPage implements OnInit {
   swipeRightLock = true
   slideIndex = 1
   start = false
+  selectedVerseArray = []
 
   constructor(public apiService: ApiService) {
     this.getAvailablaBibles()
@@ -226,6 +230,7 @@ export class BibleStudyPage implements OnInit {
       console.log('ind: ',index)//'prev: ',this.slideIndex)
       this.slideIndex = index
 
+      this.noteSelectionSheet.closeSheet()
       //var dup = document.getElementsByClassName('swiper-slide-duplicate')
       //console.log(dup)
       if(direction !== 'stay'){
@@ -293,32 +298,65 @@ export class BibleStudyPage implements OnInit {
         //let att = span.getAttribute('data-verse-id')
         //console.log(att)
         span.addEventListener('click',(clickEvent: MouseEvent)=>{
-          span.style.textDecoration = "underline dotted"
-          console.log(clickEvent)
+          clickEvent.preventDefault()
+          clickEvent.stopPropagation()
+          clickEvent.stopImmediatePropagation()
+
+          let verseId = span.getAttribute('data-verse-id')
+          //console.log(this.selectedVerseArray.find(verse => verse.verseId == verseId),verseId)
+          const verseSegments = Array.from(document.querySelectorAll('[data-verse-id="'+`${verseId}`+'"]'))
+          var verseSegmentsElementArray = <HTMLParagraphElement[]>verseSegments
+
+          if(!this.selectedVerseArray.some(verse => verse.verseId == verseId)){
+            verseSegmentsElementArray.forEach(verseSpan => {
+              verseSpan.classList.add('selected-verse')
+            })
+            this.selectedVerseArray.push({
+              verseId: verseId,
+              bibleId: this.selectedBible.id
+            })
+            /*TODO: Abrir componente para vers. seleccionados
+            * En esta línea una función o línea de código abre un componente
+            * para hacer algo con los versículos seleccionados
+            */
+           this.noteSelectionSheet.openSheet(this.selectedVerseArray)
+            //console.log(this.selectedVerseArray)
+          } else {
+            verseSegmentsElementArray.forEach(verseSpan => {
+              verseSpan.classList.remove('selected-verse')
+            })
+            let index = this.selectedVerseArray.findIndex((verse) => verse.verseId == verseId)
+            this.selectedVerseArray = this.arrayRemove(this.selectedVerseArray,this.selectedVerseArray[index])
+            //console.log(this.selectedVerseArray)
+           if(this.selectedVerseArray.length == 0){
+            /*TODO: Cerrar componente para vers. seleccionados
+            * En esta línea una función o línea de código cierra el componente
+            * para hacer algo con los versículos seleccionados
+            */
+            this.noteSelectionSheet.closeSheet()
+           }
+          }
         })
       }))
-      //console.log(verses)
-
-    /*  var paragraphArray = Array.from(document.querySelectorAll('p.test'))
-    var parrElementArray = <HTMLParagraphElement[]>paragraphArray
-    parrElementArray.forEach(parr => {
-      let chn = parr.childNodes
-      chn.forEach(nod => {
-        //console.log(nod.nodeType)
-
-        n.push(<HTMLParagraphElement>nod)
-      })
-    })
-    console.log(n)
-    n.forEach(nc => {
-      //nc.textContent = 'changee'
-      nc.addEventListener('click',(clickEvent: MouseEvent)=>{
-        nc.style.textDecoration = "underline dotted"
-        console.log(clickEvent)
-      })
-    })*/
     })
   }
+
+  unselectAll(){
+    if(this.selectedVerseArray.length != 0){
+      const verseSegments = Array.from(document.getElementsByClassName('selected-verse'))
+    var verseSegmentsElementArray = <HTMLParagraphElement[]>verseSegments
+    verseSegmentsElementArray.forEach(verseSpan => {
+      verseSpan.classList.remove('selected-verse')
+    })
+    this.selectedVerseArray.length = 0
+    }
+  }
+
+  arrayRemove(arr, value) {
+    return arr.filter(function(ele){
+        return ele != value;
+    });
+}
 
   chapterToSlideDistribution(activeIndex,data,dataType: 'actual'|'next'|'previous'){
     switch(dataType){
@@ -370,11 +408,13 @@ export class BibleStudyPage implements OnInit {
   */
   bibleChange(bible){
     this.selectedBible = bible
+    this.noteSelectionSheet.closeSheet()
     this.setChapter(bible.id,this.selectedChapter?.id || 'GEN.1')
   }
 
   chapterChange(chapter){
     this.selectedChapter = chapter
+    this.noteSelectionSheet.closeSheet()
     this.setChapter(chapter.bibleId,chapter.id)
   }
 

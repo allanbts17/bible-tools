@@ -7,8 +7,7 @@
         </ion-button>
       </ion-menu-toggle>
     </ion-buttons>
-    <ion-buttons >
-
+    <ion-buttons>
         <ion-button color="dark" strong="true" shape="round" id="open-select-passage-modal">
           {{selectedChapter?.reference}}
         </ion-button>
@@ -26,44 +25,14 @@
 </span>
 </p>-->
 <ion-content scroll-y="false">
-  <!--<p class="test">
-    <span class="v">4</span>
-    <span>Esto es una prueba especial je</span>
-    <span>Esto es una prueba especial je</span>
-    <span class="v">5</span>
-    <span>Hola a todos jaja como están</span>
-    <span>Hola a todos jaja como están</span>
-  </p>
-  <p class="test">
-    <span class="verse-span">
-      <span class="v">6</span>
-    </span>
+  <app-note-selection-sheet #sheet [chapterReference]="selectedChapter?.reference" (closeSheetEvent)="unselectAll()"></app-note-selection-sheet>
 
-    <span>Me gusta la comida</span>
-    <span>Me gusta la comida</span>
-    <span class="verse-span">
-      <span class="v">7</span>
-    </span>
-    <span>Y tocar el piano</span>
-    <span>Y tocar el piano</span>
-  </p>
-  <p class="test">
-    <span class="verse-span">
-      <span class="v">8</span>
-    </span>
-    <span>La guitarra tambipen</span>
-    <span>La guitarra tambipen</span>
-    <span class="verse-span">
-      <span class="v">9</span>
-    </span>
-    <span> la flauta por qué no</span>
-    <span> la flauta por qué no</span>
-  </p>-->
   <ion-slides id="bible-slides" #slide [options]="myOptions" class="h-full w-full" (ionSlideTransitionEnd)="transitionFinished()">
     <ion-slide class="h-full " *ngFor="let slide of showedChapters">
       <ion-text class="h-full overflow-y-scroll px-4 py-4 text-left"></ion-text>
     </ion-slide>
   </ion-slides>
+
 
   <app-select-bible-modal [availableBibles]="bibles" (bibleSelectedEvent)="bibleChange($event)"></app-select-bible-modal>
   <app-select-passage-modal [bible]="selectedBible" (passageSelectedEvent)="chapterChange($event)"></app-select-passage-modal>

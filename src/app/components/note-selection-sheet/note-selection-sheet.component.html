@@ -1,0 +1,31 @@
+<ion-card [ngStyle]="{'display':getStatus()? 'block':'none'}" id="note-selection-card" class="z-10 absolute bottom-0 ">
+  <ion-item>
+    <ion-button (click)="closeSheet()" slot="start" fill="clear" shape="round">
+      <ion-icon name="close"></ion-icon>
+    </ion-button>
+    <ion-label class="text-center">{{passageReference}}</ion-label>
+    <ion-icon name="arrow-down-outline" slot="end"></ion-icon>
+  </ion-item>
+
+  <ion-card-content>
+    <div class="flex justify-between">
+      <ion-button fill="clear">
+        <ion-icon name="color-palette"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear">
+        <ion-icon name="list"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear">
+        <ion-icon name="document"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear">
+        <ion-icon name="copy"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear">
+        <ion-icon name="share-social"></ion-icon>
+      </ion-button>
+    </div>
+  </ion-card-content>
+</ion-card>
+
+

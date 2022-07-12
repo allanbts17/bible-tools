@@ -12,10 +12,11 @@ import { SelectPassageModalComponent } from './select-passage-modal/select-passa
 import { SwiperModule } from 'swiper/angular';
 import SwiperCore, { Autoplay, Keyboard, Pagination, Scrollbar, Zoom } from 'swiper';
 import { IonicSlides } from '@ionic/angular';
+import { NoteSelectionSheetComponent } from './note-selection-sheet/note-selection-sheet.component';
 
 const components = [ColorPickerComponent,AddNoteModalComponent,GeneralNoteComponent,
 AddCategoryComponent,CustomAlertComponent,SelectBibleModalComponent,SelectPassageModalComponent,
-]
+NoteSelectionSheetComponent]
 
 SwiperCore.use([Autoplay, Keyboard, Pagination, Scrollbar, Zoom, IonicSlides]);
 
