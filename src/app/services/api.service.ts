@@ -69,9 +69,11 @@ export class ApiService {
     return this.http.get(path,{headers: this.reqHeader});
   }
 
-  getChapter(bibleId,chapterId){
-
-    const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/chapters/"+`${chapterId}`+'?include-verse-spans=true&';
+  /*TODO: Configure to add notes
+  * On bible-study.page, I can see Gn 1 RVR09 on reference bible app
+  */
+  getChapter(bibleId,chapterId,includeNotes=false){
+    const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/chapters/"+`${chapterId}`+'?include-verse-spans=true&include-notes='+`${includeNotes}`+'&';
     const url = path
     var includeNotes = true
     const ur = `${url}include-notes=${includeNotes}&`;

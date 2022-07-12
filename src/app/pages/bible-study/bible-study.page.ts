@@ -27,81 +27,20 @@ export class BibleStudyPage implements OnInit {
   ]
   activeChapter
   myOptions: SwiperOptions = {
-    //allowTouchMove: false,
     loop:true,
-    //touchAngle: 45 May help to not slide accidentaly when scrolling down/up
-    //longSwipes:false
-   // loopPreventsSlide:false
-};
+  }
   swipeLeftLock = false
   swipeRightLock = true
   slideIndex = 1
   start = false
   selectedVerseArray = []
+  //showSpace = false
 
   constructor(public apiService: ApiService) {
     this.getAvailablaBibles()
   }
 
-  ngOnInit() {
-
-
-   setTimeout(() => {
-
-    const ele = document.querySelector('[data-verse-id="GEN.1.1"]');
-    console.log(ele);
-
-    var n = []
-    var paragraphArray = Array.from(document.querySelectorAll('p.test'))
-    var parrElementArray = <HTMLParagraphElement[]>paragraphArray
-    parrElementArray.forEach(parr => {
-      let chn = parr.childNodes
-      chn.forEach(nod => {
-        //console.log(nod.nodeType)
-
-        n.push(<HTMLParagraphElement>nod)
-      })
-    })
-    console.log(n)
-    n.forEach(nc => {
-      //nc.textContent = 'changee'
-      nc.addEventListener('click',(clickEvent: MouseEvent)=>{
-        nc.style.textDecoration = "underline dotted"
-        console.log(clickEvent)
-      })
-    })
-
-    var g: ChildNode
-    //g.nodeType
-    var b = <HTMLParagraphElement>g
-    //b.style
-
-
-
-    //var dup = document.getElementsByTagName('p')
-    var dap = document.querySelectorAll('ion-slides#bible-slides p')
-    var il = Array.from(dap);
-    var dup = <HTMLParagraphElement[]>il
-    //var dfd = dup[0].childNodes
-
-    //var dup = <HTMLParagraphElement[]>Array.from(document.querySelectorAll('ion-slides#bible-slides p'));
-    //var dup = <HTMLParagraphElement>document.querySelector('ion-slides#bible-slides p')
-    //console.log(dup)
-    var el
-    for(let i=0;i<dup.length;i++){
-
-      dup[i].addEventListener('click',(clickEvent: MouseEvent)=>{
-
-        dup[i].style.textDecoration = "underline dotted"
-        //console.log('Click Event Details: ', clickEvent)
-      })
-    }
-
-
-      //console.log(dup)
-    },2000)
-
-  }
+  ngOnInit() {}
 
   setSelectedChapterInfo(data){
     this.selectedChapter = {
@@ -230,10 +169,11 @@ export class BibleStudyPage implements OnInit {
       console.log('ind: ',index)//'prev: ',this.slideIndex)
       this.slideIndex = index
 
-      this.noteSelectionSheet.closeSheet()
       //var dup = document.getElementsByClassName('swiper-slide-duplicate')
       //console.log(dup)
       if(direction !== 'stay'){
+        this.noteSelectionSheet.closeSheet()
+        this.closeSpace()
         this.unlockSwipe(direction)
         this.updateText(this.showedChapters[index-1],direction,index)
       }
@@ -281,29 +221,25 @@ export class BibleStudyPage implements OnInit {
     }
   }
 
-  /*TODO: Store click verses to use the info */
   setSlideContent(index,data){
     setTimeout(() => {
       var slideNodeList = document.querySelectorAll('ion-slides#bible-slides ion-text')
       var slideArray = Array.from(slideNodeList);
       var slideElements = <HTMLIonTextElement[]>slideArray
       this.removeAllChild(slideElements[index])
-      //console.log(data,index)
-      slideElements[index].insertAdjacentHTML('beforeend', data.content )
 
-      //var verse = document.querySelectorAll('[data-verse-id="GEN.1.2"]')
+      let spaceDIV = '<div class="w-full chapter-space"></div>' //h-36 or h-0
+      slideElements[index].insertAdjacentHTML('beforeend', data.content + spaceDIV)
+
       var spanArray = Array.from(document.querySelectorAll('span.verse-span'))
       var spanElementArray = <HTMLParagraphElement[]>spanArray
       spanElementArray.forEach((span => {
-        //let att = span.getAttribute('data-verse-id')
-        //console.log(att)
         span.addEventListener('click',(clickEvent: MouseEvent)=>{
           clickEvent.preventDefault()
           clickEvent.stopPropagation()
           clickEvent.stopImmediatePropagation()
 
           let verseId = span.getAttribute('data-verse-id')
-          //console.log(this.selectedVerseArray.find(verse => verse.verseId == verseId),verseId)
           const verseSegments = Array.from(document.querySelectorAll('[data-verse-id="'+`${verseId}`+'"]'))
           var verseSegmentsElementArray = <HTMLParagraphElement[]>verseSegments
 
@@ -315,30 +251,42 @@ export class BibleStudyPage implements OnInit {
               verseId: verseId,
               bibleId: this.selectedBible.id
             })
-            /*TODO: Abrir componente para vers. seleccionados
-            * En esta línea una función o línea de código abre un componente
-            * para hacer algo con los versículos seleccionados
-            */
-           this.noteSelectionSheet.openSheet(this.selectedVerseArray)
-            //console.log(this.selectedVerseArray)
+
+            this.noteSelectionSheet.openSheet(this.selectedVerseArray)
+            this.openSpace()
           } else {
             verseSegmentsElementArray.forEach(verseSpan => {
               verseSpan.classList.remove('selected-verse')
             })
             let index = this.selectedVerseArray.findIndex((verse) => verse.verseId == verseId)
             this.selectedVerseArray = this.arrayRemove(this.selectedVerseArray,this.selectedVerseArray[index])
-            //console.log(this.selectedVerseArray)
+
            if(this.selectedVerseArray.length == 0){
-            /*TODO: Cerrar componente para vers. seleccionados
-            * En esta línea una función o línea de código cierra el componente
-            * para hacer algo con los versículos seleccionados
-            */
             this.noteSelectionSheet.closeSheet()
+            this.closeSpace()
+           } else {
+            this.noteSelectionSheet.updatePassageReference(this.selectedVerseArray)
            }
           }
         })
       }))
     })
+  }
+
+  openSpace(){
+    let space = document.getElementsByClassName('chapter-space')
+    for(let i=0;i<space.length;i++){
+      if(!space[i].classList.contains('h-36'))
+      space[i].classList.add('h-36')
+    }
+  }
+
+  closeSpace(){
+    let space = document.getElementsByClassName('chapter-space')
+    for(let i=0;i<space.length;i++){
+      if(space[i].classList.contains('h-36'))
+      space[i].classList.remove('h-36')
+    }
   }
 
   unselectAll(){
@@ -350,6 +298,7 @@ export class BibleStudyPage implements OnInit {
     })
     this.selectedVerseArray.length = 0
     }
+    this.closeSpace()
   }
 
   arrayRemove(arr, value) {
@@ -409,12 +358,14 @@ export class BibleStudyPage implements OnInit {
   bibleChange(bible){
     this.selectedBible = bible
     this.noteSelectionSheet.closeSheet()
+    this.closeSpace()
     this.setChapter(bible.id,this.selectedChapter?.id || 'GEN.1')
   }
 
   chapterChange(chapter){
     this.selectedChapter = chapter
     this.noteSelectionSheet.closeSheet()
+    this.closeSpace()
     this.setChapter(chapter.bibleId,chapter.id)
   }
 
@@ -471,7 +422,6 @@ export class BibleStudyPage implements OnInit {
   }
 
   removeAllChild(myNode){
-    //console.log(myNode.children)
     while (myNode.firstChild) {
       myNode.removeChild(myNode.lastChild);
     }

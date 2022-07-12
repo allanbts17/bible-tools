@@ -52,14 +52,14 @@ export class NoteSelectionSheetComponent implements OnInit {
     let lastNumberInRange
     for(let i=0;i<versesLength-1;i++){
       if(verses[i+1]-verses[i] == 1){
-        let j = i
+        //let j = i
         let first = verses[i].slice()
-        while(verses[j+1]-verses[j] == 1){
-          j += 1
+        while(verses[i+1]-verses[i] == 1){
+          i += 1
         }
-        lastNumberInRange = verses[j]
-        verseRanges.push(String(first +"-"+ verses[j]))
-        i = j
+        lastNumberInRange = verses[i]
+        verseRanges.push(String(first +"-"+ verses[i]))
+        //i = j
       } else {
         verseRanges.push(verses[i])
       }

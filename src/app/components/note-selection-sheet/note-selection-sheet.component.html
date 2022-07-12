@@ -1,10 +1,10 @@
 <ion-card [ngStyle]="{'display':getStatus()? 'block':'none'}" id="note-selection-card" class="z-10 absolute bottom-0 ">
-  <ion-item>
-    <ion-button (click)="closeSheet()" slot="start" fill="clear" shape="round">
+
+  <ion-item lines="none" class="relative">
+    <ion-button class="absolute top-1 left-2 h-8" (click)="closeSheet()" slot="start" fill="clear" shape="round">
       <ion-icon name="close"></ion-icon>
     </ion-button>
     <ion-label class="text-center">{{passageReference}}</ion-label>
-    <ion-icon name="arrow-down-outline" slot="end"></ion-icon>
   </ion-item>
 
   <ion-card-content>
