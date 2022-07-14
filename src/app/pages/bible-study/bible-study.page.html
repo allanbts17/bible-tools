@@ -34,7 +34,7 @@
   </ion-slides>
 
 
-  <app-note-selection-sheet #sheet [chapterReference]="selectedChapter?.reference" (closeSheetEvent)="unselectAll()"></app-note-selection-sheet>
+  <app-note-selection-sheet #sheet [chapterId]="selectedChapter?.id" [chapterReference]="selectedChapter?.reference" (closeSheetEvent)="unselectAll()"></app-note-selection-sheet>
   <app-select-bible-modal [availableBibles]="bibles" (bibleSelectedEvent)="bibleChange($event)"></app-select-bible-modal>
   <app-select-passage-modal [bible]="selectedBible" (passageSelectedEvent)="chapterChange($event)"></app-select-passage-modal>
 </ion-content>

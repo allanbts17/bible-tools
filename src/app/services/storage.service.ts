@@ -6,6 +6,7 @@ import { Category } from '../interfaces/category';
 const NOTES_KEY = 'notes'
 const CATEGORY_KEY = 'categories'
 const SETTINGS_KEY = 'settings'
+const MARKED_KEY = 'marked'
 const ID = 'id'
 
 @Injectable({

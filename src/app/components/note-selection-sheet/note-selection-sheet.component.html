@@ -1,15 +1,25 @@
 <ion-card [ngStyle]="{'display':getStatus()? 'block':'none'}" id="note-selection-card" class="z-10 absolute bottom-0 ">
 
-  <ion-item lines="none" class="relative">
+  <ion-item *ngIf="!showHighlightColors" lines="none" class="relative">
     <ion-button class="absolute top-1 left-2 h-8" (click)="closeSheet()" slot="start" fill="clear" shape="round">
       <ion-icon name="close"></ion-icon>
     </ion-button>
     <ion-label class="text-center">{{passageReference}}</ion-label>
   </ion-item>
 
+  <ion-item *ngIf="showHighlightColors" lines="none" class="relative">
+    <ion-button class="" (click)="hideHighlightColor()" slot="start" fill="clear" shape="round">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-button>
+    <ion-label class="text-center">{{passageReference}}</ion-label>
+    <ion-button class="" (click)="saveHighlightColor()" slot="end" fill="clear" shape="round">
+      <ion-icon name="checkmark"></ion-icon>
+    </ion-button>
+  </ion-item>
+
   <ion-card-content>
-    <div class="flex justify-between">
-      <ion-button fill="clear">
+    <div *ngIf="!showHighlightColors" class="flex justify-between">
+      <ion-button fill="clear" (click)="showHighlightColors = true">
         <ion-icon name="color-palette"></ion-icon>
       </ion-button>
       <ion-button fill="clear">
@@ -24,6 +34,27 @@
       <ion-button fill="clear">
         <ion-icon name="share-social"></ion-icon>
       </ion-button>
+    </div>
+
+    <div *ngIf="showHighlightColors" class="flex justify-between">
+      <ion-button fill="clear" (click)="highlightText('yellow')">
+        <ion-icon class="text-yellow-300" name="ellipse"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" (click)="highlightText('orange')">
+        <ion-icon class="text-orange-300" name="ellipse"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" (click)="highlightText('red')">
+        <ion-icon class="text-red-300" name="ellipse"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" (click)="highlightText('green')">
+        <ion-icon class="text-green-300" name="ellipse"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" (click)="highlightText('blue')">
+        <ion-icon class="text-blue-300" name="ellipse"></ion-icon>
+      </ion-button>
+
+
+
     </div>
   </ion-card-content>
 </ion-card>

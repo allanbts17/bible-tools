@@ -9,6 +9,32 @@
     //text-decoration: underline double ;
   }
 
+  .selected-verse.yellow {
+    background-color: rgb(253 224 71);
+    color: black;
+    //text-decoration: underline double ;
+  }
+  .selected-verse.orange {
+    background-color: rgb(253 186 116);
+    color: black;
+    //text-decoration: underline double ;
+  }
+  .selected-verse.red {
+    background-color: rgb(252 165 165);
+    color: black;
+    //text-decoration: underline double ;
+  }
+  .selected-verse.green {
+    background-color: rgb(134 239 172);
+    color: black;
+    //text-decoration: underline double ;
+  }
+  .selected-verse.blue {
+    background-color: rgb(147 197 253);
+    color: black;
+    //text-decoration: underline double ;
+  }
+
   .selected-verse span.v {
     background-color: rgba($color: #9a9a9a, $alpha: 5.0);
     color: white;
