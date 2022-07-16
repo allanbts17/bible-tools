@@ -20,7 +20,7 @@
         <ion-icon slot="icon-only" name="list"></ion-icon>
       </ion-button>
 
-     <ion-popover trigger="daily-dev-menu"  [dismissOnSelect]="true">
+     <ion-popover [animated]="false" trigger="daily-dev-menu"  [dismissOnSelect]="true">
         <ng-template>
           <ion-content>
             <ion-list>
@@ -37,7 +37,7 @@
                 <ion-label>Editar categoría</ion-label>
               </ion-item>
 
-              <ion-popover trigger="category-edit"  [dismissOnSelect]="true">
+              <ion-popover [animated]="false" trigger="category-edit"  [dismissOnSelect]="true">
                 <ng-template>
                   <ion-content>
                     <ion-list>
@@ -55,7 +55,7 @@
                 <ion-label>Eliminar categoría</ion-label>
               </ion-item>
 
-              <ion-popover trigger="category-delete"  [dismissOnSelect]="true">
+              <ion-popover [animated]="false" trigger="category-delete"  [dismissOnSelect]="true">
                 <ng-template>
                   <ion-content>
                     <ion-list>
