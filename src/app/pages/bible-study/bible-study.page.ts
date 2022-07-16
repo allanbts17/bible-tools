@@ -3,6 +3,7 @@ import { ApiService } from 'src/app/services/api.service';
 import { IonSlides } from '@ionic/angular';
 import { SwiperOptions } from 'swiper';
 import { NoteSelectionSheetComponent } from 'src/app/components/note-selection-sheet/note-selection-sheet.component';
+import { StorageService } from 'src/app/services/storage.service';
 
 
 @Component({
@@ -34,10 +35,13 @@ export class BibleStudyPage implements OnInit {
   slideIndex = 1
   start = false
   selectedVerseArray = []
+  markersData = []
   //showSpace = false
 
-  constructor(public apiService: ApiService) {
+  constructor(public apiService: ApiService,
+    public storage: StorageService) {
     this.getAvailablaBibles()
+    this.loadMarkedVerses()
   }
 
   ngOnInit() {}
@@ -221,6 +225,11 @@ export class BibleStudyPage implements OnInit {
     }
   }
 
+  async loadMarkedVerses(){
+    this.markersData = await this.storage.getData('marked')
+    console.log(this.markersData)
+  }
+
   setSlideContent(index,data){
     setTimeout(() => {
       var slideNodeList = document.querySelectorAll('ion-slides#bible-slides ion-text')
@@ -234,6 +243,18 @@ export class BibleStudyPage implements OnInit {
       var spanArray = Array.from(document.querySelectorAll('span.verse-span'))
       var spanElementArray = <HTMLParagraphElement[]>spanArray
       spanElementArray.forEach((span => {
+
+        let dataVerseId = span.getAttribute('data-verse-id')
+        let markedVerse = this.markersData.find(marked => marked.verse == dataVerseId)
+        /** Setting mark if have mark */
+        if(markedVerse !== undefined){
+          const verseSegments = Array.from(document.querySelectorAll('[data-verse-id="'+`${dataVerseId}`+'"]'))
+          verseSegments.forEach(verse => {
+            verse.classList.add(markedVerse.color)
+          })
+          //var verseSegmentsElementArray = <HTMLParagraphElement[]>verseSegments
+        }
+
         span.addEventListener('click',(clickEvent: MouseEvent)=>{
           clickEvent.preventDefault()
           clickEvent.stopPropagation()
@@ -306,6 +327,14 @@ export class BibleStudyPage implements OnInit {
         return ele != value;
     });
 }
+
+  closeSelectionSheet(updateMarks){
+    this.unselectAll()
+  }
+
+  updateMarks(){
+
+  }
 
   chapterToSlideDistribution(activeIndex,data,dataType: 'actual'|'next'|'previous'){
     switch(dataType){

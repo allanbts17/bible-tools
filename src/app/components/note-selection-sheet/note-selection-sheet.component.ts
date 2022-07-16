@@ -1,5 +1,9 @@
 import { Component, OnInit, HostListener, Output, EventEmitter, Input } from '@angular/core';
 import { StorageService } from 'src/app/services/storage.service';
+import { Clipboard } from '@capacitor/clipboard';
+import { ToastController } from '@ionic/angular';
+import { Share } from '@capacitor/share';
+
 
 @Component({
   selector: 'app-note-selection-sheet',
@@ -10,13 +14,16 @@ export class NoteSelectionSheetComponent implements OnInit {
   @Output() closeSheetEvent = new EventEmitter<any>()
   @Input() chapterReference
   @Input() chapterId
+  @Input() bibleName
   private showCard = false
   passageReference = ''
   selectedData
   verses
   showHighlightColors = false
   selectedMarkerColor
-  constructor(public storage: StorageService) {}
+
+  constructor(public storage: StorageService,
+    public toastController: ToastController) {}
 
   ngOnInit() {
     this.onResize();
@@ -29,63 +36,122 @@ export class NoteSelectionSheetComponent implements OnInit {
    card.style.width = String(window.innerWidth - 20) + "px"
   }
 
-  closeSheet(){
+  async presentToast(text,duration = 2000) {
+    const toast = await this.toastController.create({
+      message: text,
+      duration: duration
+    });
+    await toast.present();
+    const { role } = await toast.onDidDismiss();
+  }
+
+  closeSheet(updateMarks = false){
     this.showCard = false
-    this.closeSheetEvent.emit()
+    this.closeSheetEvent.emit(updateMarks)
   }
 
   hideHighlightColor(){
-    if(this.selectedMarkerColor != undefined){
-      let coloredText = Array.from(document.getElementsByClassName(this.selectedMarkerColor))
-      coloredText.forEach((spans => {
-        spans.classList.remove(this.selectedMarkerColor)
-      }))
-      this.selectedMarkerColor = undefined
+    this.showHighlightColors = false
+  }
+
+  async removeStoredHighlightColor(){
+    let storedData = await this.storage.getData('marked')
+    for(let i=0;i<this.verses.length;i++){
+
+      let verseId = this.chapterId +'.'+ this.verses[i]
+      let searchedData = storedData.find(markedVerse => {
+        return markedVerse.verse == verseId
+      })
+
+      if(searchedData !== undefined){
+        await this.storage.removeItemByID('marked',{id:searchedData.id})
+      }
     }
     this.showHighlightColors = false
   }
 
-  async saveHighlightColor(){
-    if(this.selectedMarkerColor != undefined){
-      let storedData = await this.storage.getData('marked')
-      for(let i=0;i<this.verses.length;i++){
-        let data = {
-          verse: this.chapterId +'.'+ this.verses[i],
-          color: this.selectedMarkerColor
-        }
+  async saveHighlightColor(selColor){
 
-        let searchedData = storedData.find(markedVerse => {
-          //console.log(markedVerse.verse,data.verse)
-          return markedVerse.verse == data.verse
-        })
-        console.log('search',searchedData)
-        console.log('store',storedData)
-
-        if(searchedData === undefined){
-          console.log('new',data)
-          await this.storage.addData('marked',data)
-        } else {
-          let newData = {
-            id: searchedData.id,
-            verse: this.chapterId +'.'+ this.verses[i],
-            color: this.selectedMarkerColor
-          }
-          console.log('edit',newData)
-          await this.storage.editItemByID('marked',newData)
-        }
-
-
-       // console.log(data)
+    let storedData = await this.storage.getData('marked')
+    for(let i=0;i<this.verses.length;i++){
+      let data = {
+        verse: this.chapterId +'.'+ this.verses[i],
+        color: selColor
       }
-      this.selectedMarkerColor = false
-      this.showHighlightColors = false
+
+      let searchedData = storedData.find(markedVerse => {
+        //console.log(markedVerse.verse,data.verse)
+        return markedVerse.verse == data.verse
+      })
+      //console.log('search',searchedData)
+      //console.log('store',storedData)
+
+      if(searchedData === undefined){
+        //console.log('new',data)
+        await this.storage.addData('marked',data)
+      } else {
+        let newData = {
+          id: searchedData.id,
+          verse: this.chapterId +'.'+ this.verses[i],
+          color: selColor
+        }
+        //console.log('edit',newData)
+        await this.storage.editItemByID('marked',newData)
+      }
+
+
+      // console.log(data)
     }
+    this.showHighlightColors = false
+  }
+
+  async writeToClipboard(){
+    let text = ''
+    this.verses.forEach(verse => {
+      const verseSegments = Array.from(document.querySelectorAll('[data-verse-id="'+this.chapterId+'.'+verse+'"]'))
+      var verseSegmentsElementArray = <HTMLParagraphElement[]>verseSegments
+      verseSegmentsElementArray.forEach(verseEl => {
+        if(!verseEl.children[0]?.classList.contains('v'))
+          text += verseEl.innerText +" "
+      })
+    })
+    text += '\n' + this.passageReference + " " +this.bibleName
+    //console.log(text)
+    await Clipboard.write({
+      string: text
+    });
+    this.closeSheet()
+    this.presentToast('El texto se ha copiado.')
+  }
+
+  async shareData(){
+    let text = ''
+    this.verses.forEach(verse => {
+      const verseSegments = Array.from(document.querySelectorAll('[data-verse-id="'+this.chapterId+'.'+verse+'"]'))
+      var verseSegmentsElementArray = <HTMLParagraphElement[]>verseSegments
+      verseSegmentsElementArray.forEach(verseEl => {
+        if(!verseEl.children[0]?.classList.contains('v'))
+          text += verseEl.innerText +" "
+      })
+    })
+    text += '\n' + this.passageReference + " " +this.bibleName
+
+    let canShare = await Share.canShare()
+    if(canShare.value){
+      await Share.share({
+        title: this.passageReference,
+        text: text,
+        dialogTitle: '¡Comparte esperanza!',
+      });
+      this.closeSheet()
+    } else {
+      this.presentToast('La acción de compartir no es compatible con este dispositivo.')
+    }
+
   }
 
   openSheet(data){
     this.updatePassageReference(data)
-    if(this.selectedMarkerColor != undefined)
-      this.highlightText(this.selectedMarkerColor)
     this.showCard = true
   }
 
@@ -147,18 +213,23 @@ export class NoteSelectionSheetComponent implements OnInit {
     });
   }
 
-  highlightText(color: 'yellow'|'orange'|'red'|'green'|'blue'){
-    this.selectedMarkerColor = color
+  highlightText(color: 'yellow'|'orange'|'red'|'green'|'blue'|'none'){
     let selectedText = document.getElementsByClassName('selected-verse')
+    let haveToRemove = false
     //console.log(selectedText)
     for(let i=0;i<selectedText.length;i++){
-
       let availableColors = ['yellow','orange','red','green','blue']
       let hasAColor = false
+
       for(let j=0;j<availableColors.length;j++) {
        if(selectedText[i].classList.contains(availableColors[j])){
-        console.log(selectedText[i].classList.replace(availableColors[j],color))
-        hasAColor = true
+        if(color!=='none'){
+          selectedText[i].classList.replace(availableColors[j],color)
+          hasAColor = true
+        } else {
+          selectedText[i].classList.remove(availableColors[j])
+          haveToRemove = true
+        }
         break
        }
       }
@@ -167,6 +238,17 @@ export class NoteSelectionSheetComponent implements OnInit {
         selectedText[i].classList.add(color)
       }
     }
+
+    if(color == 'none'){
+      if(haveToRemove){
+        this.removeStoredHighlightColor()
+      }
+    } else {
+      this.saveHighlightColor(color)
+    }
+
+    this.showHighlightColors = false
+    this.closeSheet(true)
   }
 
 }

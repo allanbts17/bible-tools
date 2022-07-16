@@ -1,13 +1,22 @@
 <ion-card [ngStyle]="{'display':getStatus()? 'block':'none'}" id="note-selection-card" class="z-10 absolute bottom-0 ">
 
-  <ion-item *ngIf="!showHighlightColors" lines="none" class="relative">
-    <ion-button class="absolute top-1 left-2 h-8" (click)="closeSheet()" slot="start" fill="clear" shape="round">
-      <ion-icon name="close"></ion-icon>
-    </ion-button>
-    <ion-label class="text-center">{{passageReference}}</ion-label>
-  </ion-item>
+  <div *ngIf="!showHighlightColors" class="p-2 header h-10 flex justify-between items-center">
+    <button class="w-10 h-10" (click)="closeSheet()" slot="start" fill="clear" shape="round">
+      <ion-icon class="w-10" name="close"></ion-icon>
+    </button>
+    <p class=" text-center truncate">{{passageReference}}</p>
+    <button class="h-full w-10"></button>
+  </div>
 
-  <ion-item *ngIf="showHighlightColors" lines="none" class="relative">
+  <div *ngIf="showHighlightColors" class="p-2 header h-10 flex justify-between items-center">
+    <button class="w-10 h-10" (click)="hideHighlightColor()" slot="start" fill="clear" shape="round">
+      <ion-icon class="w-10" name="arrow-back"></ion-icon>
+    </button>
+    <p class=" text-center truncate">{{passageReference}}</p>
+    <button class="h-full w-10"></button>
+  </div>
+
+  <!--<ion-item *ngIf="showHighlightColors" lines="none" class="relative">
     <ion-button class="" (click)="hideHighlightColor()" slot="start" fill="clear" shape="round">
       <ion-icon name="arrow-back"></ion-icon>
     </ion-button>
@@ -15,7 +24,7 @@
     <ion-button class="" (click)="saveHighlightColor()" slot="end" fill="clear" shape="round">
       <ion-icon name="checkmark"></ion-icon>
     </ion-button>
-  </ion-item>
+  </ion-item>-->
 
   <ion-card-content>
     <div *ngIf="!showHighlightColors" class="flex justify-between">
@@ -28,33 +37,23 @@
       <ion-button fill="clear">
         <ion-icon name="document"></ion-icon>
       </ion-button>
-      <ion-button fill="clear">
+      <ion-button fill="clear" (click)="writeToClipboard()">
         <ion-icon name="copy"></ion-icon>
       </ion-button>
-      <ion-button fill="clear">
+      <ion-button fill="clear" (click)="shareData()">
         <ion-icon name="share-social"></ion-icon>
       </ion-button>
     </div>
 
     <div *ngIf="showHighlightColors" class="flex justify-between">
-      <ion-button fill="clear" (click)="highlightText('yellow')">
-        <ion-icon class="text-yellow-300" name="ellipse"></ion-icon>
-      </ion-button>
-      <ion-button fill="clear" (click)="highlightText('orange')">
-        <ion-icon class="text-orange-300" name="ellipse"></ion-icon>
-      </ion-button>
-      <ion-button fill="clear" (click)="highlightText('red')">
-        <ion-icon class="text-red-300" name="ellipse"></ion-icon>
-      </ion-button>
-      <ion-button fill="clear" (click)="highlightText('green')">
-        <ion-icon class="text-green-300" name="ellipse"></ion-icon>
-      </ion-button>
-      <ion-button fill="clear" (click)="highlightText('blue')">
-        <ion-icon class="text-blue-300" name="ellipse"></ion-icon>
-      </ion-button>
-
-
-
+      <button class="rounded-full w-6 h-6 bg-yellow-300" (click)="highlightText('yellow')"></button>
+      <button class="rounded-full w-6 h-6 bg-orange-300" (click)="highlightText('orange')"></button>
+      <button class="rounded-full w-6 h-6 bg-red-300" (click)="highlightText('red')"></button>
+      <button class="rounded-full w-6 h-6 bg-green-300" (click)="highlightText('green')"></button>
+      <button class="rounded-full w-6 h-6 bg-blue-300" (click)="highlightText('blue')"></button>
+      <button class="rounded-full w-6 h-6 " (click)="highlightText('none')">
+        <img class="w-6 h-6" src="../assets/forbbiden.svg">
+      </button>
     </div>
   </ion-card-content>
 </ion-card>

@@ -18,23 +18,17 @@
 
   </ion-toolbar>
 </ion-header>
-<!--<div class="px-4 pt-4 h-full overflow-y-scroll" [innerHtml]="bibleText?.data.content"></div>-->
-<!--<p id="testId">
-  <span class="verse-span" data-verse-id="GEN.1.1" data-verse-org-ids="GEN.1.1">
-    <span data-number="1" data-sid="GEN 1:1" class="v">1</span>
-</span>
-</p>-->
+
 <ion-content scroll-y="false">
   <ion-slides id="bible-slides" #slide [options]="myOptions" class="h-full w-full" (ionSlideTransitionEnd)="transitionFinished()">
     <ion-slide class="h-full " *ngFor="let slide of showedChapters">
       <ion-text class="h-full overflow-y-scroll px-4 py-4 text-left">
-
       </ion-text>
     </ion-slide>
   </ion-slides>
 
 
-  <app-note-selection-sheet #sheet [chapterId]="selectedChapter?.id" [chapterReference]="selectedChapter?.reference" (closeSheetEvent)="unselectAll()"></app-note-selection-sheet>
+  <app-note-selection-sheet #sheet [bibleName]="selectedBible?.abbreviationLocal" [chapterId]="selectedChapter?.id" [chapterReference]="selectedChapter?.reference" (closeSheetEvent)="closeSelectionSheet($event)"></app-note-selection-sheet>
   <app-select-bible-modal [availableBibles]="bibles" (bibleSelectedEvent)="bibleChange($event)"></app-select-bible-modal>
   <app-select-passage-modal [bible]="selectedBible" (passageSelectedEvent)="chapterChange($event)"></app-select-passage-modal>
 </ion-content>
