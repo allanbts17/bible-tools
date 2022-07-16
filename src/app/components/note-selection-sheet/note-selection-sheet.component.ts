@@ -3,6 +3,7 @@ import { StorageService } from 'src/app/services/storage.service';
 import { Clipboard } from '@capacitor/clipboard';
 import { ToastController } from '@ionic/angular';
 import { Share } from '@capacitor/share';
+import { ConfigService } from 'src/app/services/config.service';
 
 
 @Component({
@@ -23,7 +24,8 @@ export class NoteSelectionSheetComponent implements OnInit {
   selectedMarkerColor
 
   constructor(public storage: StorageService,
-    public toastController: ToastController) {}
+    public toastController: ToastController,
+    public config: ConfigService) {}
 
   ngOnInit() {
     this.onResize();

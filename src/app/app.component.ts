@@ -32,7 +32,8 @@ export class AppComponent {
   async getSettings(){
     this.settings = await this.storage.getSettings()
     //console.log('set: ',this.settings)
-
+    this.config.settings = this.settings
+    console.log(this.config.settings)
     this.darkMode = this.settings.darkMode
     this.config.lang = this.settings.lang
     this.darkMode? this.theme.applyDark():this.theme.removeDark()
@@ -43,6 +44,7 @@ export class AppComponent {
     this.darkMode = !this.darkMode
     this.darkMode? this.theme.applyDark():this.theme.removeDark()
     this.settings.darkMode = this.darkMode
+    this.config.settings = this.settings
     this.storage.setSettings(this.settings)
   }
 

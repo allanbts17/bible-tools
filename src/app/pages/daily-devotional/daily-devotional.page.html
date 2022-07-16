@@ -81,10 +81,10 @@
   </ion-toolbar>
 </ion-header>
 
-
+<!--/*FIXME: pop-overs and modals are too slow on Android */-->
 <ion-content>
   <!-- Scrollable Segment -->
-  <div class="sticky top-0 z-10 bg-white">
+  <div class="sticky top-0 z-10 segment-background">
     <ion-segment  scrollable value="{{tabs[0]}}">
       <ion-segment-button (click)="tabSelected(tab)" *ngFor="let tab of tabs" value="{{tab}}">
         <ion-label>{{tab}}</ion-label>

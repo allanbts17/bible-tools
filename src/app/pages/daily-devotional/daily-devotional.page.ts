@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ConfigService } from 'src/app/services/config.service';
 import { StorageService } from 'src/app/services/storage.service';
 import  * as moment  from 'moment'
@@ -14,6 +14,7 @@ import { Note } from 'src/app/interfaces/note';
   selector: 'app-daily-devotional',
   templateUrl: './daily-devotional.page.html',
   styleUrls: ['./daily-devotional.page.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class DailyDevotionalPage implements OnInit {
   @ViewChild(AddNoteModalComponent) addNoteModal: AddNoteModalComponent;
