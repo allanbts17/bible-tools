@@ -7,7 +7,8 @@ import { AddCategoryComponent } from 'src/app/components/add-category/add-catego
 import { Category } from 'src/app/interfaces/category';
 import { CustomAlertComponent } from 'src/app/components/custom-alert/custom-alert.component';
 import { Note } from 'src/app/interfaces/note';
-
+import { IonPopover, PopoverController } from '@ionic/angular';
+import { DailyDevotionalMainMenuComponent } from 'src/app/components/daily-devotional-main-menu/daily-devotional-main-menu.component';
 
 
 @Component({
@@ -20,6 +21,7 @@ export class DailyDevotionalPage implements OnInit {
   @ViewChild(AddNoteModalComponent) addNoteModal: AddNoteModalComponent;
   @ViewChild(AddCategoryComponent) addCategoryModal: AddCategoryComponent;
   @ViewChild(CustomAlertComponent) alert: CustomAlertComponent;
+  @ViewChild('popover') popover: IonPopover;
   tabs = []
   categoryList = []
   noteList = [{category:0,title:"Mens",text:"este es un texto",color:"#fff",date:""}]
@@ -29,15 +31,33 @@ export class DailyDevotionalPage implements OnInit {
   searchTerm = ""
   filterOn = false
   showDate = false
+  isOpen = false
 
   constructor(public config: ConfigService,
-    public storageService: StorageService) {}
+    public storageService: StorageService,
+    public popoverController: PopoverController) {}
 
 
   ngOnInit() {
     this.loadCategories()
     this.loadNotes()
     this.filterNotes(this.selectedTab)
+
+  }
+
+  async presentPopover(e: Event) {
+    this.popover.event = e;
+    this.isOpen = true;
+    /*let roleMsg
+    const popover = await this.popoverController.create({
+      component: DailyDevotionalMainMenuComponent,
+      event: e
+    });
+
+    await popover.present();
+
+    const { role } = await popover.onDidDismiss();
+    roleMsg = `Popover dismissed with role: ${role}`;*/
   }
 
   filterTypeSelect(e){
@@ -80,6 +100,7 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   presentNoteModal(note: Note = null){
+    this.popover.dismiss()
     if(note == null)
       this.addNoteModal.setToNewFunction()
     else
@@ -93,6 +114,7 @@ export class DailyDevotionalPage implements OnInit {
 
 
   presentCategoryModal(category: Category = null){
+    this.popover.dismiss()
     if(category == null)
       this.addCategoryModal.setToNewFunction()
     else
@@ -101,8 +123,14 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   deleteCategory(cat){
+    this.popover.dismiss()
     this.alert.deleteCategoryAlert(cat)
     //this.alert.moveNotesAlert(cat)
+  }
+
+  toogleFilter(){
+    this.popover.dismiss()
+    this.filterOn=!this.filterOn
   }
 
   async loadCategories(){

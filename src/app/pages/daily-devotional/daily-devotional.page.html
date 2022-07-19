@@ -16,11 +16,10 @@
 
     <ion-searchbar *ngIf="filterOn" (ionFocus)="searchbarFocus()" (ionCancel)="clearSearchTerm()" [(ngModel)]="searchTerm" (ionChange)="searchbarChange($event)" animated placeholder=""></ion-searchbar>
     <ion-buttons slot="primary">
-      <ion-button id="daily-dev-menu" >
+      <ion-button id="daily-dev-menu" (click)="presentPopover($event)">
         <ion-icon slot="icon-only" name="list"></ion-icon>
       </ion-button>
-
-     <ion-popover [animated]="false" trigger="daily-dev-menu"  [dismissOnSelect]="true">
+      <ion-popover #popover [isOpen]="isOpen" (didDismiss)="isOpen = false">
         <ng-template>
           <ion-content>
             <ion-list>
@@ -37,7 +36,7 @@
                 <ion-label>Editar categoría</ion-label>
               </ion-item>
 
-              <ion-popover [animated]="false" trigger="category-edit"  [dismissOnSelect]="true">
+              <ion-popover [animated]="true" trigger="category-edit"  [dismissOnSelect]="true">
                 <ng-template>
                   <ion-content>
                     <ion-list>
@@ -55,7 +54,7 @@
                 <ion-label>Eliminar categoría</ion-label>
               </ion-item>
 
-              <ion-popover [animated]="false" trigger="category-delete"  [dismissOnSelect]="true">
+              <ion-popover [animated]="true" trigger="category-delete"  [dismissOnSelect]="true">
                 <ng-template>
                   <ion-content>
                     <ion-list>
@@ -68,7 +67,7 @@
                 </ng-template>
               </ion-popover>
 
-              <ion-item (click)="filterOn=!filterOn" [button]="true" [detail]="false">
+              <ion-item (click)="toogleFilter()" [button]="true" [detail]="false">
                 <ion-icon name="filter" slot="start"></ion-icon>
                 <ion-label>Filtar notas</ion-label>
               </ion-item>
@@ -76,12 +75,10 @@
           </ion-content>
         </ng-template>
       </ion-popover>
-
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<!--/*FIXME: pop-overs and modals are too slow on Android */-->
 <ion-content>
   <!-- Scrollable Segment -->
   <div class="sticky top-0 z-10 segment-background">
@@ -110,12 +107,7 @@
     <ion-datetime *ngIf="showDate" (ionCancel)="showDate=false" (ionChange)="dateSelectionChange($event)" presentation="date" locale="es-ES" [showDefaultButtons]="false"
     doneText="Ok"
     cancelText="Ocultar"></ion-datetime>
-
   </div>
-
-
-
-
 
   <!-- Notes-->
   <app-general-note (noteDeleteEvent)="deleteNote($event)" (noteEditEvent)="presentNoteModal($event)" [categories]="categoryList"  *ngFor="let note of filteredNoteList; let i = index" [index]="'note-popover-'+i" [note]="note"></app-general-note>

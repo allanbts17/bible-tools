@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { PopoverController } from '@ionic/angular';
+//import { PopoverController } from '@ionic/angular';
 declare var contrast;
 import  * as moment  from 'moment'
 import { Note } from 'src/app/interfaces/note';
@@ -18,7 +18,7 @@ export class GeneralNoteComponent implements OnInit {
 
   touched = false
 
-  constructor(public popoverController: PopoverController) { }
+  constructor(/*public popoverController: PopoverController*/) { }
 
   ngOnInit() {
   }

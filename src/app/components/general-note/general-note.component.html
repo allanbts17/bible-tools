@@ -10,7 +10,7 @@
     <button id="{{index}}" class="w-8 h-8 pt-1 rounded-md card-button" [ngClass]="{'card-button-active':touched}" (touchstart)="menuPressed()" (touchend)="menuReleased()">
       <ion-icon class="w-6 h-6" [style.color]="getContrastColor()" name="menu-outline"></ion-icon>
     </button>
-    <ion-popover [animated]="false" trigger="{{index}}" [dismissOnSelect]="true">
+    <ion-popover [animated]="true" trigger="{{index}}" [dismissOnSelect]="true">
       <ng-template>
         <ion-content>
           <ion-list>
