@@ -100,7 +100,7 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   presentNoteModal(note: Note = null){
-    this.popover.dismiss()
+    //this.popover.dismiss()
     if(note == null)
       this.addNoteModal.setToNewFunction()
     else
@@ -114,7 +114,7 @@ export class DailyDevotionalPage implements OnInit {
 
 
   presentCategoryModal(category: Category = null){
-    this.popover.dismiss()
+    //this.popover.dismiss()
     if(category == null)
       this.addCategoryModal.setToNewFunction()
     else
@@ -123,13 +123,13 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   deleteCategory(cat){
-    this.popover.dismiss()
+    //this.popover.dismiss()
     this.alert.deleteCategoryAlert(cat)
     //this.alert.moveNotesAlert(cat)
   }
 
   toogleFilter(){
-    this.popover.dismiss()
+    //this.popover.dismiss()
     this.filterOn=!this.filterOn
   }
 

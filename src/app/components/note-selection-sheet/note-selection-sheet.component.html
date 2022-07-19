@@ -1,4 +1,4 @@
-<ion-card [ngStyle]="{'display':getStatus()? 'block':'none'}" id="note-selection-card" class="z-10 absolute bottom-0 ">
+<ion-card [ngStyle]="{'display':getStatus()? 'block':''}" id="note-selection-card" [ngClass]="{'animate__fadeInUp':getStatus(),'animate__fadeOutDown':!getStatus()}" class="myNoteSeletcionSheet z-10 absolute bottom-0 animate__animated animate__faster">
 
   <div *ngIf="!showHighlightColors" class="p-2 header h-10 flex justify-between items-center">
     <button class="w-10 h-10" (click)="closeSheet()" slot="start" fill="clear" shape="round">
@@ -45,13 +45,13 @@
       </ion-button>
     </div>
 
-    <div *ngIf="showHighlightColors" class="flex justify-between">
-      <button class="rounded-full w-6 h-6 bg-yellow-300" (click)="highlightText('yellow')"></button>
-      <button class="rounded-full w-6 h-6 bg-orange-300" (click)="highlightText('orange')"></button>
-      <button class="rounded-full w-6 h-6 bg-red-300" (click)="highlightText('red')"></button>
-      <button class="rounded-full w-6 h-6 bg-green-300" (click)="highlightText('green')"></button>
-      <button class="rounded-full w-6 h-6 bg-blue-300" (click)="highlightText('blue')"></button>
-      <button class="rounded-full w-6 h-6 " (click)="highlightText('none')">
+    <div *ngIf="showHighlightColors" class="color-markers flex justify-between">
+      <button class="rounded-full w-6 h-6 bg-yellow-300 active:bg-yellow-500 active:ring-2" [ngClass]="{'active:ring-gray-600':config?.settings?.darkMode,'active:ring-gray-300':!config?.settings?.darkMode}" [ngClass]="{'active:ring-gray-600':config?.settings?.darkMode,'active:ring-gray-300':!config?.settings?.darkMode}" (click)="highlightText('yellow')"></button>
+      <button class="rounded-full w-6 h-6 bg-orange-300 active:bg-orange-500 active:ring-2" [ngClass]="{'active:ring-gray-600':config?.settings?.darkMode,'active:ring-gray-300':!config?.settings?.darkMode}" (click)="highlightText('orange')"></button>
+      <button class="rounded-full w-6 h-6 bg-red-300 active:bg-red-500 active:ring-2" [ngClass]="{'active:ring-gray-600':config?.settings?.darkMode,'active:ring-gray-300':!config?.settings?.darkMode}" (click)="highlightText('red')"></button>
+      <button class="rounded-full w-6 h-6 bg-green-300 active:bg-green-500 active:ring-2" [ngClass]="{'active:ring-gray-600':config?.settings?.darkMode,'active:ring-gray-300':!config?.settings?.darkMode}" (click)="highlightText('green')"></button>
+      <button class="rounded-full w-6 h-6 bg-blue-300 active:bg-blue-500 active:ring-2" [ngClass]="{'active:ring-gray-600':config?.settings?.darkMode,'active:ring-gray-300':!config?.settings?.darkMode}" (click)="highlightText('blue')"></button>
+      <button class="rounded-full w-6 h-6 active:ring-2" [ngClass]="{'active:ring-gray-600':config?.settings?.darkMode,'active:ring-gray-300':!config?.settings?.darkMode}" (click)="highlightText('none')">
         <svg class="w-6 h-6" version="1.0" xmlns="http://www.w3.org/2000/svg"
           width="1280.000000pt" height="1280.000000pt" viewBox="0 0 1280.000000 1280.000000"
           preserveAspectRatio="xMidYMid meet">

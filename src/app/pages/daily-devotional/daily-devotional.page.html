@@ -19,7 +19,7 @@
       <ion-button id="daily-dev-menu" (click)="presentPopover($event)">
         <ion-icon slot="icon-only" name="list"></ion-icon>
       </ion-button>
-      <ion-popover #popover [isOpen]="isOpen" (didDismiss)="isOpen = false">
+      <ion-popover #popover [isOpen]="isOpen" (didDismiss)="isOpen = false" [dismissOnSelect]="true">
         <ng-template>
           <ion-content>
             <ion-list>
