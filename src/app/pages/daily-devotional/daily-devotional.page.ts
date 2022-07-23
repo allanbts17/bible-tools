@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ConfigService } from 'src/app/services/config.service';
 import { StorageService } from 'src/app/services/storage.service';
 import  * as moment  from 'moment'
@@ -8,8 +8,6 @@ import { Category } from 'src/app/interfaces/category';
 import { CustomAlertComponent } from 'src/app/components/custom-alert/custom-alert.component';
 import { Note } from 'src/app/interfaces/note';
 import { IonPopover, PopoverController } from '@ionic/angular';
-import { DailyDevotionalMainMenuComponent } from 'src/app/components/daily-devotional-main-menu/daily-devotional-main-menu.component';
-
 
 @Component({
   selector: 'app-daily-devotional',
@@ -48,16 +46,6 @@ export class DailyDevotionalPage implements OnInit {
   async presentPopover(e: Event) {
     this.popover.event = e;
     this.isOpen = true;
-    /*let roleMsg
-    const popover = await this.popoverController.create({
-      component: DailyDevotionalMainMenuComponent,
-      event: e
-    });
-
-    await popover.present();
-
-    const { role } = await popover.onDidDismiss();
-    roleMsg = `Popover dismissed with role: ${role}`;*/
   }
 
   filterTypeSelect(e){
@@ -136,6 +124,11 @@ export class DailyDevotionalPage implements OnInit {
   async loadCategories(){
     this.categoryList = await this.storageService.getData("categories")
     this.fillTabs()
+    setTimeout(()=>{
+      var g = document.getElementsByTagName('ion-segment-button')
+      console.log(g[1])
+      console.log(g[1].getBoundingClientRect())
+    })
   }
 
   async sortNotes(){

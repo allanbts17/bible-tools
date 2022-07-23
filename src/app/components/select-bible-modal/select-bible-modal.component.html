@@ -1,4 +1,4 @@
-<ion-modal #modal trigger="open-select-bible-modal">
+<ion-modal #modal [trigger]="triggerId" [isOpen]="isOpen || false" (ionModalDidDismiss)="dismiss()">
   <ng-template>
     <ion-content>
       <ion-toolbar>
@@ -10,11 +10,11 @@
 
       <!-- List of Text Items -->
       <ion-list>
-        <ion-item-group *ngFor="let langCat of availableBibles">
+        <ion-item-group *ngFor="let langCat of sharedInfo.bibles">
           <ion-item-divider>
             <ion-label>{{langCat.lang.name}}</ion-label>
           </ion-item-divider>
-          <ion-item *ngFor="let bible of langCat.bibles" button (click)="select(bible)">
+          <ion-item *ngFor="let bible of langCat?.bibles" button (click)="select(bible)">
             <ion-label>{{bible.nameLocal}}</ion-label>
           </ion-item>
         </ion-item-group>

@@ -5,6 +5,8 @@ import { Category } from '../interfaces/category';
 
 const NOTES_KEY = 'notes'
 const CATEGORY_KEY = 'categories'
+const TOPIC_KEY = "topics"
+const MY_VERSES_KEY = "my-verses"
 const SETTINGS_KEY = 'settings'
 const MARKED_KEY = 'marked'
 const ID = 'id'
@@ -17,21 +19,7 @@ export class StorageService {
   constructor(private storage: Storage) {
     this.init();
     //setTimeout(()=> this.removeItem('categories',200),4000)
-    //setTimeout(() => this.asignID('categories'),4000)
-    //setTimeout(() => this.editNote(),4000)
   }
-
-  /*async asignID(key){
-    var data = await this.getData(key)
-    console.log(data.length)
-    console.log(typeof data)
-    for(let i=0;i<data.length;i++){
-      var note: Category = data[i];
-      note.id = await this.getID()
-      console.log(note)
-    }
-    this.storage.set(key,data)
-  }*/
 
   async editNote(){
     const notes = await this.storage.get(NOTES_KEY) || []

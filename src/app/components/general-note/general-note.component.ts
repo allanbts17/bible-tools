@@ -29,16 +29,6 @@ export class GeneralNoteComponent implements OnInit {
     return category
   }
 
-
-
-  menuPressed(){
-    this.touched = true
-  }
-
-  menuReleased(){
-    this.touched = false
-  }
-
   formatCardDate(date){
     var localMoment = moment(date)
     localMoment.locale('es');

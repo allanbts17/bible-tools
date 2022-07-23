@@ -4,6 +4,7 @@ import { IonSlides } from '@ionic/angular';
 import { SwiperOptions } from 'swiper';
 import { NoteSelectionSheetComponent } from 'src/app/components/note-selection-sheet/note-selection-sheet.component';
 import { StorageService } from 'src/app/services/storage.service';
+import { SharedInfoService } from 'src/app/services/shared-info.service';
 
 
 @Component({
@@ -39,8 +40,9 @@ export class BibleStudyPage implements OnInit {
   //showSpace = false
 
   constructor(public apiService: ApiService,
-    public storage: StorageService) {
-    this.getAvailablaBibles()
+    public storage: StorageService,
+    public sharedInfo: SharedInfoService) {
+    //this.getAvailablaBibles()
     this.loadMarkedVerses()
   }
 
@@ -53,6 +55,7 @@ export class BibleStudyPage implements OnInit {
       reference: data.reference,
       bookId: data.bookId
     }
+    this.sharedInfo.defaultChapter = this.selectedChapter
   }
 /**
  * if(index === 1){
@@ -393,20 +396,21 @@ export class BibleStudyPage implements OnInit {
 
   chapterChange(chapter){
     this.selectedChapter = chapter
+    this.sharedInfo.defaultChapter = this.selectedChapter
     this.noteSelectionSheet.closeSheet()
     this.closeSpace()
     this.setChapter(chapter.bibleId,chapter.id)
   }
 
-  getAllBibles(){
+  /*getAllBibles(){
     this.apiService.getAllBibles().subscribe((bibles)=>{
       //console.log(bibles)
     },(error)=>{
       console.log(error)
     })
-  }
+  }*/
 
-  async getAvailablaBibles(){
+  /*async getAvailablaBibles(){
     for(let i=0;i<this.availableBibleLanguages.length;i++){
       let aux
       var lang = this.availableBibleLanguages[i]
@@ -419,15 +423,18 @@ export class BibleStudyPage implements OnInit {
     })
     }
     this.selectedBible = this.bibles[0].bibles[0]
+    this.sharedInfo.bibles = this.bibles
+    this.sharedInfo.defaultBible = this.selectedBible
     this.getBibleFirstChapter()
 
-  }
+  }*/
 
   getBibleFirstChapter(){
     var auxCh
     this.apiService.getBibleFirstChapter(this.selectedBible.id).then(async (chapter) => {
       auxCh = chapter
       this.selectedChapter = chapter
+      this.sharedInfo.defaultChapter = chapter
       this.start = true
       //var ind = await this.slides.getActiveIndex()
       //console.log('first ind: ',ind)
@@ -435,6 +442,15 @@ export class BibleStudyPage implements OnInit {
       this.swipeLeftLock = true
       this.setChapterFirstTime(this.selectedBible.id,auxCh.id)
     },err => console.log(err))
+  }
+
+  async setDefaultData(data){
+    this.selectedBible = data.defaultBible
+    this.selectedChapter = data.defaultChapter
+    console.log(this.selectedBible,this.selectedChapter)
+    await this.slides.lockSwipeToPrev(true)
+    this.swipeLeftLock = true
+    this.setChapterFirstTime(this.selectedBible.id,this.selectedChapter.id)
   }
 
   getAllLang(){

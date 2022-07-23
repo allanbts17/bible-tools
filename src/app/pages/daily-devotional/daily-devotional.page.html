@@ -8,16 +8,11 @@
       </ion-menu-toggle>
     </ion-buttons>
     <ion-title *ngIf="!filterOn" slot="">Diario devocional</ion-title>
-   <!-- <ion-buttons slot="start">
-      <ion-button>
-        <ion-icon name="filter"></ion-icon>
-      </ion-button>
-    </ion-buttons>-->
 
     <ion-searchbar *ngIf="filterOn" (ionFocus)="searchbarFocus()" (ionCancel)="clearSearchTerm()" [(ngModel)]="searchTerm" (ionChange)="searchbarChange($event)" animated placeholder=""></ion-searchbar>
     <ion-buttons slot="primary">
       <ion-button id="daily-dev-menu" (click)="presentPopover($event)">
-        <ion-icon slot="icon-only" name="list"></ion-icon>
+        <ion-icon slot="icon-only" name="chevron-down-outline"></ion-icon>
       </ion-button>
       <ion-popover #popover [isOpen]="isOpen" (didDismiss)="isOpen = false" [dismissOnSelect]="true">
         <ng-template>
@@ -88,6 +83,7 @@
       </ion-segment-button>
     </ion-segment>
 
+    <!-- Filter select -->
     <div *ngIf="filterOn" class="mx-2 mt-1 flex justify-center items-center relative">
       <ion-label>Filtrar por:</ion-label>
       <ion-select [(ngModel)]="filterType" [multiple]="false" (ionChange)="filterTypeSelect($event)">

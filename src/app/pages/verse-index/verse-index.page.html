@@ -1,30 +1,99 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>verse-index</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-toggle>
+        <ion-button>
+          <ion-icon slot="icon-only" name="menu"></ion-icon>
+        </ion-button>
+      </ion-menu-toggle>
+    </ion-buttons>
+    <ion-title *ngIf="!filterOn" slot="">Mis versículos</ion-title>
+
+    <ion-searchbar *ngIf="filterOn" (ionCancel)="clearSearchTerm()" [(ngModel)]="searchTerm" (ionChange)="searchbarChange($event)" animated placeholder=""></ion-searchbar>
+    <ion-buttons slot="primary">
+      <ion-button (click)="presentPopover($event)">
+        <ion-icon slot="icon-only" name="chevron-down-outline"></ion-icon>
+      </ion-button>
+      <ion-popover #popover [isOpen]="isOpen" (didDismiss)="isOpen = false" [dismissOnSelect]="true">
+        <ng-template>
+          <ion-content>
+            <ion-list>
+              <ion-item (click)="presentVerseModal()" [button]="true" [detail]="false">
+                <ion-icon name="document-text" slot="start"></ion-icon>
+                <ion-label>Nuevo versículo</ion-label>
+              </ion-item>
+              <ion-item (click)="presentTopicModal()" [button]="true" [detail]="false">
+                <ion-icon name="albums" slot="start"></ion-icon>
+                <ion-label>Nuevo tema</ion-label>
+              </ion-item>
+              <ion-item id="topic-edit" [button]="true" [detail]="false">
+                <ion-icon name="create" slot="start"></ion-icon>
+                <ion-label>Editar tema</ion-label>
+              </ion-item>
+
+              <ion-popover [animated]="true" trigger="topic-edit"  [dismissOnSelect]="true">
+                <ng-template>
+                  <ion-content>
+                    <ion-list>
+                      <ion-item *ngFor="let topic of topicList" (click)="presentTopicModal(topic)" [button]="true" [detail]="false">
+                        <ion-label>{{topic.name}}</ion-label>
+                      </ion-item>
+                    </ion-list>
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
+
+              <ion-item id="topic-delete" [button]="true" [detail]="false">
+                <ion-icon name="trash" slot="start"></ion-icon>
+                <ion-label>Eliminar tema</ion-label>
+              </ion-item>
+
+              <ion-popover [animated]="true" trigger="topic-delete"  [dismissOnSelect]="true">
+                <ng-template>
+                  <ion-content>
+                    <ion-list>
+                      <ion-item *ngFor="let topic of topicList" (click)="deleteTopic(topic)" [button]="true" [detail]="false">
+                        <ion-label>{{topic.name}}</ion-label>
+                      </ion-item>
+                    </ion-list>
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
+
+              <ion-item (click)="toogleFilter()" [button]="true" [detail]="false">
+                <ion-icon name="filter" slot="start"></ion-icon>
+                <ion-label>Filtar versículos</ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-content>
+        </ng-template>
+      </ion-popover>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-button id="popover-button">Open Menu</ion-button>
-  <ion-popover trigger="popover-button" [dismissOnSelect]="true">
-    <ng-template>
-      <ion-content>
-        <ion-list>
-          <ion-item [button]="true" [detail]="false">Option 1</ion-item>
-          <ion-item [button]="true" [detail]="false">Option 2</ion-item>
-          <ion-item [button]="true" id="nested-trigger">More options...</ion-item>
+  <!-- Scrollable Segment -->
+  <div class="sticky top-0 z-10 segment-background">
+    <ion-segment  scrollable value="{{tabs[0]}}">
+      <ion-segment-button (click)="tabSelected(tab)" *ngFor="let tab of tabs" value="{{tab}}">
+        <ion-label>{{tab}}</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
 
-          <ion-popover trigger="nested-trigger" [dismissOnSelect]="true" side="end">
-            <ng-template>
-              <ion-content>
-                <ion-list>
-                  <ion-item [button]="true" [detail]="false">Nested option</ion-item>
-                </ion-list>
-              </ion-content>
-            </ng-template>
-          </ion-popover>
-        </ion-list>
-      </ion-content>
-    </ng-template>
-  </ion-popover>
+  <ion-card *ngFor="let verse of filteredVerseList">
+    <ion-item class="">
+      <ion-label>{{verse.passage.reference}}</ion-label>
+      <ion-button (click)="openBibleModal(verse)" fill="" shape="round" >{{verse.bible.reference}}</ion-button>
+    </ion-item>
+    <ion-card-content class="" style="white-space: pre-line">
+      {{verse.text}}
+    </ion-card-content>
+  </ion-card>
+
+  <app-select-passage-modal [bible]="selectedBible || sharedInfo.defaultBible" (passageSelectedEvent)="chapterChange($event)"></app-select-passage-modal>
+  <app-select-bible-modal [changeShared]="false" [(isOpen)]="isOpenBibleModal" (bibleSelectedEvent)="bibleChange($event)"></app-select-bible-modal>
+  <app-add-verse-modal (selectChapterEvent)="openChapterModal()" (selectBibleEvent)="openBibleModal()" [selectedBible]="selectedBible || sharedInfo.defaultBible" [selectedChapter]="selectedChapter || sharedInfo.defaultChapter" [topicList]="topicList" (addTopicEvent)="loadTopics()" (addVerseEvent)="loadVerses()"></app-add-verse-modal>
+
 </ion-content>

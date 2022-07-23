@@ -85,7 +85,7 @@ export class ApiService {
 
   /**passageId example: REV.10.3-REV.10.6 */
   getPassage(bibleId,passageId){
-    const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/passages/"+`${passageId}`;
+    const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/passages/"+`${passageId}`+'?content-type=text';
     return this.http.get(path,{headers: this.reqHeader});
   }
 
