@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ConfigService } from 'src/app/services/config.service';
 import { StorageService } from 'src/app/services/storage.service';
 import  * as moment  from 'moment'
-import { AddNoteModalComponent } from 'src/app/components/add-note-modal/add-note-modal.component';
 import { AddCategoryComponent } from 'src/app/components/add-category/add-category.component';
 import { CustomAlertComponent } from 'src/app/components/custom-alert/custom-alert.component';
 import { IonPopover, PopoverController } from '@ionic/angular';
@@ -48,17 +47,16 @@ export class VerseIndexPage implements OnInit {
 
   ngOnInit() {
     this.loadTopics()
+    this.loadVerses()
   }
 
   openBibleModal(verse = undefined){
     if(verse !== undefined){
       this.selectedVerse = {...verse}
-
     }
     else {
       this.selectedVerse = verse
     }
-
     //console.log(verse)
     this.isOpenBibleModal = true
   }
@@ -138,7 +136,7 @@ export class VerseIndexPage implements OnInit {
 
   async loadVerses(){
     await this.sortVerses()
-    this.verseList = await this.storageService.getData("notes")
+    this.verseList = await this.storageService.getData("my-verses")
     this.filterVerses(this.selectedTab)
   }
 
@@ -165,7 +163,6 @@ export class VerseIndexPage implements OnInit {
     if(tab === this.config.getData().daly_devotional.tab){
       filtered = this.verseList
     } else {
-      //this.filteredNoteList = this.noteList.filter(note => note.category === tab)
       filtered = this.verseList.filter(verse => {
         var topic = this.topicList.find(topic => {
           return topic.id == verse.topic
@@ -189,10 +186,10 @@ export class VerseIndexPage implements OnInit {
 
   fillTabs(){
     this.tabs = [this.config.getData().daly_devotional.tab]
-    console.log('')
     if(this.topicList !== null)
-      this.topicList.forEach(tab => this.tabs.push(tab.category))
+      this.topicList.forEach(tab => this.tabs.push(tab.name))
     this.selectedTab = this.tabs[0]
+    //console.log(this.tabs)
   }
 
   tabSelected(tab){

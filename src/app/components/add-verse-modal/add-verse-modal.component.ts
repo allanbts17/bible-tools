@@ -3,12 +3,9 @@ import { IonModal } from '@ionic/angular';
 import { ConfigService } from 'src/app/services/config.service';
 import { StorageService } from 'src/app/services/storage.service';
 import  * as moment  from 'moment'
-import { Category } from 'src/app/interfaces/category';
-import { Note } from 'src/app/interfaces/note';
 import { Topic } from 'src/app/interfaces/topic';
 import { Verse } from 'src/app/interfaces/verse';
 import { SharedInfoService } from 'src/app/services/shared-info.service';
-import { BibleStudyPage } from 'src/app/pages/bible-study/bible-study.page';
 import { ApiService } from 'src/app/services/api.service';
 
 @Component({
@@ -22,6 +19,7 @@ export class AddVerseModalComponent implements OnInit {
   @Output() addTopicEvent = new EventEmitter<any>()
   @Output() selectBibleEvent = new EventEmitter<any>()
   @Output() selectChapterEvent = new EventEmitter<any>()
+  @Output() passageOutputEvent = new EventEmitter<any>()
   @Input() topicList: Topic[]
   @Input() selectedBible
   @Input() selectedChapter
@@ -31,6 +29,7 @@ export class AddVerseModalComponent implements OnInit {
   verses = ""
   passageOutput = []
   verseInputTimeout
+  passageText
 
 
   selectTopicName = ""
@@ -51,6 +50,15 @@ export class AddVerseModalComponent implements OnInit {
     public apiService: ApiService){ }
 
   ngOnInit() {}
+
+  ngOnChanges(ch){
+    let bibleChanged = ch?.selectedBible !== undefined
+    let chapterChanged = ch?.selectedChapter !== undefined
+    let inputStarted = this.verses !== ""
+    if((bibleChanged || chapterChanged) && inputStarted){
+      this.changeVersesInput(this.verses)
+    }
+  }
 
   selectBible(){
     this.selectBibleEvent.emit()
@@ -78,15 +86,19 @@ export class AddVerseModalComponent implements OnInit {
       }
       this.passageOutput.length = arr.length
       this.passageOutput.fill(0)
-      console.log('test',this.passageOutput)
+
+      /** Fill passage and bible parameters */
+      this.verse.passage.id = arr.slice(0)
+      this.verse.passage.reference = this.selectedChapter.reference +':'+ text
+      this.verse.bible.id = this.selectedBible.id
+      this.verse.bible.reference = this.selectedBible.abbreviationLocal
+      //console.log(this.selectedBible)
+      //console.log(this.verse.passage.reference)
+      //console.log('test',this.passageOutput)
       for(let i=0;i<arr.length;i++){
         this.getPassage(arr[i],i)
       }
-
-      //console.log(text)
-      //console.log(arr)
     },500)
-
   }
 
   getPassage(passId,index){
@@ -95,10 +107,35 @@ export class AddVerseModalComponent implements OnInit {
       aux = data
       this.passageOutput[index] = aux.data.content
       if(!this.passageOutput.some(el => el === 0))
-        console.log(this.passageOutput)
+        this.buildOutputText()
     },error=>{
       console.log(error)
     })
+  }
+
+  buildOutputText(){
+    let outputText = ''
+   // let arr = []
+    this.passageOutput.forEach(verseRange => {
+      var container = document.createElement('div')
+      container.insertAdjacentHTML('beforeend',verseRange)
+      let spans = container.querySelectorAll('span.verse-span')
+      spans.forEach(span => {
+        if(span.childNodes[0].nodeType === 3){
+          let text = span.childNodes[0].textContent
+          if(text.slice(-1) != ' '){
+            text += ' '
+          }
+          //arr.push(text)
+          outputText += text
+          //console.log(span.childNodes[0])
+        }
+      })
+    })
+    this.passageText = outputText
+    this.verse.text = outputText
+    //this.passageOutputEvent.emit(outputText)
+    //console.log(outputText)
   }
 
   async saveVerse(){
