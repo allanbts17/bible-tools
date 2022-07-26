@@ -13,6 +13,6 @@ export interface Bible {
 }
 
 export interface Passage {
-  id: number;
+  id: Array<string>;
   reference: string;
 }

@@ -34,12 +34,19 @@
           <ion-label position="floating">Versículos separados por coma</ion-label>
           <ion-input [(ngModel)]="verses" (ngModelChange)="changeVersesInput($event)"></ion-input>
         </ion-item>
+        <ion-item *ngIf="showInputMessage">
+          <p class="w-full text-center text-red-600">Entrada inválida, escriba una lista de versículos o rangos separadas por coma. Ej: 1,2-3,4</p>
+        </ion-item>
+        <ion-item *ngIf="showNotFoundMessage">
+          <p class="w-full text-center text-red-600">El pasaje no se encontra en esta versión</p>
+        </ion-item>
         <ion-item>
           <!--<ion-textarea [(ngModel)]="verse.text" auto-grow="true" wrap="hard"></ion-textarea>-->
           <p>{{verse.text}}</p>
         </ion-item>
       </ion-list>
       <p *ngIf="showRedText" class="w-full text-center text-red-600">Faltan espacios por llenar</p>
+
 
       <div class="mt-5 flex justify-center w-full">
         <ion-button color="dark" (click)="saveVerse()">Guardar</ion-button>

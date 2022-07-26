@@ -124,11 +124,11 @@ export class DailyDevotionalPage implements OnInit {
   async loadCategories(){
     this.categoryList = await this.storageService.getData("categories")
     this.fillTabs()
-    setTimeout(()=>{
+    /*setTimeout(()=>{
       var g = document.getElementsByTagName('ion-segment-button')
       console.log(g[1])
       console.log(g[1].getBoundingClientRect())
-    })
+    })*/
   }
 
   async sortNotes(){

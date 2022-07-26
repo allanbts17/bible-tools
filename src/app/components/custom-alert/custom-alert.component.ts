@@ -1,5 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AlertController } from '@ionic/angular';
+import { Category } from 'src/app/interfaces/category';
+import { Note } from 'src/app/interfaces/note';
+import { Topic } from 'src/app/interfaces/topic';
+import { Verse } from 'src/app/interfaces/verse';
 import { StorageService } from 'src/app/services/storage.service';
 
 
@@ -9,11 +13,16 @@ import { StorageService } from 'src/app/services/storage.service';
   styleUrls: ['./custom-alert.component.scss'],
 })
 export class CustomAlertComponent implements OnInit {
-  @Input() notes
-  @Input() categories
+  @Input() notes: Note[]
+  @Input() categories: Category[]
+  @Input() verses: Verse[]
+  @Input() topics: Topic[]
   @Output() categoryErasedEvent = new EventEmitter<any>()
   @Output() notesChangedEvent = new EventEmitter<any>()
+  @Output() topicErasedEvent = new EventEmitter<any>()
+  @Output() versesChangedEvent = new EventEmitter<any>()
   newCatToMove = 0
+  newTopToMove = 0
 
   constructor(public alertController: AlertController,public storageService: StorageService) {}
 
@@ -42,8 +51,9 @@ export class CustomAlertComponent implements OnInit {
           id: 'confirm-button',
           handler: async () => {
             await this.deleteNotes(cat)
-            await this.storageService.removeItemByID('categories',cat.id)
+            await this.storageService.removeItemByID('categories',cat)
             this.categoryErasedEvent.emit()
+            this.notesChangedEvent.emit()
           }
         }
       ]
@@ -54,6 +64,72 @@ export class CustomAlertComponent implements OnInit {
       this.categoryDeleteConfirmationAlert(cat)
     }
 
+  }
+
+  async deleteTopicAlert(top: Topic){
+    //console.log(cat)
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Eliminando '+top.name,
+      message: '¿Que desea hacer con los versículos del tema: "'+top.name+'"?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          id: 'cancel-button',
+          handler: (blah) => {}
+        }, {
+          text: 'Asignar otro tema',
+          id: 'confirm-button',
+          handler: () => {
+            this.moveVerseAlert(top)
+          }
+        }, {
+          text: 'Eliminarlas',
+          id: 'confirm-button',
+          handler: async () => {
+            await this.deleteVerses(top)
+            await this.storageService.removeItemByID('topics',top)
+            this.topicErasedEvent.emit()
+            this.versesChangedEvent.emit()
+          }
+        }
+      ]
+    });
+    if(this.topicHaveVerses(top)){
+      await alert.present();
+    } else {
+      this.topicDeleteConfirmationAlert(top)
+    }
+  }
+
+  async topicDeleteConfirmationAlert(top){
+    //console.log('confirm',cat)
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Confirmación',
+      message: 'Está seguro que desea eliminar '+top.name+'?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          id: 'cancel-button',
+          handler: (blah) => {}
+        }, {
+          text: 'Eliminar',
+          id: 'confirm-button',
+          handler: async () => {
+            await this.storageService.removeItemByID('topics',top)
+            this.topicErasedEvent.emit()
+            this.versesChangedEvent.emit()
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   async categoryDeleteConfirmationAlert(cat){
@@ -81,6 +157,33 @@ export class CustomAlertComponent implements OnInit {
       ]
     });
 
+    await alert.present();
+  }
+
+  async verseDeleteConfirmationAlert(verse: Verse){
+    //console.log('confirm',cat)
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Confirmación',
+      message: 'Está seguro que desea eliminar '+verse.passage.reference+'?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          id: 'cancel-button',
+          handler: (blah) => {}
+        }, {
+          text: 'Eliminar',
+          id: 'confirm-button',
+          handler: async () => {
+            //console.log(verse)
+            await this.storageService.removeItemByID('my-verses',verse)
+            this.versesChangedEvent.emit()
+          }
+        }
+      ]
+    });
     await alert.present();
   }
 
@@ -116,6 +219,53 @@ export class CustomAlertComponent implements OnInit {
     return this.notes.findIndex(note => note.category == cat.id) != -1
   }
 
+  topicHaveVerses(top){
+    return this.verses.findIndex(verse => verse.topic == top.id) != -1
+  }
+
+  async moveVerseAlert(top){
+    var radios = []
+    var newTopics = this.topics.slice()
+    delete newTopics[newTopics.findIndex(topic => topic.id == top.id)]
+    newTopics.forEach(newTop=> radios.push({
+        name: newTop.id,
+        type: 'radio',
+        label: newTop.name,
+        value: newTop.id,
+        handler: (val) => {
+          this.newTopToMove = val.value
+          console.log(val.value)
+        },
+        checked: false
+    }))
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Moviendo notas',
+      message: '¿A donde desea mover los versículos?',
+      inputs: radios,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Confirm Cancel');
+          }
+        }, {
+          text: 'Mover',
+          handler: async () => {
+            await this.moveVerses(top)
+            await this.storageService.removeItemByID('topics',top)
+            this.topicErasedEvent.emit()
+            this.versesChangedEvent.emit()
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
   async moveNotesAlert(cat){
     var radios = []
     var newCategories = this.categories.slice()
@@ -148,7 +298,7 @@ export class CustomAlertComponent implements OnInit {
           text: 'Mover',
           handler: async () => {
             await this.moveNotes(cat)
-            await this.storageService.removeItemByID('categories',cat.id)
+            await this.storageService.removeItemByID('categories',cat)
             this.categoryErasedEvent.emit()
             this.notesChangedEvent.emit()
           }
@@ -167,10 +317,26 @@ export class CustomAlertComponent implements OnInit {
     }
   }
 
+  async moveVerses(prevTop){
+    var filteredVerses = this.verses.filter(verse => verse.topic == prevTop.id)
+    for(let i=0;i<filteredVerses.length;i++){
+      filteredVerses[i].topic = this.newTopToMove
+      await this.storageService.editItemByID('my-verses',filteredVerses[i])
+    }
+  }
+
+
   async deleteNotes(prevCat){
     var filteredNotes = this.notes.filter(note => note.category == prevCat.id)
     for(let i=0;i<filteredNotes.length;i++){
       await this.storageService.removeItemByID('notes',filteredNotes[i])
+    }
+  }
+
+  async deleteVerses(prevTop){
+    var filteredVerses = this.verses.filter(verse => verse.topic == prevTop.id)
+    for(let i=0;i<filteredVerses.length;i++){
+      await this.storageService.removeItemByID('my-verses',filteredVerses[i])
     }
   }
 

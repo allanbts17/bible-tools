@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { IonModal } from '@ionic/angular';
+import { IonModal, ToastController } from '@ionic/angular';
 import { ConfigService } from 'src/app/services/config.service';
 import { StorageService } from 'src/app/services/storage.service';
 import  * as moment  from 'moment'
@@ -26,10 +26,12 @@ export class AddVerseModalComponent implements OnInit {
   newVerse = true
   showNewTopicInput = false
   showRedText = false
+  showInputMessage = false
   verses = ""
   passageOutput = []
   verseInputTimeout
   passageText
+  showNotFoundMessage = false
 
 
   selectTopicName = ""
@@ -40,16 +42,26 @@ export class AddVerseModalComponent implements OnInit {
     topic:0,
     date:"",
     bible:{id:0,reference:""},
-    passage:{id:0,reference:""},
+    passage:{id:['0'],reference:""},
     text:""
   }
 
   constructor(public config: ConfigService,
     public storageService: StorageService,
     public sharedInfo: SharedInfoService,
-    public apiService: ApiService){ }
+    public apiService: ApiService,
+    public toastController: ToastController){ }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
+
+  async presentToast(msg) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 2000
+    });
+    toast.present();
+  }
 
   ngOnChanges(ch){
     let bibleChanged = ch?.selectedBible !== undefined
@@ -73,6 +85,7 @@ export class AddVerseModalComponent implements OnInit {
       clearTimeout(this.verseInputTimeout)
     }
     this.verseInputTimeout = setTimeout(()=>{
+      this.showInputMessage = !this.validateVerseInput(text)
       let chId = this.selectedChapter.id
       text = text.replace(/\s+/g, '')
       let arr = text.split(',')
@@ -92,9 +105,7 @@ export class AddVerseModalComponent implements OnInit {
       this.verse.passage.reference = this.selectedChapter.reference +':'+ text
       this.verse.bible.id = this.selectedBible.id
       this.verse.bible.reference = this.selectedBible.abbreviationLocal
-      //console.log(this.selectedBible)
-      //console.log(this.verse.passage.reference)
-      //console.log('test',this.passageOutput)
+
       for(let i=0;i<arr.length;i++){
         this.getPassage(arr[i],i)
       }
@@ -106,10 +117,15 @@ export class AddVerseModalComponent implements OnInit {
     this.apiService.getPassage(this.selectedBible.id,passId).subscribe(data=>{
       aux = data
       this.passageOutput[index] = aux.data.content
+      this.showNotFoundMessage = false
       if(!this.passageOutput.some(el => el === 0))
         this.buildOutputText()
     },error=>{
-      console.log(error)
+      if(error.status === 404){
+        this.showNotFoundMessage = true
+      } else {
+        console.log(error)
+      }
     })
   }
 
@@ -153,9 +169,9 @@ export class AddVerseModalComponent implements OnInit {
       }
     }
 
-    console.log('Before save',this.verse)
-    if(this.validateVerse()){
-      console.log('enter, newNote',this.newVerse)
+    //console.log('Before save',this.verse)
+    if(this.validateVerse() && !this.showInputMessage && !this.showNotFoundMessage){
+      //console.log('enter, newNote',this.newVerse)
       if(this.newVerse)
         this.addVerse(this.verse)
       else
@@ -163,7 +179,8 @@ export class AddVerseModalComponent implements OnInit {
       this.resetValues()
       this.modal.dismiss()
     } else {
-      this.showRedText = true
+      if(!this.validateVerse())
+        this.showRedText = true
     }
   }
 
@@ -171,6 +188,11 @@ export class AddVerseModalComponent implements OnInit {
     var validText = this.verse.text != ""
     var validTopic = this.verse.topic != 0
     return validText && validTopic
+  }
+
+  validateVerseInput(str){
+    let reg = /^(?:(?:\d+,)|(?:\d+-\d+,))*(?:(?:\d+)|(?:\d+-\d+))$/
+    return reg.test(str)
   }
 
   getTopicOptions(){
@@ -203,6 +225,7 @@ export class AddVerseModalComponent implements OnInit {
   handleSelectChange(e){
     var value = e.detail.value
     this.showNewTopicInput = value == "Nuevo"
+    this.showRedText = false
   }
 
   resetValues(){
@@ -216,7 +239,7 @@ export class AddVerseModalComponent implements OnInit {
       topic:0,
       date:"",
       bible:{id:0,reference:""},
-      passage:{id:0,reference:""},
+      passage:{id:['0'],reference:""},
       text:""
     }
   }

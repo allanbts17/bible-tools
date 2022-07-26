@@ -81,19 +81,31 @@
       </ion-segment-button>
     </ion-segment>
   </div>
+  <div class="w-full flex justify-center">
+    <ion-button *ngIf="filterOn" fill="outline" shape="round" (click)="quiteFilter()">
+      Quitar filtro
+      <ion-icon name="close-outline"></ion-icon>
+    </ion-button>
+  </div>
 
   <ion-card *ngFor="let verse of filteredVerseList">
     <ion-item class="">
       <ion-label>{{verse.passage.reference}}</ion-label>
       <ion-button (click)="openBibleModal(verse)" fill="" shape="round" >{{verse.bible.reference}}</ion-button>
+      <ion-button fill="" shape="round" (click)="deleteVerse(verse)">
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
     </ion-item>
     <ion-card-content class="" style="white-space: pre-line">
       {{verse.text}}
     </ion-card-content>
   </ion-card>
+  <p class="text-slate-500 w-full text-center mt-2" *ngIf="filteredVerseList?.length == 0 && filterOn">No existen versículos para este filtro</p>
+  <p class="text-slate-500 w-full text-center mt-2" *ngIf="filteredVerseList?.length == 0 && !filterOn">No existen versículos con este tema</p>
 
+  <app-topic-modal [topicList]="topicList" (addTopicEvent)="loadTopics()"></app-topic-modal>
   <app-select-passage-modal [bible]="selectedBible || sharedInfo.defaultBible" (passageSelectedEvent)="chapterChange($event)"></app-select-passage-modal>
   <app-select-bible-modal [changeShared]="false" [(isOpen)]="isOpenBibleModal" (bibleSelectedEvent)="bibleChange($event)"></app-select-bible-modal>
   <app-add-verse-modal (selectChapterEvent)="openChapterModal()" (selectBibleEvent)="openBibleModal()" [selectedBible]="selectedBible || sharedInfo.defaultBible" [selectedChapter]="selectedChapter || sharedInfo.defaultChapter" [topicList]="topicList" (addTopicEvent)="loadTopics()" (addVerseEvent)="loadVerses()"></app-add-verse-modal>
-
+  <app-custom-alert (versesChangedEvent)="loadVerses()" (topicErasedEvent)="loadTopics()" [topics]="topicList" [verses]="verseList"></app-custom-alert>
 </ion-content>

@@ -15,10 +15,12 @@ import { IonicSlides } from '@ionic/angular';
 import { NoteSelectionSheetComponent } from './note-selection-sheet/note-selection-sheet.component';
 import { DailyDevotionalMainMenuComponent } from './daily-devotional-main-menu/daily-devotional-main-menu.component';
 import { AddVerseModalComponent } from './add-verse-modal/add-verse-modal.component';
+import { TopicModalComponent } from './topic-modal/topic-modal.component';
 
 const components = [ColorPickerComponent,AddNoteModalComponent,GeneralNoteComponent,
 AddCategoryComponent,CustomAlertComponent,SelectBibleModalComponent,SelectPassageModalComponent,
-NoteSelectionSheetComponent,DailyDevotionalMainMenuComponent,AddVerseModalComponent]
+NoteSelectionSheetComponent,DailyDevotionalMainMenuComponent,AddVerseModalComponent,
+TopicModalComponent]
 
 SwiperCore.use([Autoplay, Keyboard, Pagination, Scrollbar, Zoom, IonicSlides]);
 
