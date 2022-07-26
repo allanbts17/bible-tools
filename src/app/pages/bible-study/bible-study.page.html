@@ -8,7 +8,7 @@
       </ion-menu-toggle>
     </ion-buttons>
     <ion-buttons>
-        <ion-button color="dark" strong="true" shape="round" id="open-select-passage-modal">
+        <ion-button color="dark" strong="true" shape="round" id="open-select-passage-modal" (click)="selectPassage.modal.present()">
           {{selectedChapter?.reference || sharedInfo.defaultChapter?.reference}}
         </ion-button>
         <ion-button slot="end" color="dark" strong="true" shape="round" id="open-select-bible-modal">
@@ -28,7 +28,7 @@
   </ion-slides>
 
 
-  <app-note-selection-sheet #sheet [bibleName]="selectedBible?.abbreviationLocal || sharedInfo.defaultBible?.abbreviationLocal" [chapterId]="selectedChapter?.id || sharedInfo.defaultChapter?.id" [chapterReference]="selectedChapter?.reference || sharedInfo.defaultChapter?.reference" (closeSheetEvent)="closeSelectionSheet($event)"></app-note-selection-sheet>
+  <app-note-selection-sheet #sheet [bible]="selectedBible || sharedInfo.defaultBible" [chapter]="selectedChapter || sharedInfo.defaultChapter" (closeSheetEvent)="closeSelectionSheet($event)"></app-note-selection-sheet>
   <app-select-bible-modal [triggerId]="'open-select-bible-modal'" (bibleSelectedEvent)="bibleChange($event)" (bibleListEvent)="setDefaultData($event)"></app-select-bible-modal>
   <app-select-passage-modal [bible]="selectedBible || sharedInfo.defaultBible" (passageSelectedEvent)="chapterChange($event)"></app-select-passage-modal>
 </ion-content>

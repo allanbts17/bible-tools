@@ -19,10 +19,10 @@
           <ion-label position="floating">Nuevo tema</ion-label>
           <ion-input [(ngModel)]="newTopic.name"></ion-input>
         </ion-item>
-        <ion-item lines="false">
+        <ion-item *ngIf="!addFromBibleStudyPage" lines="false">
           <ion-label>Seleccione el capítulo y la biblia</ion-label>
         </ion-item>
-        <div class="flex justify-around">
+        <div *ngIf="!addFromBibleStudyPage" class="flex justify-around">
           <ion-button (click)="selectChapter()"  fill="clear" color="dark" shape="round" id="open-select-passage-modal-from-verse-index">
             {{selectedChapter?.reference}}
           </ion-button>
@@ -30,7 +30,13 @@
             {{selectedBible?.abbreviationLocal}}
           </ion-button>
         </div>
-        <ion-item>
+
+        <ion-item *ngIf="addFromBibleStudyPage">
+          <ion-label>{{verse.passage.reference}}</ion-label>
+          <ion-label>{{verse.bible.reference}}</ion-label>
+        </ion-item>
+
+        <ion-item *ngIf="!addFromBibleStudyPage">
           <ion-label position="floating">Versículos separados por coma</ion-label>
           <ion-input [(ngModel)]="verses" (ngModelChange)="changeVersesInput($event)"></ion-input>
         </ion-item>

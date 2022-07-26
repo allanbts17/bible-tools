@@ -1,9 +1,11 @@
-import { Component, OnInit, HostListener, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, HostListener, Output, EventEmitter, Input, ViewChild } from '@angular/core';
 import { StorageService } from 'src/app/services/storage.service';
 import { Clipboard } from '@capacitor/clipboard';
 import { ToastController } from '@ionic/angular';
 import { Share } from '@capacitor/share';
 import { ConfigService } from 'src/app/services/config.service';
+import { AddVerseModalComponent } from '../add-verse-modal/add-verse-modal.component';
+import { Verse } from 'src/app/interfaces/verse';
 
 
 @Component({
@@ -12,16 +14,24 @@ import { ConfigService } from 'src/app/services/config.service';
   styleUrls: ['./note-selection-sheet.component.scss'],
 })
 export class NoteSelectionSheetComponent implements OnInit {
+  @ViewChild(AddVerseModalComponent) addVerseModal: AddVerseModalComponent;
   @Output() closeSheetEvent = new EventEmitter<any>()
-  @Input() chapterReference
-  @Input() chapterId
-  @Input() bibleName
+  @Input() bible
+  @Input() chapter
   private showCard = false
   passageReference = ''
   selectedData
   verses
   showHighlightColors = false
   selectedMarkerColor
+  topicList
+  selectedVerse: Verse = {
+    topic:0,
+    date:"",
+    bible:{id:'',reference:""},
+    passage:{id:['0'],reference:""},
+    text:""
+  }
 
   constructor(public storage: StorageService,
     public toastController: ToastController,
@@ -29,6 +39,7 @@ export class NoteSelectionSheetComponent implements OnInit {
 
   ngOnInit() {
     this.onResize();
+    this.loadTopics()
   }
 
   @HostListener('window:resize', ['$event'])
@@ -52,6 +63,14 @@ export class NoteSelectionSheetComponent implements OnInit {
     this.closeSheetEvent.emit(updateMarks)
   }
 
+  async loadTopics(){
+    this.topicList = await this.storage.getData("topics")
+  }
+
+  newVerseAdded(){
+    this.presentToast('El pasaje ha sido añadido.')
+  }
+
   hideHighlightColor(){
     this.showHighlightColors = false
   }
@@ -60,7 +79,7 @@ export class NoteSelectionSheetComponent implements OnInit {
     let storedData = await this.storage.getData('marked')
     for(let i=0;i<this.verses.length;i++){
 
-      let verseId = this.chapterId +'.'+ this.verses[i]
+      let verseId = this.chapter.id +'.'+ this.verses[i]
       let searchedData = storedData.find(markedVerse => {
         return markedVerse.verse == verseId
       })
@@ -77,7 +96,7 @@ export class NoteSelectionSheetComponent implements OnInit {
     let storedData = await this.storage.getData('marked')
     for(let i=0;i<this.verses.length;i++){
       let data = {
-        verse: this.chapterId +'.'+ this.verses[i],
+        verse: this.chapter.id +'.'+ this.verses[i],
         color: selColor
       }
 
@@ -94,7 +113,7 @@ export class NoteSelectionSheetComponent implements OnInit {
       } else {
         let newData = {
           id: searchedData.id,
-          verse: this.chapterId +'.'+ this.verses[i],
+          verse: this.chapter.id +'.'+ this.verses[i],
           color: selColor
         }
         //console.log('edit',newData)
@@ -107,17 +126,40 @@ export class NoteSelectionSheetComponent implements OnInit {
     this.showHighlightColors = false
   }
 
-  async writeToClipboard(){
+  openAddVerseModal(){
     let text = ''
     this.verses.forEach(verse => {
-      const verseSegments = Array.from(document.querySelectorAll('[data-verse-id="'+this.chapterId+'.'+verse+'"]'))
+      const verseSegments = Array.from(document.querySelectorAll('[data-verse-id="'+this.chapter.id+'.'+verse+'"]'))
       var verseSegmentsElementArray = <HTMLParagraphElement[]>verseSegments
       verseSegmentsElementArray.forEach(verseEl => {
         if(!verseEl.children[0]?.classList.contains('v'))
           text += verseEl.innerText +" "
       })
     })
-    text += '\n' + this.passageReference + " " +this.bibleName
+    this.selectedVerse.text = text
+    this.selectedVerse.bible = {
+      id: this.bible.id,
+      reference: this.bible.abbreviationLocal
+    }
+    this.selectedVerse.passage = {
+      id:this.selectedData,
+      reference:this.passageReference
+    }
+    this.addVerseModal.setVerse(this.selectedVerse)
+    this.addVerseModal.modal.present()
+  }
+
+  async writeToClipboard(){
+    let text = ''
+    this.verses.forEach(verse => {
+      const verseSegments = Array.from(document.querySelectorAll('[data-verse-id="'+this.chapter.id+'.'+verse+'"]'))
+      var verseSegmentsElementArray = <HTMLParagraphElement[]>verseSegments
+      verseSegmentsElementArray.forEach(verseEl => {
+        if(!verseEl.children[0]?.classList.contains('v'))
+          text += verseEl.innerText +" "
+      })
+    })
+    text += '\n' + this.passageReference + " " +this.bible.abbreviationLocal
     //console.log(text)
     await Clipboard.write({
       string: text
@@ -129,14 +171,14 @@ export class NoteSelectionSheetComponent implements OnInit {
   async shareData(){
     let text = ''
     this.verses.forEach(verse => {
-      const verseSegments = Array.from(document.querySelectorAll('[data-verse-id="'+this.chapterId+'.'+verse+'"]'))
+      const verseSegments = Array.from(document.querySelectorAll('[data-verse-id="'+this.chapter.id+'.'+verse+'"]'))
       var verseSegmentsElementArray = <HTMLParagraphElement[]>verseSegments
       verseSegmentsElementArray.forEach(verseEl => {
         if(!verseEl.children[0]?.classList.contains('v'))
           text += verseEl.innerText +" "
       })
     })
-    text += '\n' + this.passageReference + " " +this.bibleName
+    text += '\n' + this.passageReference + " " +this.bible.abbreviationLocal
 
     let canShare = await Share.canShare()
     if(canShare.value){
@@ -194,18 +236,20 @@ export class NoteSelectionSheetComponent implements OnInit {
         }
         lastNumberInRange = verses[i]
         verseRanges.push(String(first +"-"+ verses[i]))
-        this.selectedData.push(String(this.chapterId+"."+first +"-"+ this.chapterId+"."+verses[i]))
+        this.selectedData.push(String(this.chapter.id+"."+first +"-"+ this.chapter.id+"."+verses[i]))
         //i = j
       } else {
         verseRanges.push(verses[i])
-        this.selectedData.push(this.chapterId+"."+verses[i])
+        this.selectedData.push(this.chapter.id+"."+verses[i])
       }
     }
     if(lastNumberInRange !== verses[versesLength-1]){
       verseRanges.push(verses[versesLength-1])
-      this.selectedData.push(this.chapterId+"."+verses[versesLength-1])
+      this.selectedData.push(this.chapter.id+"."+verses[versesLength-1])
     }
-    this.passageReference = this.chapterReference +":"+ verseRanges.toString()
+    console.log(verseRanges)
+    console.log(this.selectedData)
+    this.passageReference = this.chapter.reference +":"+ verseRanges.toString()
     this.quiteUnseletedColorClass()
   }
 

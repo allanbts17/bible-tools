@@ -5,6 +5,7 @@ import { SwiperOptions } from 'swiper';
 import { NoteSelectionSheetComponent } from 'src/app/components/note-selection-sheet/note-selection-sheet.component';
 import { StorageService } from 'src/app/services/storage.service';
 import { SharedInfoService } from 'src/app/services/shared-info.service';
+import { SelectPassageModalComponent } from 'src/app/components/select-passage-modal/select-passage-modal.component';
 
 
 @Component({
@@ -16,6 +17,7 @@ import { SharedInfoService } from 'src/app/services/shared-info.service';
 export class BibleStudyPage implements OnInit {
   @ViewChild('slide') slides: IonSlides;
   @ViewChild('sheet') noteSelectionSheet: NoteSelectionSheetComponent;
+  @ViewChild(SelectPassageModalComponent) selectPassage: SelectPassageModalComponent;
   availableBibleLanguages = [{id:"spa",name:"Español"},{id:"eng",name:"English"}]
   bibles = []
   selectedBible
@@ -46,7 +48,9 @@ export class BibleStudyPage implements OnInit {
     this.loadMarkedVerses()
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.start = true
+  }
 
   setSelectedChapterInfo(data){
     this.selectedChapter = {
@@ -169,7 +173,9 @@ export class BibleStudyPage implements OnInit {
    * too soon, before data updates
    */
   async transitionFinished(): Promise<void>{
+    //console.log(this.start)
     if(this.start){
+
       let index = await this.getActiveIndex()
       let direction = this.swipeDirection(index)
       this.setSelectedChapterInfo(this.showedChapters[index-1])

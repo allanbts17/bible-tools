@@ -8,7 +8,7 @@ export interface Verse {
 }
 
 export interface Bible {
-  id: number;
+  id: string;
   reference: string;
 }
 

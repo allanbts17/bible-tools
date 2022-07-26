@@ -23,6 +23,7 @@ export class AddVerseModalComponent implements OnInit {
   @Input() topicList: Topic[]
   @Input() selectedBible
   @Input() selectedChapter
+  @Input() addFromBibleStudyPage = false
   newVerse = true
   showNewTopicInput = false
   showRedText = false
@@ -41,7 +42,7 @@ export class AddVerseModalComponent implements OnInit {
   verse: Verse = {
     topic:0,
     date:"",
-    bible:{id:0,reference:""},
+    bible:{id:'',reference:""},
     passage:{id:['0'],reference:""},
     text:""
   }
@@ -78,6 +79,10 @@ export class AddVerseModalComponent implements OnInit {
 
   selectChapter(){
     this.selectChapterEvent.emit()
+  }
+
+  setVerse(inputVerse: Verse){
+    this.verse = inputVerse
   }
 
   changeVersesInput(text){
@@ -238,7 +243,7 @@ export class AddVerseModalComponent implements OnInit {
     this.verse = {
       topic:0,
       date:"",
-      bible:{id:0,reference:""},
+      bible:{id:'',reference:""},
       passage:{id:['0'],reference:""},
       text:""
     }

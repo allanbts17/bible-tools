@@ -31,12 +31,12 @@
       <ion-button fill="clear" (click)="showHighlightColors = true">
         <ion-icon [ngClass]="{'text-white':config?.settings?.darkMode}" name="color-palette"></ion-icon>
       </ion-button>
-      <ion-button fill="clear">
+      <ion-button fill="clear" (click)="openAddVerseModal()">
         <ion-icon [ngClass]="{'text-white':config?.settings?.darkMode}" name="list"></ion-icon>
       </ion-button>
-      <ion-button fill="clear">
+      <!--<ion-button fill="clear">
         <ion-icon [ngClass]="{'text-white':config?.settings?.darkMode}" name="document"></ion-icon>
-      </ion-button>
+      </ion-button>-->
       <ion-button fill="clear" (click)="writeToClipboard()">
         <ion-icon [ngClass]="{'text-white':config?.settings?.darkMode}" name="copy"></ion-icon>
       </ion-button>
@@ -78,5 +78,7 @@
     </div>
   </ion-card-content>
 </ion-card>
+
+<app-add-verse-modal [addFromBibleStudyPage]="true" [selectedBible]="bible" [selectedChapter]="chapter" [topicList]="topicList" (addTopicEvent)="loadTopics()" (addVerseEvent)="newVerseAdded()"></app-add-verse-modal>
 
 
