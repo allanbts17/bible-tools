@@ -74,14 +74,15 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content scroll-y="false">
   <!-- Scrollable Segment -->
-  <div class="sticky top-0 z-10 segment-background">
-    <ion-segment  scrollable value="{{tabs[0]}}">
-      <ion-segment-button (click)="tabSelected(tab)" *ngFor="let tab of tabs" value="{{tab}}">
+  <div id="daily-div" class="sticky top-0 z-10 segment-background">
+    <!--<ion-segment #segment selectOnFocus="true"  scrollable value="{{tabs[0]}}">
+      <ion-segment-button (click)="tabSelected(tab,i)" *ngFor="let tab of tabs; let i = index" value="{{tab}}">
         <ion-label>{{tab}}</ion-label>
       </ion-segment-button>
-    </ion-segment>
+    </ion-segment>-->
+    <app-tabs #dailyTabs [tabs]="tabs" [selectedTab]="selectedTab" (selectedTabEvent)="tabSelected($event)"></app-tabs>
 
     <!-- Filter select -->
     <div *ngIf="filterOn" class="mx-2 mt-1 flex justify-center items-center relative">
@@ -106,9 +107,17 @@
   </div>
 
   <!-- Notes-->
-  <app-general-note (noteDeleteEvent)="deleteNote($event)" (noteEditEvent)="presentNoteModal($event)" [categories]="categoryList"  *ngFor="let note of filteredNoteList; let i = index" [index]="'note-popover-'+i" [note]="note"></app-general-note>
-  <p class="text-slate-500 w-full text-center mt-2" *ngIf="filteredNoteList.length == 0 && filterOn">No existen notas para este filtro</p>
-  <p class="text-slate-500 w-full text-center mt-2" *ngIf="filteredNoteList.length == 0 && !filterOn">No existen notas para esta categoría</p>
+  <ion-slides #slide class="h-full w-full" (ionSlideTransitionEnd)="transitionFinished()">
+    <ion-slide class="h-full w-full" *ngFor="let tab of tabs">
+      <div class="h-full w-full overflow-y-scroll">
+        <app-general-note (noteDeleteEvent)="deleteNote($event)" (noteEditEvent)="presentNoteModal($event)" [categories]="categoryList"  *ngFor="let note of notes[tab === config.getData().daly_devotional.tab? 'all':tab]; let i = index" [index]="'note-popover-'+i" [note]="note"></app-general-note>
+        <p class="text-slate-500 w-full text-center mt-2" *ngIf="filteredNoteList.length == 0 && filterOn">No existen notas para este filtro</p>
+        <p class="text-slate-500 w-full text-center mt-2" *ngIf="filteredNoteList.length == 0 && !filterOn">No existen notas para esta categoría</p>
+      </div>
+    </ion-slide>
+  </ion-slides>
+
+
   <!-- Modals -->
   <app-add-note-modal [categoryList]="categoryList" (addCategoryEvent)="loadCategories()" (addNoteEvent)="loadNotes()"></app-add-note-modal>
   <app-add-category [categoryList]="categoryList" (addCategoryEvent)="loadCategories()"></app-add-category>

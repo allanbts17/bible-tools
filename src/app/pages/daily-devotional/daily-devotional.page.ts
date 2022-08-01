@@ -7,7 +7,8 @@ import { AddCategoryComponent } from 'src/app/components/add-category/add-catego
 import { Category } from 'src/app/interfaces/category';
 import { CustomAlertComponent } from 'src/app/components/custom-alert/custom-alert.component';
 import { Note } from 'src/app/interfaces/note';
-import { IonPopover, PopoverController } from '@ionic/angular';
+import { IonPopover, IonSegment, IonSlides, PopoverController } from '@ionic/angular';
+import { TabsComponent } from 'src/app/components/tabs/tabs.component';
 
 @Component({
   selector: 'app-daily-devotional',
@@ -20,6 +21,9 @@ export class DailyDevotionalPage implements OnInit {
   @ViewChild(AddCategoryComponent) addCategoryModal: AddCategoryComponent;
   @ViewChild(CustomAlertComponent) alert: CustomAlertComponent;
   @ViewChild('popover') popover: IonPopover;
+  @ViewChild('slide') slides: IonSlides;
+  @ViewChild('segment') segment: IonSegment;
+  @ViewChild('dailyTabs') myTabs: TabsComponent;
   tabs = []
   categoryList = []
   noteList = [{category:0,title:"Mens",text:"este es un texto",color:"#fff",date:""}]
@@ -30,6 +34,9 @@ export class DailyDevotionalPage implements OnInit {
   filterOn = false
   showDate = false
   isOpen = false
+  notes
+  slideIndex = 0
+  checked
 
   constructor(public config: ConfigService,
     public storageService: StorageService,
@@ -37,6 +44,9 @@ export class DailyDevotionalPage implements OnInit {
 
 
   ngOnInit() {
+    this.notes =  this.storageService.getNotes()
+    console.log(this.notes)
+    console.log(this.storageService.getNotes())
     this.loadCategories()
     this.loadNotes()
     this.filterNotes(this.selectedTab)
@@ -47,6 +57,18 @@ export class DailyDevotionalPage implements OnInit {
     this.popover.event = e;
     this.isOpen = true;
   }
+
+  async transitionFinished(){
+    let index = await this.slides.getActiveIndex()
+    /*let segmentButtons = this.getButtons()
+    let prevBtn = segmentButtons[this.slideIndex]
+    let currentBtn = segmentButtons[index]*/
+    this.selectedTab = this.tabs[index]
+    this.myTabs.moveTabs(this.slideIndex,index,this.selectedTab)
+    this.slideIndex = index
+  }
+
+
 
   filterTypeSelect(e){
     var value = e.detail.value
@@ -124,11 +146,6 @@ export class DailyDevotionalPage implements OnInit {
   async loadCategories(){
     this.categoryList = await this.storageService.getData("categories")
     this.fillTabs()
-    /*setTimeout(()=>{
-      var g = document.getElementsByTagName('ion-segment-button')
-      console.log(g[1])
-      console.log(g[1].getBoundingClientRect())
-    })*/
   }
 
   async sortNotes(){
@@ -151,9 +168,10 @@ export class DailyDevotionalPage implements OnInit {
     this.selectedTab = this.tabs[0]
   }
 
-  tabSelected(tab){
-    this.selectedTab = tab
-    this.filterNotes(tab)
+  tabSelected(e){
+    this.selectedTab = e.tab
+    this.filterNotes(e.tab)
+    this.slides.slideTo(e.index)
   }
 
   filterNotes(tab=this.selectedTab){
@@ -163,7 +181,6 @@ export class DailyDevotionalPage implements OnInit {
     } else{
       this.filteredNoteList = this.filterByCategory(tab)
     }
-
   }
 
   filterByCategory(tab){

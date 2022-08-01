@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ConfigService } from './services/config.service';
 import { StorageService } from './services/storage.service';
 import { ThemeService } from './services/theme.service';
-import { SharedData } from './interfaces/shared-data';
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',

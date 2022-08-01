@@ -10,11 +10,17 @@ const MY_VERSES_KEY = "my-verses"
 const SETTINGS_KEY = 'settings'
 const MARKED_KEY = 'marked'
 const ID = 'id'
+//var notes = {}
+var categories = []
+var verses = {}
+var topics = []
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class StorageService {
+  notes = {}
 
   constructor(private storage: Storage) {
     this.init();
@@ -32,7 +38,31 @@ export class StorageService {
 
   async init(){
     await this.storage.create()
+    categories = await this.getData(CATEGORY_KEY)
+   // notes['test'] = 's'
+    Object.assign(this.notes,{'all':await this.filterNotesByCategory()})
+    categories.forEach(async category => {
+      Object.assign(this.notes,{[category.category]:await this.filterNotesByCategory(category.id)})
+    })
+
+    //console.log(notes)
   }
+
+  getNotes(category = 'all'){
+    return this.notes
+  }
+
+  async filterNotesByCategory(categoryId = null){
+    let allNotes = await this.getData(NOTES_KEY)
+    if(categoryId !== null){
+      //let catId = categories.find(cat => cat.category === category).id
+      return allNotes.filter(note => note.category === categoryId)
+    } else {
+      return allNotes
+    }
+  }
+
+
 
  public async getID(){
     const extractedID = await this.storage.get(ID) || 1
