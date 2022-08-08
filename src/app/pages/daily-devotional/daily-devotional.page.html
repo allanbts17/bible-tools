@@ -77,7 +77,7 @@
 <ion-content scroll-y="false">
   <!-- Scrollable Segment -->
   <div id="daily-div" class="sticky top-0 z-10 segment-background">
-    <app-tabs #dailyTabs [tabs]="tabs" [selectedTab]="selectedTab" (selectedTabEvent)="tabSelected($event)"></app-tabs>
+    <app-tabs #dailyTabs [tabs]="tabs" (selectedTabEvent)="tabSelected($event)"></app-tabs>
 
     <!-- Filter select -->
     <div *ngIf="filterOn" class="mx-2 mt-1 flex justify-center items-center relative">
@@ -104,13 +104,15 @@
   <!-- Notes-->
   <ion-slides #slide class="h-full w-full" (ionSlideTransitionEnd)="transitionFinished()">
     <ion-slide class="h-full w-full" *ngFor="let tab of tabs">
-      <div class="h-full w-full overflow-y-scroll">
+      <div class="h-full w-full overflow-y-scroll"  [scrollWindow]="false" infinite-scroll [horizontal]="true" [infiniteScrollDistance]="3" [infiniteScrollThrottle]="50" (scrolled)="onScroll()">
         <app-general-note (noteDeleteEvent)="deleteNote($event)" (noteEditEvent)="presentNoteModal($event)" [categories]="categoryList"  *ngFor="let note of notes[tab === config.getData().daly_devotional.tab? 'all':tab]; let i = index" [index]="'note-popover-'+i" [note]="note"></app-general-note>
         <p class="text-slate-500 w-full text-center mt-2" *ngIf="filteredNoteList.length == 0 && filterOn">No existen notas para este filtro</p>
         <p class="text-slate-500 w-full text-center mt-2" *ngIf="filteredNoteList.length == 0 && !filterOn">No existen notas para esta categoría</p>
       </div>
     </ion-slide>
   </ion-slides>
+
+  
 
 
   <!-- Modals -->

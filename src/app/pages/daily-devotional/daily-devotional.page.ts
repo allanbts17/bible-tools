@@ -48,9 +48,8 @@ export class DailyDevotionalPage implements OnInit {
     console.log(this.notes)
     console.log(this.storageService.getNotes())
     this.loadCategories()
-    this.loadNotes()
-    this.filterNotes(this.selectedTab)
-
+    //this.loadNotes()
+    //this.filterNotes(this.selectedTab)
   }
 
   async presentPopover(e: Event) {
@@ -58,18 +57,16 @@ export class DailyDevotionalPage implements OnInit {
     this.isOpen = true;
   }
 
+  onScroll(){
+    console.log('scrolled')
+  }
+
   async transitionFinished(){
     let index = await this.slides.getActiveIndex()
-    /*let segmentButtons = this.getButtons()
-    let prevBtn = segmentButtons[this.slideIndex]
-    let currentBtn = segmentButtons[index]*/
     this.selectedTab = this.tabs[index]
-    //this.myTabs.moveTabs(this.slideIndex,index,this.selectedTab)
     this.myTabs.tabSelected(this.selectedTab,index,true)
     this.slideIndex = index
   }
-
-
 
   filterTypeSelect(e){
     var value = e.detail.value

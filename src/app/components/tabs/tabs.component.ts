@@ -9,15 +9,12 @@ import { IonSegment, IonSegmentButton } from '@ionic/angular';
 })
 export class TabsComponent implements OnInit {
   @Input() tabs
-  @Input() selectedTab
   @Output() selectedTabEvent = new EventEmitter<any>()
   @ViewChild('segment') segment: IonSegment;
-  //@ViewChild('segmentButton') segmentButton: QueryList<IonSegmentButton>;
   checked
   tabTouched = false
   selectIndex = 0
   start = false
-
 
   constructor() { }
 
@@ -57,9 +54,6 @@ export class TabsComponent implements OnInit {
       customIndicator.style.left = `${buttonClientRect.x-firstButtonX}px`
       this.scrollTabs(index)
     })
-    /*customIndicator.style.width = `${buttonClientRect.width}px`
-    customIndicator.style.left = `${buttonClientRect.x-firstButtonX}px`*/
-    this.selectedTab = tab
 
     if(!parentsTabSelected){
       this.selectedTabEvent.emit({
@@ -67,7 +61,6 @@ export class TabsComponent implements OnInit {
         index: index
       })
     }
-
     this.selectIndex = index
   }
 
