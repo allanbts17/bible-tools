@@ -16,6 +16,37 @@ ion-segment {
   scrollbar-width: none;  /* Firefox */
 }
 
-ion-segment-button {
+.indicator-hided ion-segment-button {
   --indicator-color: rgba(255, 255, 255, 0);
 }
+
+#custom-indicator {
+  background-color: #92949c;
+  height: 2px;
+
+}
+
+.custom-animation {
+  transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.test-button {
+  //transition: width 600ms cubic-bezier(0.4, 0, 0.2, 1), left 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition-property: left, width;
+  background-color: blue;
+  color: white
+}
+
+.test-button .animated {
+  //transform: rotate(20deg);
+  background-color: rgb(199, 196, 196);
+  color: black
+}
+
+.animate {
+  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition-property: left, width;
+}
+
+

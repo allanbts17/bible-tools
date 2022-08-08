@@ -1,5 +1,20 @@
-<ion-segment #segment selectOnFocus="true"  scrollable value="{{tabs[0]}}">
-  <ion-segment-button (click)="tabSelected(tab,i)" *ngFor="let tab of tabs; let i = index" value="{{tab}}">
-    <ion-label>{{tab}}</ion-label>
-  </ion-segment-button>
-</ion-segment>
+<div id="tab-container" class="relative w-full">
+ <!-- <div class="flex justify-between">
+    <p class="px-2" *ngFor="let tab of tabs">
+      {{tab}}
+    </p>
+  </div>-->
+  <ion-segment id="tab-segment" class="" scrollable #segment selectOnFocus="true" value="{{tabs[0]}}">
+    <ion-segment-button #segmentButton (click)="tabSelected(tab,i)" *ngFor="let tab of tabs; let i = index" value="{{tab}}">
+      <ion-label>{{tab}}</ion-label>
+      <!--<div class="custom-indicator bg-red-800"></div>-->
+    </ion-segment-button>
+    <div id="custom-indicator" class="absolute bottom-0 custom-animation"></div>
+  </ion-segment>
+
+</div>
+<!--<div class="relative">
+  <button class="p-4 test-button absolute top-0 left-0 w-20" id="testButton" (click)="testAnimation()">btn</button>
+</div>-->
+
+

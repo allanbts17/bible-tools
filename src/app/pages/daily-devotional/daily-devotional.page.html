@@ -77,11 +77,6 @@
 <ion-content scroll-y="false">
   <!-- Scrollable Segment -->
   <div id="daily-div" class="sticky top-0 z-10 segment-background">
-    <!--<ion-segment #segment selectOnFocus="true"  scrollable value="{{tabs[0]}}">
-      <ion-segment-button (click)="tabSelected(tab,i)" *ngFor="let tab of tabs; let i = index" value="{{tab}}">
-        <ion-label>{{tab}}</ion-label>
-      </ion-segment-button>
-    </ion-segment>-->
     <app-tabs #dailyTabs [tabs]="tabs" [selectedTab]="selectedTab" (selectedTabEvent)="tabSelected($event)"></app-tabs>
 
     <!-- Filter select -->

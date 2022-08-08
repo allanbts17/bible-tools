@@ -64,7 +64,8 @@ export class DailyDevotionalPage implements OnInit {
     let prevBtn = segmentButtons[this.slideIndex]
     let currentBtn = segmentButtons[index]*/
     this.selectedTab = this.tabs[index]
-    this.myTabs.moveTabs(this.slideIndex,index,this.selectedTab)
+    //this.myTabs.moveTabs(this.slideIndex,index,this.selectedTab)
+    this.myTabs.tabSelected(this.selectedTab,index,true)
     this.slideIndex = index
   }
 
