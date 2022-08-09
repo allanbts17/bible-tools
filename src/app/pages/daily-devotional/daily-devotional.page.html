@@ -75,50 +75,56 @@
 </ion-header>
 
 <ion-content scroll-y="false">
-  <!-- Scrollable Segment -->
-  <div id="daily-div" class="sticky top-0 z-10 segment-background">
-    <app-tabs #dailyTabs [tabs]="tabs" (selectedTabEvent)="tabSelected($event)"></app-tabs>
+  <section class="h-full flex flex-col">
+    <!-- Scrollable Segment -->
+    <div id="daily-div" class="sticky top-0 z-10 segment-background flex-none">
+      <app-tabs #dailyTabs [tabs]="tabs" (selectedTabEvent)="tabSelected($event)"></app-tabs>
 
-    <!-- Filter select -->
-    <div *ngIf="filterOn" class="mx-2 mt-1 flex justify-center items-center relative">
-      <ion-label>Filtrar por:</ion-label>
-      <ion-select [(ngModel)]="filterType" [multiple]="false" (ionChange)="filterTypeSelect($event)">
-        <ion-select-option value="all">Todo</ion-select-option>
-        <ion-select-option value="title">Título</ion-select-option>
-        <ion-select-option value="text">Texto</ion-select-option>
-        <ion-select-option value="date">Fecha</ion-select-option>
-      </ion-select>
-      <button (click)="cancelFilter()" class="absolute top-1 right-2 w-10">
-        <ion-icon class="text-3xl" name="close-outline"></ion-icon>
-      </button>
-      <!--<button *ngIf="filterType == 'date'" (click)="showDate = !showDate" class="absolute top-1 left-2 w-10">
-        <ion-icon class="text-3xl" name="calendar"></ion-icon>
-      </button>-->
+      <!-- Filter select -->
+      <div *ngIf="filterOn" class="mx-2 mt-1 flex justify-center items-center relative">
+        <ion-label>Filtrar por:</ion-label>
+        <ion-select [(ngModel)]="filterType" [multiple]="false" (ionChange)="filterTypeSelect($event)">
+          <ion-select-option value="all">Todo</ion-select-option>
+          <ion-select-option value="title">Título</ion-select-option>
+          <ion-select-option value="text">Texto</ion-select-option>
+          <ion-select-option value="date">Fecha</ion-select-option>
+        </ion-select>
+        <button (click)="cancelFilter()" class="absolute top-1 right-2 w-10">
+          <ion-icon class="text-3xl" name="close-outline"></ion-icon>
+        </button>
+        <!--<button *ngIf="filterType == 'date'" (click)="showDate = !showDate" class="absolute top-1 left-2 w-10">
+          <ion-icon class="text-3xl" name="calendar"></ion-icon>
+        </button>-->
+      </div>
+
+      <ion-datetime *ngIf="showDate" (ionCancel)="showDate=false" (ionChange)="dateSelectionChange($event)" presentation="date" locale="es-ES" [showDefaultButtons]="false"
+      doneText="Ok"
+      cancelText="Ocultar"></ion-datetime>
     </div>
 
-    <ion-datetime *ngIf="showDate" (ionCancel)="showDate=false" (ionChange)="dateSelectionChange($event)" presentation="date" locale="es-ES" [showDefaultButtons]="false"
-    doneText="Ok"
-    cancelText="Ocultar"></ion-datetime>
-  </div>
+    <!-- Notes-->
+    <ion-slides #slide class="flex-1 w-full" (ionSlideTransitionEnd)="transitionFinished()">
+      <ion-slide class="h-full w-full" *ngFor="let tab of tabs">
+        <div class="h-full w-full overflow-y-scroll ion-content-scroll-host" >
+          <app-general-note (noteDeleteEvent)="deleteNote($event)" (noteEditEvent)="presentNoteModal($event)" [categories]="categoryList"  *ngFor="let note of notes[tab === config.getData().daly_devotional.tab? 'all':tab]; let i = index" [index]="'note-popover-'+i" [note]="note"></app-general-note>
+          <p class="text-slate-500 w-full text-center mt-2" *ngIf="notes[tab === config.getData().daly_devotional.tab? 'all':tab].length == 0 && filterOn">No existen notas para este filtro</p>
+          <p class="text-slate-500 w-full text-center mt-2" *ngIf="notes[tab === config.getData().daly_devotional.tab? 'all':tab].length == 0 && !filterOn">No existen notas para esta categoría</p>
 
-  <!-- Notes-->
-  <ion-slides #slide class="h-full w-full" (ionSlideTransitionEnd)="transitionFinished()">
-    <ion-slide class="h-full w-full" *ngFor="let tab of tabs">
-      <div class="h-full w-full overflow-y-scroll"  [scrollWindow]="false" infinite-scroll [horizontal]="true" [infiniteScrollDistance]="3" [infiniteScrollThrottle]="50" (scrolled)="onScroll()">
-        <app-general-note (noteDeleteEvent)="deleteNote($event)" (noteEditEvent)="presentNoteModal($event)" [categories]="categoryList"  *ngFor="let note of notes[tab === config.getData().daly_devotional.tab? 'all':tab]; let i = index" [index]="'note-popover-'+i" [note]="note"></app-general-note>
-        <p class="text-slate-500 w-full text-center mt-2" *ngIf="filteredNoteList.length == 0 && filterOn">No existen notas para este filtro</p>
-        <p class="text-slate-500 w-full text-center mt-2" *ngIf="filteredNoteList.length == 0 && !filterOn">No existen notas para esta categoría</p>
-      </div>
-    </ion-slide>
-  </ion-slides>
+          <ion-infinite-scroll threshold="100px" id="infinite-scroll" class="" (ionInfinite)="onScroll($event)">
+            <ion-infinite-scroll-content
+              loading-spinner="bubbles"
+              loading-text="Cargando más notas...">
+            </ion-infinite-scroll-content>
+          </ion-infinite-scroll>
+        </div>
+      </ion-slide>
+    </ion-slides>
 
-  
+    <!-- Modals -->
+    <app-add-note-modal [categoryList]="categoryList" (addCategoryEvent)="loadCategories()" (addNoteEvent)="loadNotes()"></app-add-note-modal>
+    <app-add-category [categoryList]="categoryList" (addCategoryEvent)="loadCategories()"></app-add-category>
 
-
-  <!-- Modals -->
-  <app-add-note-modal [categoryList]="categoryList" (addCategoryEvent)="loadCategories()" (addNoteEvent)="loadNotes()"></app-add-note-modal>
-  <app-add-category [categoryList]="categoryList" (addCategoryEvent)="loadCategories()"></app-add-category>
-
-  <!-- Alert -->
-  <app-custom-alert (notesChangedEvent)="loadNotes()" (categoryErasedEvent)="loadCategories()" [categories]="categoryList" [notes]="noteList"></app-custom-alert>
+    <!-- Alert -->
+    <app-custom-alert (notesChangedEvent)="loadNotes()" (categoryErasedEvent)="loadCategories()" [categories]="categoryList" [notes]="noteList"></app-custom-alert>
+  </section>
 </ion-content>

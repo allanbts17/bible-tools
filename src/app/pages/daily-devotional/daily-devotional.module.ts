@@ -8,7 +8,6 @@ import { DailyDevotionalPageRoutingModule } from './daily-devotional-routing.mod
 
 import { DailyDevotionalPage } from './daily-devotional.page';
 import { ComponentsModule } from 'src/app/components/components.module';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 
 @NgModule({
@@ -16,7 +15,6 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     CommonModule,
     FormsModule,
     IonicModule,
-    InfiniteScrollModule,
     ComponentsModule,
     DailyDevotionalPageRoutingModule
   ],

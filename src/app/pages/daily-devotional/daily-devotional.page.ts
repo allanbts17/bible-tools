@@ -7,7 +7,7 @@ import { AddCategoryComponent } from 'src/app/components/add-category/add-catego
 import { Category } from 'src/app/interfaces/category';
 import { CustomAlertComponent } from 'src/app/components/custom-alert/custom-alert.component';
 import { Note } from 'src/app/interfaces/note';
-import { IonPopover, IonSegment, IonSlides, PopoverController } from '@ionic/angular';
+import { IonInfiniteScroll, IonPopover, IonSegment, IonSlides, PopoverController } from '@ionic/angular';
 import { TabsComponent } from 'src/app/components/tabs/tabs.component';
 
 @Component({
@@ -24,6 +24,7 @@ export class DailyDevotionalPage implements OnInit {
   @ViewChild('slide') slides: IonSlides;
   @ViewChild('segment') segment: IonSegment;
   @ViewChild('dailyTabs') myTabs: TabsComponent;
+  //@ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll
   tabs = []
   categoryList = []
   noteList = [{category:0,title:"Mens",text:"este es un texto",color:"#fff",date:""}]
@@ -35,6 +36,7 @@ export class DailyDevotionalPage implements OnInit {
   showDate = false
   isOpen = false
   notes
+  notePages = {}
   slideIndex = 0
   checked
 
@@ -44,12 +46,19 @@ export class DailyDevotionalPage implements OnInit {
 
 
   ngOnInit() {
-    this.notes =  this.storageService.getNotes()
-    console.log(this.notes)
-    console.log(this.storageService.getNotes())
-    this.loadCategories()
+    this.loadData()
     //this.loadNotes()
     //this.filterNotes(this.selectedTab)
+  }
+
+  async loadData(){
+    this.notes = await this.storageService.getNotes(null,0)
+    for (const item in this.notes) {
+      Object.assign(this.notePages,{[item]:0})
+    }
+    console.log(this.notePages)
+    console.log(this.notes)
+    this.loadCategories()
   }
 
   async presentPopover(e: Event) {
@@ -57,8 +66,18 @@ export class DailyDevotionalPage implements OnInit {
     this.isOpen = true;
   }
 
-  onScroll(){
-    console.log('scrolled')
+  onScroll(e){
+    setTimeout(async () => {
+      let tab = this.selectedTab === this.config.getData().daly_devotional.tab? 'all':this.selectedTab
+      this.notePages[tab] += 1
+      let newData = await this.storageService.getNotes(tab,this.notePages[tab])
+      this.notes[tab].push(...newData)
+      //console.log(newData)
+      e.target.complete();
+      if(newData.length === 0){
+        e.target.disabled = true;
+      }
+    }, 500);
   }
 
   async transitionFinished(){

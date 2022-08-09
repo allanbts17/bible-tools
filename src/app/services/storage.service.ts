@@ -14,6 +14,7 @@ const ID = 'id'
 var categories = []
 var verses = {}
 var topics = []
+const pagSize = 5
 
 
 @Injectable({
@@ -21,6 +22,7 @@ var topics = []
 })
 export class StorageService {
   notes = {}
+  started = false
 
   constructor(private storage: Storage) {
     this.init();
@@ -38,27 +40,64 @@ export class StorageService {
 
   async init(){
     await this.storage.create()
+    await this.fillValues()
+  }
+
+  async fillValues(){
     categories = await this.getData(CATEGORY_KEY)
-   // notes['test'] = 's'
-    Object.assign(this.notes,{'all':await this.filterNotesByCategory()})
-    categories.forEach(async category => {
-      Object.assign(this.notes,{[category.category]:await this.filterNotesByCategory(category.id)})
+    let all = await this.filterNotesByCategory()
+    Object.assign(this.notes,{'all':all})
+    for(let category of categories){
+      let cat = await this.filterNotesByCategory(category.id)
+      Object.assign(this.notes,{[category.category]:cat})
+    }
+    this.started = true
+  }
+
+  async getNotes(category = null,pag = -1){
+    await this.fillCheck()
+
+    if(category === null){
+      if(pag === -1){
+        return {...this.notes}
+      } else {
+        let newObj = {}
+        let all = await this.filterNotesByCategory(null,pag)
+        Object.assign(newObj,{'all':all})
+        for(let category of categories){
+          let cat = await this.filterNotesByCategory(category.id,pag)
+          Object.assign(newObj,{[category.category]:cat})
+        }
+        return newObj
+      }
+    } else {
+      if(pag == -1){
+        return this.notes[category].slice()
+      } else {
+        return this.notes[category].slice(pagSize*pag,pagSize*(pag+1))
+      }
+    }
+
+  }
+
+  async fillCheck(){
+    return new Promise((resolve,reject)=> {
+      let myInterval = setInterval(()=>{
+        if(this.started){
+          clearInterval(myInterval)
+          resolve('it has started')
+        }
+      },20)
     })
-
-    //console.log(notes)
   }
 
-  getNotes(category = 'all'){
-    return this.notes
-  }
-
-  async filterNotesByCategory(categoryId = null){
+  async filterNotesByCategory(categoryId = null,pag = -1){
     let allNotes = await this.getData(NOTES_KEY)
     if(categoryId !== null){
-      //let catId = categories.find(cat => cat.category === category).id
-      return allNotes.filter(note => note.category === categoryId)
+      let filtered = allNotes.filter(note => note.category === categoryId)
+      return pag === -1? filtered:filtered.slice(pagSize*pag,pagSize*(pag+1))
     } else {
-      return allNotes
+      return pag === -1? allNotes:allNotes.slice(pagSize*pag,pagSize*(pag+1))
     }
   }
 
