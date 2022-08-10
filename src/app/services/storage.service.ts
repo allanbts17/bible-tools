@@ -14,7 +14,7 @@ const ID = 'id'
 var categories = []
 var verses = {}
 var topics = []
-const pagSize = 5
+const pagSize = 10
 
 
 @Injectable({
@@ -56,7 +56,6 @@ export class StorageService {
 
   async getNotes(category = null,pag = -1){
     await this.fillCheck()
-
     if(category === null){
       if(pag === -1){
         return {...this.notes}

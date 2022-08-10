@@ -25,10 +25,13 @@ export class TabsComponent implements OnInit {
       var buttons = document.getElementsByTagName('ion-segment-button')
       let rect = buttons[index].getBoundingClientRect()
       let windowWidth = window.innerWidth
-      if((rect.x+rect.width) > windowWidth || rect.x < 0){
-        buttons[index].scrollIntoView({
-          behavior: 'smooth'
-        })
+      let scrollableSegment = document.getElementById('tab-segment')
+      console.log(rect.x,rect.x+rect.width,windowWidth)
+      if((rect.x+rect.width) > windowWidth){
+        let move = rect.x+rect.width - windowWidth
+        scrollableSegment.scrollBy(move,0)
+      } else if(rect.x < 0){
+        scrollableSegment.scrollBy(rect.x,0)
       }
     })
   }

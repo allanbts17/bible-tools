@@ -103,7 +103,7 @@
     </div>
 
     <!-- Notes-->
-    <ion-slides #slide class="flex-1 w-full" (ionSlideTransitionEnd)="transitionFinished()">
+    <ion-slides #slide class="flex-1 w-full" (ionSlideTransitionEnd)="transitionFinished()" (ionSlideTransitionStart)="transitionStarted()">
       <ion-slide class="h-full w-full" *ngFor="let tab of tabs">
         <div class="h-full w-full overflow-y-scroll ion-content-scroll-host" >
           <app-general-note (noteDeleteEvent)="deleteNote($event)" (noteEditEvent)="presentNoteModal($event)" [categories]="categoryList"  *ngFor="let note of notes[tab === config.getData().daly_devotional.tab? 'all':tab]; let i = index" [index]="'note-popover-'+i" [note]="note"></app-general-note>

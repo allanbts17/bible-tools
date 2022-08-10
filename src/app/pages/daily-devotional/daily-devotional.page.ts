@@ -81,10 +81,15 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   async transitionFinished(){
+
+  }
+
+  async transitionStarted(){
     let index = await this.slides.getActiveIndex()
     this.selectedTab = this.tabs[index]
     this.myTabs.tabSelected(this.selectedTab,index,true)
     this.slideIndex = index
+
   }
 
   filterTypeSelect(e){

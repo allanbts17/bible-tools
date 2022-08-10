@@ -18,7 +18,7 @@ import { FormsModule } from '@angular/forms';
     IonicModule.forRoot(),
     FormsModule,
     IonicStorageModule.forRoot({
-      name:"mydatabase"
+      name:"new-database"
     }),
     AppRoutingModule,
     HttpClientModule],
