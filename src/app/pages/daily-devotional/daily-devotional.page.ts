@@ -39,6 +39,8 @@ export class DailyDevotionalPage implements OnInit {
   notePages = {}
   slideIndex = 0
   checked
+  showFab = false
+  isAutoScrollingUp = false
 
   constructor(public config: ConfigService,
     public storageService: StorageService,
@@ -47,6 +49,7 @@ export class DailyDevotionalPage implements OnInit {
 
   ngOnInit() {
     this.loadData()
+
     //this.loadNotes()
     //this.filterNotes(this.selectedTab)
   }
@@ -59,6 +62,7 @@ export class DailyDevotionalPage implements OnInit {
     console.log(this.notePages)
     console.log(this.notes)
     this.loadCategories()
+    this.addScrollListener()
   }
 
   async presentPopover(e: Event) {
@@ -80,8 +84,59 @@ export class DailyDevotionalPage implements OnInit {
     }, 500);
   }
 
-  async transitionFinished(){
+  addScrollListener(){
+    var lastScrollTop = 0
+    var delta = 0
+    let myTimeout
+    let myInterval = setInterval(()=>{
+      let scrollSlides = document.getElementsByClassName('scrolled-slide')
+      if(scrollSlides.length > 0){
+        clearInterval(myInterval)
+        //console.log(scrollSlides)
 
+        for(let i=0;i<scrollSlides.length;i++){
+          scrollSlides[i].addEventListener('scroll', (e) => {
+            let newScrollTop = scrollSlides[i].scrollTop
+            if (newScrollTop > lastScrollTop){
+              // downscroll code
+              //console.log('down')
+              this.showFab = false
+              delta = newScrollTop
+            } else {
+                // upscroll code
+                //console.log(delta-newScrollTop)
+                if(delta-newScrollTop > 7 && !this.isAutoScrollingUp){
+                  this.showFab = true
+                  clearTimeout(myTimeout)
+                  myTimeout = setTimeout(()=>{
+                    this.showFab = false
+                  },3000)
+                }// else if (this.isAutoScrollingUp){
+                if(newScrollTop === 0){
+                  clearTimeout(myTimeout)
+                  this.showFab = false
+                  this.isAutoScrollingUp = false
+                }
+                //}
+            }
+            //console.log(,newScrollTop)
+            lastScrollTop = newScrollTop <= 0 ? 0 : newScrollTop; // For Mobile or negative scrolling
+          })
+        }
+      }
+    },50)
+  }
+
+  scrollToTop(){
+    let scrollSlide = document.getElementsByClassName(`slide-${this.selectedTab}`)[0]
+    scrollSlide.scrollTo(0,0)
+    this.showFab = false
+    this.isAutoScrollingUp = true
+    //console.log(scrollSlide)
+  }
+
+  getStatus(){
+    return this.showFab
   }
 
   async transitionStarted(){
@@ -89,6 +144,7 @@ export class DailyDevotionalPage implements OnInit {
     this.selectedTab = this.tabs[index]
     this.myTabs.tabSelected(this.selectedTab,index,true)
     this.slideIndex = index
+    this.showFab = false
 
   }
 

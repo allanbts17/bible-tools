@@ -26,7 +26,6 @@ export class TabsComponent implements OnInit {
       let rect = buttons[index].getBoundingClientRect()
       let windowWidth = window.innerWidth
       let scrollableSegment = document.getElementById('tab-segment')
-      console.log(rect.x,rect.x+rect.width,windowWidth)
       if((rect.x+rect.width) > windowWidth){
         let move = rect.x+rect.width - windowWidth
         scrollableSegment.scrollBy(move,0)

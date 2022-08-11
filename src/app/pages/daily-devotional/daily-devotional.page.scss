@@ -15,3 +15,11 @@ ion-segment {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+ion-fab {
+  --animate-duration: 0.5s;
+}
+
+.scrolled-slide {
+  scroll-behavior: smooth;
+}
