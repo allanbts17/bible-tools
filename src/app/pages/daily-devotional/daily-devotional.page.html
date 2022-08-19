@@ -105,8 +105,8 @@
     <!-- Notes-->
     <ion-slides #slide class="flex-1 w-full" (ionSlideTransitionStart)="transitionStarted()">
       <ion-slide class="h-full w-full" *ngFor="let tab of tabs">
-        <div class="slide-{{tab}} scrolled-slide h-full w-full overflow-y-scroll ion-content-scroll-host">
-          <app-general-note (noteDeleteEvent)="deleteNote($event)" (noteEditEvent)="presentNoteModal($event)" [categories]="categoryList"  *ngFor="let note of notes[tab === config.getData().daly_devotional.tab? 'all':tab]; let i = index" [index]="'note-popover-'+i" [note]="note"></app-general-note>
+        <div id="slide-{{tab}}" class="scrolled-slide h-full w-full overflow-y-scroll ion-content-scroll-host">
+          <app-general-note (noteDeleteEvent)="deleteNote($event)" (noteEditEvent)="presentNoteModal($event)" [categories]="categoryList"  *ngFor="let note of getFilteredNotes(tab === config.getData().daly_devotional.tab? 'all':tab); let i = index" [index]="'note-popover-'+i" [note]="note"></app-general-note>
           <p class="text-slate-500 w-full text-center mt-2" *ngIf="notes[tab === config.getData().daly_devotional.tab? 'all':tab].length == 0 && filterOn">No existen notas para este filtro</p>
           <p class="text-slate-500 w-full text-center mt-2" *ngIf="notes[tab === config.getData().daly_devotional.tab? 'all':tab].length == 0 && !filterOn">No existen notas para esta categoría</p>
 
@@ -130,10 +130,10 @@
     </ion-fab>
 
     <!-- Modals -->
-    <app-add-note-modal [categoryList]="categoryList" (addCategoryEvent)="loadCategories()" (addNoteEvent)="loadNotes()"></app-add-note-modal>
+    <app-add-note-modal [categoryList]="categoryList" (addCategoryEvent)="loadCategories()" (addNoteEvent)="loadNotes($event)"></app-add-note-modal>
     <app-add-category [categoryList]="categoryList" (addCategoryEvent)="loadCategories()"></app-add-category>
 
     <!-- Alert -->
-    <app-custom-alert (notesChangedEvent)="loadNotes()" (categoryErasedEvent)="loadCategories()" [categories]="categoryList" [notes]="noteList"></app-custom-alert>
+    <app-custom-alert (notesChangedEvent)="loadNotes($event)" (categoryErasedEvent)="loadCategories()" [categories]="categoryList" [notes]="noteList"></app-custom-alert>
   </section>
 </ion-content>

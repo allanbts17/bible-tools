@@ -86,17 +86,21 @@ export class AddNoteModalComponent implements OnInit {
 
 
   async saveNote(){
+    let noteCategoryName
     if(this.newNote)
       this.note.date = moment().format('lll')
 
     if(this.showNewCategoryInput){
       if(this.newCategory.category != ""){
         var cat = await this.addCategories(this.newCategory)
+        noteCategoryName = cat.category
         this.note.category = cat.id
       }
     } else {
       if(this.selectCategoryName != ""){
-        this.note.category = this.categoryList.find(cat => cat.category == this.selectCategoryName).id
+        let category = this.categoryList.find(cat => cat.category == this.selectCategoryName)
+        this.note.category = category.id
+        noteCategoryName = category.category
       }
     }
 
@@ -105,9 +109,9 @@ export class AddNoteModalComponent implements OnInit {
     if(this.validateNote()){
       console.log('enter, newNote',this.newNote)
       if(this.newNote)
-        this.addNote(this.note)
+        this.addNote(this.note,noteCategoryName)
       else
-        this.editNote(this.note)
+        this.editNote(this.note,noteCategoryName)
       this.resetValues()
       this.modal.dismiss()
     } else {
@@ -133,14 +137,15 @@ export class AddNoteModalComponent implements OnInit {
     return array
   }
 
-  async addNote(data){
+  async addNote(data,category){
+    console.log('added note: ',data,category)
     await this.storageService.addData('notes',data)
-    this.addNoteEvent.emit()
+    this.addNoteEvent.emit({categoryName:category,data:data})
   }
 
-  async editNote(data){
+  async editNote(data,category){
     await this.storageService.editItemByID('notes',data)
-    this.addNoteEvent.emit()
+    this.addNoteEvent.emit({categoryName:category,data:data})
   }
 
   async addCategories(data){

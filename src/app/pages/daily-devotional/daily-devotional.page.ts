@@ -78,6 +78,8 @@ export class DailyDevotionalPage implements OnInit {
       this.notes[tab].push(...newData)
       //console.log(newData)
       e.target.complete();
+      //let scrollSlide = document.getElementById(`slide-${this.selectedTab}`)
+      console.log('size: ',newData.length)
       if(newData.length === 0){
         e.target.disabled = true;
       }
@@ -128,7 +130,7 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   scrollToTop(){
-    let scrollSlide = document.getElementsByClassName(`slide-${this.selectedTab}`)[0]
+    let scrollSlide = document.getElementById(`slide-${this.selectedTab}`)
     scrollSlide.scrollTo(0,0)
     this.showFab = false
     this.isAutoScrollingUp = true
@@ -145,7 +147,6 @@ export class DailyDevotionalPage implements OnInit {
     this.myTabs.tabSelected(this.selectedTab,index,true)
     this.slideIndex = index
     this.showFab = false
-
   }
 
   filterTypeSelect(e){
@@ -156,7 +157,7 @@ export class DailyDevotionalPage implements OnInit {
 
   searchbarChange(e){
     this.searchTerm = e.detail.value
-    this.filterNotes()
+    //this.filterNotes()
     console.log(this.searchTerm)
   }
 
@@ -167,7 +168,7 @@ export class DailyDevotionalPage implements OnInit {
 
   clearSearchTerm(){
     this.searchTerm = ""
-    this.filterNotes()
+    //this.filterNotes()
   }
 
   cancelFilter(){
@@ -183,7 +184,7 @@ export class DailyDevotionalPage implements OnInit {
     var formattedDate = localMoment.format('LL')
     this.searchTerm = formattedDate
     console.log(this.searchTerm)
-    this.filterNotes()
+    //this.filterNotes()
     if(this.filteredNoteList.length > 0) this.showDate = false
   }
 
@@ -233,10 +234,15 @@ export class DailyDevotionalPage implements OnInit {
       return mb.diff(ma)
     })
   }
-  async loadNotes(){
+
+  async loadNotes(data){
     await this.sortNotes()
-    this.noteList = await this.storageService.getData("notes")
-    this.filterNotes(this.selectedTab)
+    //this.noteList = await this.storageService.getData("notes")
+    //let newData = await this.storageService.getNotes(category,this.notePages[category])
+    this.notes[data.categoryName].unshift(data.data)
+    this.notes.all.unshift(data.data)
+    console.log('newData',data)
+    //this.filterNotes(this.selectedTab)
   }
 
   fillTabs(){
@@ -248,20 +254,27 @@ export class DailyDevotionalPage implements OnInit {
 
   tabSelected(e){
     this.selectedTab = e.tab
-    this.filterNotes(e.tab)
+    //this.filterNotes(e.tab)
     this.slides.slideTo(e.index)
   }
 
-  filterNotes(tab=this.selectedTab){
+  /*filterNotes(tab=this.selectedTab){
     if(this.filterOn){
       var tabFilteredList = this.filterByCategory(tab)
       this.filteredNoteList = this.filterByCustomType(tabFilteredList)
     } else{
       this.filteredNoteList = this.filterByCategory(tab)
     }
+  }*/
+
+  getFilteredNotes(tab){
+    if(this.filterOn)
+      return this.filterByCustomType(this.notes[tab])
+    else
+      return this.notes[tab]
   }
 
-  filterByCategory(tab){
+  /*filterByCategory(tab){
     var filtered
     if(tab === this.config.getData().daly_devotional.tab){
       filtered = this.noteList
@@ -275,7 +288,7 @@ export class DailyDevotionalPage implements OnInit {
       })
     }
     return filtered
-  }
+  }*/
 
   filterByCustomType(tabFilteredList){
     var filtered

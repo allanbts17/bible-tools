@@ -41,6 +41,7 @@ export class StorageService {
   async init(){
     await this.storage.create()
     await this.fillValues()
+    console.log('all values: ',this.notes)
   }
 
   async fillValues(){
@@ -54,7 +55,7 @@ export class StorageService {
     this.started = true
   }
 
-  async getNotes(category = null,pag = -1){
+  async getNotes(category = null,pag = -1,full = false){
     await this.fillCheck()
     if(category === null){
       if(pag === -1){
@@ -73,7 +74,11 @@ export class StorageService {
       if(pag == -1){
         return this.notes[category].slice()
       } else {
-        return this.notes[category].slice(pagSize*pag,pagSize*(pag+1))
+        if(full){
+          return this.notes[category].slice(0,pagSize*(pag+1))
+        } else {
+          return this.notes[category].slice(pagSize*pag,pagSize*(pag+1))
+        }
       }
     }
 
@@ -100,9 +105,7 @@ export class StorageService {
     }
   }
 
-
-
- public async getID(){
+  public async getID(){
     const extractedID = await this.storage.get(ID) || 1
     await this.storage.set(ID,extractedID + 1)
     return extractedID
