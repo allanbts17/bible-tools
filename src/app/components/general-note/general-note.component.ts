@@ -21,6 +21,7 @@ export class GeneralNoteComponent implements OnInit {
   constructor(/*public popoverController: PopoverController*/) { }
 
   ngOnInit() {
+    //console.log(this.index)
   }
 
   getCategoryValues(){

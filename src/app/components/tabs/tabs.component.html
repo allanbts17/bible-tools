@@ -1,6 +1,6 @@
 <ion-segment id="tab-segment" class="relative" scrollable #segment selectOnFocus="true" value="{{tabs[0]}}">
   <ion-segment-button #segmentButton (click)="tabSelected(tab,i)" *ngFor="let tab of tabs; let i = index" value="{{tab}}">
-    <ion-label>{{tab}}</ion-label>
+    <ion-label>{{tab=='all'? config.getData().daly_devotional.tab:tab}}</ion-label>
   </ion-segment-button>
   <div id="custom-indicator" class="absolute bottom-0 custom-animation"></div>
 </ion-segment>

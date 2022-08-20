@@ -205,7 +205,8 @@ export class CustomAlertComponent implements OnInit {
           id: 'confirm-button',
           handler: async () => {
             console.log(note)
-            await this.storageService.removeItemByID('notes',note)
+            //await this.storageService.removeItemByID('notes',note)
+            await this.storageService.deleteNote(note)
             this.notesChangedEvent.emit()
           }
         }

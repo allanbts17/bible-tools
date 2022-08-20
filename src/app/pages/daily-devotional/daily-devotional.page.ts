@@ -10,6 +10,7 @@ import { Note } from 'src/app/interfaces/note';
 import { IonInfiniteScroll, IonPopover, IonSegment, IonSlides, PopoverController } from '@ionic/angular';
 import { TabsComponent } from 'src/app/components/tabs/tabs.component';
 
+const pagSize = 10
 @Component({
   selector: 'app-daily-devotional',
   templateUrl: './daily-devotional.page.html',
@@ -55,10 +56,12 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   async loadData(){
-    this.notes = await this.storageService.getNotes(null,0)
-    for (const item in this.notes) {
+    //this.notes = await this.storageService.getNotes(null,0)
+    /*for (const item in this.notes) {
       Object.assign(this.notePages,{[item]:0})
-    }
+    }*/
+    this.notes = this.storageService.notes
+    this.notePages = this.storageService.notePages
     console.log(this.notePages)
     console.log(this.notes)
     this.loadCategories()
@@ -72,14 +75,14 @@ export class DailyDevotionalPage implements OnInit {
 
   onScroll(e){
     setTimeout(async () => {
-      let tab = this.selectedTab === this.config.getData().daly_devotional.tab? 'all':this.selectedTab
+      let tab = this.selectedTab
       this.notePages[tab] += 1
       let newData = await this.storageService.getNotes(tab,this.notePages[tab])
-      this.notes[tab].push(...newData)
+      //this.notes[tab].push(...newData)
       //console.log(newData)
       e.target.complete();
       //let scrollSlide = document.getElementById(`slide-${this.selectedTab}`)
-      console.log('size: ',newData.length)
+      //console.log('size: ',newData.length)
       if(newData.length === 0){
         e.target.disabled = true;
       }
@@ -223,7 +226,8 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   async loadCategories(){
-    this.categoryList = await this.storageService.getData("categories")
+    //this.categoryList = await this.storageService.getData("categories")
+    this.categoryList = this.storageService.categories
     this.fillTabs()
   }
 
@@ -235,18 +239,28 @@ export class DailyDevotionalPage implements OnInit {
     })
   }
 
-  async loadNotes(data){
-    await this.sortNotes()
+  async loadNotes(data = null){
+    //await this.sortNotes()
     //this.noteList = await this.storageService.getData("notes")
     //let newData = await this.storageService.getNotes(category,this.notePages[category])
-    this.notes[data.categoryName].unshift(data.data)
-    this.notes.all.unshift(data.data)
-    console.log('newData',data)
+    //this.notes[data.categoryName].unshift(data.data)
+    //this.notes.all.unshift(data.data)
+    //console.log('newData',data)
     //this.filterNotes(this.selectedTab)
   }
 
+  async addNewNote(data){
+    /*await this.sortNotes()
+    this.notes[data.categoryName].unshift(data.data)
+    this.notes.all.unshift(data.data)*/
+  }
+
+  eraseNote(){
+
+  }
+
   fillTabs(){
-    this.tabs = [this.config.getData().daly_devotional.tab]
+    this.tabs = ['all']
     if(this.categoryList !== null)
       this.categoryList.forEach(tab => this.tabs.push(tab.category))
     this.selectedTab = this.tabs[0]
@@ -272,6 +286,10 @@ export class DailyDevotionalPage implements OnInit {
       return this.filterByCustomType(this.notes[tab])
     else
       return this.notes[tab]
+  }
+
+  getPaginatedNotes(tab){
+    return this.getFilteredNotes(tab)?.slice(0,pagSize*(this.notePages[tab]+1))
   }
 
   /*filterByCategory(tab){

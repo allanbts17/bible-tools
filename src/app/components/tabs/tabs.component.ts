@@ -1,5 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, ViewChild } from '@angular/core';
 import { IonSegment, IonSegmentButton } from '@ionic/angular';
+import { ConfigService } from 'src/app/services/config.service';
 
 
 @Component({
@@ -16,7 +17,7 @@ export class TabsComponent implements OnInit {
   selectIndex = 0
   start = false
 
-  constructor() { }
+  constructor(public config: ConfigService) { }
 
   ngOnInit() {}
 

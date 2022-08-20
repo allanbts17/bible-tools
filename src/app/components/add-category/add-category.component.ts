@@ -75,18 +75,20 @@ export class AddCategoryComponent implements OnInit {
   }
 
   async loadCategories(){
-    this.categoryList = await this.storageService.getData("categories")
+    //this.categoryList = await this.storageService.getData("categories")
   }
 
   async saveCategory(){
     if(this.validateCategory()){
       if(this.newCat){
         console.log('new cat')
-        var arr = await this.storageService.addData('categories',this.category)
+        //var arr = await this.storageService.addData('categories',this.category)
+        var arr = await this.storageService.addCategories(this.category)
         console.log(arr.slice(-1)[0])
       } else {
         //console.log('enter on save edit: ',this.category)
-        await this.storageService.editItemByID('categories',this.category)
+        //await this.storageService.editItemByID('categories',this.category)
+        await this.storageService.editCategories(this.category)
       }
       this.addCategoryEvent.emit()
       this.loadCategories()

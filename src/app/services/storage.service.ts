@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 import { Note } from '../interfaces/note';
 import { Category } from '../interfaces/category';
+import  * as moment  from 'moment'
 
 const NOTES_KEY = 'notes'
 const CATEGORY_KEY = 'categories'
@@ -11,7 +12,7 @@ const SETTINGS_KEY = 'settings'
 const MARKED_KEY = 'marked'
 const ID = 'id'
 //var notes = {}
-var categories = []
+//var categories = []
 var verses = {}
 var topics = []
 const pagSize = 10
@@ -22,20 +23,22 @@ const pagSize = 10
 })
 export class StorageService {
   notes = {}
+  categories = []
   started = false
+  notePages = {}
 
   constructor(private storage: Storage) {
     this.init();
     //setTimeout(()=> this.removeItem('categories',200),4000)
   }
 
-  async editNote(){
+  /*async editNote(){
     const notes = await this.storage.get(NOTES_KEY) || []
     const category = await this.storage.get(CATEGORY_KEY) || []
     notes.forEach(str => str.category = category.find(cat => cat.category == str.category).id)
     return this.storage.set(NOTES_KEY,notes)
     //console.log(notes)
-  }
+  }*/
 
 
   async init(){
@@ -45,14 +48,71 @@ export class StorageService {
   }
 
   async fillValues(){
-    categories = await this.getData(CATEGORY_KEY)
+    this.categories = await this.getData(CATEGORY_KEY)
     let all = await this.filterNotesByCategory()
     Object.assign(this.notes,{'all':all})
-    for(let category of categories){
+    for(let category of this.categories){
       let cat = await this.filterNotesByCategory(category.id)
       Object.assign(this.notes,{[category.category]:cat})
     }
+
+    for (const item in this.notes) {
+      Object.assign(this.notePages,{[item]:0})
+    }
+    //console.log('storage notepages: ',this.notePages)
     this.started = true
+  }
+
+  async addNote(note: Note,categoryName: string){
+    await this.addData('notes',note)
+    await this.sortData("notes",(a,b)=>{
+      var ma = moment(a.date)
+      var mb = moment(b.date)
+      return mb.diff(ma)
+    })
+    this.notes[categoryName].unshift(note)
+    this.notes['all'].unshift(note)
+    console.log('from add notes: ',this.notes)
+  }
+
+  async deleteNote(note: Note){
+    await this.removeItemByID('notes',note)
+    //console.log('on storage: ',this.categories)
+    let categoryName = this.categories.find(cat => cat.id === note.category)['category']
+    //console.log('category: ',this.categories.find(cat => cat.id === note.category))
+    //console.log('categoryName: ',categoryName)
+    this.notes[categoryName] = this.notes[categoryName].filter(arrNote => arrNote !== note)
+    this.notes['all'] = this.notes['all'].filter(arrNote => arrNote !== note)
+  }
+
+  async editNote(note: Note, prevCategoryName = null){
+    await this.editItemByID('notes',note)
+    let newCategoryName = this.categories.find(cat => cat.id === note.category)['category']
+
+    let noteCatIndex = this.notes[prevCategoryName].findIndex(arrNote => arrNote.id === note.id)
+    let noteAllIndex = this.notes['all'].findIndex(arrNote => arrNote.id === note.id)
+    this.notes['all'][noteAllIndex] = note
+    this.notes[newCategoryName][noteCatIndex] = note
+
+    if(prevCategoryName !== newCategoryName){
+      this.notes[prevCategoryName] = this.notes[prevCategoryName].filter(arrNote => arrNote.id !== note.id)
+    }
+  }
+
+  async addCategories(category: Category){
+    let categoryArray = await this.addData('categories',category)
+    this.categories.push(category)
+    Object.assign(this.notes,{[category.category]:[]})
+    Object.assign(this.notePages,{[category.category]:0})
+    return categoryArray
+  }
+
+  async editCategories(category: Category){
+    await this.editItemByID('categories',category)
+    let index = this.categories.findIndex(cat => cat.id === category.id)
+    this.categories[index] = category
+    Object.assign(this.notes,{[category.category]:[]})
+    Object.assign(this.notePages,{[category.category]:0})
   }
 
   async getNotes(category = null,pag = -1,full = false){
@@ -64,7 +124,7 @@ export class StorageService {
         let newObj = {}
         let all = await this.filterNotesByCategory(null,pag)
         Object.assign(newObj,{'all':all})
-        for(let category of categories){
+        for(let category of this.categories){
           let cat = await this.filterNotesByCategory(category.id,pag)
           Object.assign(newObj,{[category.category]:cat})
         }

@@ -39,6 +39,7 @@ export class AddNoteModalComponent implements OnInit {
     edit:"Editar nota"
   }
   actualTitle
+  prevCategory: string;
 
   constructor(public config: ConfigService, public storageService: StorageService) {
     //this.loadCategories()
@@ -79,6 +80,7 @@ export class AddNoteModalComponent implements OnInit {
     this.setTitle()
     this.showNewCategoryInput = false
     this.selectCategoryName = this.categoryList.find(cat => cat.id == note.category).category
+    this.prevCategory = this.selectCategoryName
     this.note = {...note}
     console.log(this.note)
    // this.initialCategoryName = category.category
@@ -139,24 +141,28 @@ export class AddNoteModalComponent implements OnInit {
 
   async addNote(data,category){
     console.log('added note: ',data,category)
-    await this.storageService.addData('notes',data)
-    this.addNoteEvent.emit({categoryName:category,data:data})
+    await this.storageService.addNote(data,category)
+    this.addNoteEvent.emit()
   }
 
   async editNote(data,category){
-    await this.storageService.editItemByID('notes',data)
-    this.addNoteEvent.emit({categoryName:category,data:data})
+    if(!this.newNote){
+      await this.storageService.editNote(data,this.prevCategory)
+    }
+    //await this.storageService.editItemByID('notes',data)
+    this.addNoteEvent.emit()
   }
 
   async addCategories(data){
-    var catArr = await this.storageService.addData('categories',data)
+    //var catArr = await this.storageService.addData('categories',data)
+    var catArr = await this.storageService.addCategories(data)
     this.addCategoryEvent.emit()
     this.loadCategories()
     return catArr.slice(-1)[0]
   }
 
   async loadCategories(){
-    this.categoryList = await this.storageService.getData("categories")
+    //this.categoryList = await this.storageService.getData("categories")
   }
 
   handleSelectChange(e){
