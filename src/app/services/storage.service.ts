@@ -85,14 +85,14 @@ export class StorageService {
     this.notes['all'] = this.notes['all'].filter(arrNote => arrNote !== note)
   }
 
-  async editNote(note: Note, prevCategoryName = null){
+  async editNote(note: Note, prevCategoryName){
     await this.editItemByID('notes',note)
     let newCategoryName = this.categories.find(cat => cat.id === note.category)['category']
 
-    let noteCatIndex = this.notes[prevCategoryName].findIndex(arrNote => arrNote.id === note.id)
+    //let noteCatIndex = this.notes[prevCategoryName].findIndex(arrNote => arrNote.id === note.id)
     let noteAllIndex = this.notes['all'].findIndex(arrNote => arrNote.id === note.id)
     this.notes['all'][noteAllIndex] = note
-    this.notes[newCategoryName][noteCatIndex] = note
+    this.notes[newCategoryName].unshift(note)
 
     if(prevCategoryName !== newCategoryName){
       this.notes[prevCategoryName] = this.notes[prevCategoryName].filter(arrNote => arrNote.id !== note.id)
@@ -121,6 +121,12 @@ export class StorageService {
       //console.log('on storage cat edit: ',this.notes)
       //console.log('on storage cat edit: ',this.notePages)
     }
+  }
+
+  async deleteCategory(category: Category){
+    await this.removeItemByID('categories',category)
+    //console.log(this.categories.filter(arrCategory => arrCategory !== category))
+    this.categories = this.categories.filter(arrCategory => arrCategory !== category)
   }
 
   async getNotes(category = null,pag = -1,full = false){

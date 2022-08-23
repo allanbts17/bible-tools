@@ -13,15 +13,15 @@ import { StorageService } from 'src/app/services/storage.service';
   styleUrls: ['./custom-alert.component.scss'],
 })
 export class CustomAlertComponent implements OnInit {
-  @Input() notes: Note[]
+  @Input() notes
   @Input() categories: Category[]
-  @Input() verses: Verse[]
+  @Input() verses //verses: Verse[]
   @Input() topics: Topic[]
   @Output() categoryErasedEvent = new EventEmitter<any>()
   @Output() notesChangedEvent = new EventEmitter<any>()
   @Output() topicErasedEvent = new EventEmitter<any>()
   @Output() versesChangedEvent = new EventEmitter<any>()
-  newCatToMove = 0
+  newCatToMove
   newTopToMove = 0
 
   constructor(public alertController: AlertController,public storageService: StorageService) {}
@@ -51,7 +51,7 @@ export class CustomAlertComponent implements OnInit {
           id: 'confirm-button',
           handler: async () => {
             await this.deleteNotes(cat)
-            await this.storageService.removeItemByID('categories',cat)
+            await this.storageService.deleteCategory(cat)
             this.categoryErasedEvent.emit()
             this.notesChangedEvent.emit()
           }
@@ -149,7 +149,7 @@ export class CustomAlertComponent implements OnInit {
           text: 'Eliminar',
           id: 'confirm-button',
           handler: async () => {
-            await this.storageService.removeItemByID('categories',cat)
+            await this.storageService.deleteCategory(cat)
             this.categoryErasedEvent.emit()
             this.notesChangedEvent.emit()
           }
@@ -217,7 +217,9 @@ export class CustomAlertComponent implements OnInit {
   }
 
   categoryHaveNotes(cat){
-    return this.notes.findIndex(note => note.category == cat.id) != -1
+    //Object.keys(this.notes)
+    //Object.keys(this.notes).findIndex(noteCategory => noteCategory == cat.id) != -1
+    return this.notes[cat.category].findIndex(note => note.category == cat.id) != -1
   }
 
   topicHaveVerses(top){
@@ -275,7 +277,7 @@ export class CustomAlertComponent implements OnInit {
         name: newCat.id,
         type: 'radio',
         label: newCat.category,
-        value: newCat.id,
+        value: newCat,
         handler: (val) => {
           this.newCatToMove = val.value
           console.log(val.value)
@@ -299,7 +301,7 @@ export class CustomAlertComponent implements OnInit {
           text: 'Mover',
           handler: async () => {
             await this.moveNotes(cat)
-            await this.storageService.removeItemByID('categories',cat)
+            await this.storageService.deleteCategory(cat)
             this.categoryErasedEvent.emit()
             this.notesChangedEvent.emit()
           }
@@ -311,10 +313,10 @@ export class CustomAlertComponent implements OnInit {
   }
 
   async moveNotes(prevCat){
-    var filteredNotes = this.notes.filter(note => note.category == prevCat.id)
+    var filteredNotes = this.notes[prevCat.category]//.filter(note => note.category == prevCat.id)
     for(let i=0;i<filteredNotes.length;i++){
-      filteredNotes[i].category = this.newCatToMove
-      await this.storageService.editItemByID('notes',filteredNotes[i])
+      filteredNotes[i].category = this.newCatToMove.id
+      await this.storageService.editNote(filteredNotes[i],prevCat.category)
     }
   }
 
@@ -330,7 +332,7 @@ export class CustomAlertComponent implements OnInit {
   async deleteNotes(prevCat){
     var filteredNotes = this.notes.filter(note => note.category == prevCat.id)
     for(let i=0;i<filteredNotes.length;i++){
-      await this.storageService.removeItemByID('notes',filteredNotes[i])
+      await this.storageService.deleteNote(filteredNotes[i])
     }
   }
 

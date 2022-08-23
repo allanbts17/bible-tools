@@ -134,6 +134,6 @@
     <app-add-category [categoryList]="categoryList" (addCategoryEvent)="loadCategories()"></app-add-category>
 
     <!-- Alert -->
-    <app-custom-alert (notesChangedEvent)="loadNotes($event)" (categoryErasedEvent)="loadCategories()" [categories]="categoryList" [notes]="noteList"></app-custom-alert>
+    <app-custom-alert (notesChangedEvent)="loadNotes($event)" (categoryErasedEvent)="loadCategories()" [categories]="categoryList" [notes]="notes"></app-custom-alert>
   </section>
 </ion-content>
