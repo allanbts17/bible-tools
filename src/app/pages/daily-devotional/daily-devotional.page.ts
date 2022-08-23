@@ -42,6 +42,8 @@ export class DailyDevotionalPage implements OnInit {
   checked
   showFab = false
   isAutoScrollingUp = false
+  categoryEditSize: string = 'none'
+  categoryDeleteSize: string = 'none'
 
   constructor(public config: ConfigService,
     public storageService: StorageService,
@@ -202,6 +204,20 @@ export class DailyDevotionalPage implements OnInit {
 
   deleteNote(note: Note){
     this.alert.noteDeleteConfirmationAlert(note)
+  }
+
+  setCategoryEditStyle(){
+    let btn = document.getElementById('category-edit')
+    let btnRect = btn.getBoundingClientRect()
+    let size = window.innerHeight - (btnRect.y + btnRect.height)
+    this.categoryEditSize = `${size-5}px`
+  }
+
+  setCategoryDeleteStyle(){
+    let btn = document.getElementById('category-delete')
+    let btnRect = btn.getBoundingClientRect()
+    let size = window.innerHeight - (btnRect.y + btnRect.height)
+    this.categoryDeleteSize = `${size-5}px`
   }
 
 

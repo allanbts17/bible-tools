@@ -26,7 +26,7 @@
                 <ion-icon name="albums" slot="start"></ion-icon>
                 <ion-label>Nueva categoría</ion-label>
               </ion-item>
-              <ion-item id="category-edit" [button]="true" [detail]="false">
+              <ion-item id="category-edit" [button]="true" [detail]="false" (click)="setCategoryEditStyle()">
                 <ion-icon name="create" slot="start"></ion-icon>
                 <ion-label>Editar categoría</ion-label>
               </ion-item>
@@ -34,7 +34,7 @@
               <ion-popover [animated]="true" trigger="category-edit"  [dismissOnSelect]="true">
                 <ng-template>
                   <ion-content>
-                    <ion-list>
+                    <ion-list class="overflow-y-auto" [style.maxHeight]="categoryEditSize">
                       <ion-item *ngFor="let cat of categoryList" (click)="presentCategoryModal(cat)" [button]="true" [detail]="false">
                         <ion-icon [style.color]="cat.color" name="ellipse" slot="start"></ion-icon>
                         <ion-label>{{cat.category}}</ion-label>
@@ -44,7 +44,7 @@
                 </ng-template>
               </ion-popover>
 
-              <ion-item id="category-delete" [button]="true" [detail]="false">
+              <ion-item id="category-delete" [button]="true" [detail]="false" (click)="setCategoryDeleteStyle()">
                 <ion-icon name="trash" slot="start"></ion-icon>
                 <ion-label>Eliminar categoría</ion-label>
               </ion-item>
@@ -52,7 +52,7 @@
               <ion-popover [animated]="true" trigger="category-delete"  [dismissOnSelect]="true">
                 <ng-template>
                   <ion-content>
-                    <ion-list>
+                    <ion-list class="overflow-y-auto" [style.maxHeight]="categoryDeleteSize">
                       <ion-item *ngFor="let cat of categoryList" (click)="deleteCategory(cat)" [button]="true" [detail]="false">
                         <ion-icon [style.color]="cat.color" name="ellipse" slot="start"></ion-icon>
                         <ion-label>{{cat.category}}</ion-label>

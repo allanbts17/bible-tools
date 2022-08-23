@@ -34,6 +34,7 @@ export class AddCategoryComponent implements OnInit {
   actualTitle
   actualLabel
   initialCategoryName = ""
+  prevCategory: string;
 
   constructor(public config: ConfigService, public storageService: StorageService) {
     //this.loadCategories()
@@ -88,7 +89,7 @@ export class AddCategoryComponent implements OnInit {
       } else {
         //console.log('enter on save edit: ',this.category)
         //await this.storageService.editItemByID('categories',this.category)
-        await this.storageService.editCategories(this.category)
+        await this.storageService.editCategories(this.category,this.initialCategoryName)
       }
       this.addCategoryEvent.emit()
       this.loadCategories()

@@ -107,12 +107,20 @@ export class StorageService {
     return categoryArray
   }
 
-  async editCategories(category: Category){
+  async editCategories(category: Category, prevCategoryName: string){
     await this.editItemByID('categories',category)
     let index = this.categories.findIndex(cat => cat.id === category.id)
     this.categories[index] = category
-    Object.assign(this.notes,{[category.category]:[]})
-    Object.assign(this.notePages,{[category.category]:0})
+    if(category.category !== prevCategoryName){
+      let prevNotes = this.notes[prevCategoryName].slice()
+      delete this.notes[prevCategoryName]
+      delete this.notePages[prevCategoryName]
+
+      Object.assign(this.notes,{[category.category]:prevNotes})
+      Object.assign(this.notePages,{[category.category]:0})
+      //console.log('on storage cat edit: ',this.notes)
+      //console.log('on storage cat edit: ',this.notePages)
+    }
   }
 
   async getNotes(category = null,pag = -1,full = false){
