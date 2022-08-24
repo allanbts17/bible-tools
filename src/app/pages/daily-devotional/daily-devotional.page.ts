@@ -58,10 +58,6 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   async loadData(){
-    //this.notes = await this.storageService.getNotes(null,0)
-    /*for (const item in this.notes) {
-      Object.assign(this.notePages,{[item]:0})
-    }*/
     this.notes = this.storageService.notes
     this.notePages = this.storageService.notePages
     console.log(this.notePages)
@@ -79,12 +75,8 @@ export class DailyDevotionalPage implements OnInit {
     setTimeout(async () => {
       let tab = this.selectedTab
       this.notePages[tab] += 1
-      let newData = await this.storageService.getNotes(tab,this.notePages[tab])
-      //this.notes[tab].push(...newData)
-      //console.log(newData)
+      let newData = this.getFilteredNotes(tab)?.slice(pagSize*this.notePages[tab],pagSize*(this.notePages[tab]+1))
       e.target.complete();
-      //let scrollSlide = document.getElementById(`slide-${this.selectedTab}`)
-      //console.log('size: ',newData.length)
       if(newData.length === 0){
         e.target.disabled = true;
       }
@@ -256,13 +248,7 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   async loadNotes(data = null){
-    //await this.sortNotes()
-    //this.noteList = await this.storageService.getData("notes")
-    //let newData = await this.storageService.getNotes(category,this.notePages[category])
-    //this.notes[data.categoryName].unshift(data.data)
-    //this.notes.all.unshift(data.data)
-    //console.log('newData',data)
-    //this.filterNotes(this.selectedTab)
+
   }
 
   async addNewNote(data){

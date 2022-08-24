@@ -330,7 +330,7 @@ export class CustomAlertComponent implements OnInit {
 
 
   async deleteNotes(prevCat){
-    var filteredNotes = this.notes.filter(note => note.category == prevCat.id)
+    var filteredNotes = this.notes[prevCat.category]//.filter(note => note.category == prevCat.id)
     for(let i=0;i<filteredNotes.length;i++){
       await this.storageService.deleteNote(filteredNotes[i])
     }
