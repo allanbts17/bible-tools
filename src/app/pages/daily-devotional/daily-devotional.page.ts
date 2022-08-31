@@ -23,8 +23,8 @@ export class DailyDevotionalPage implements OnInit {
   @ViewChild(CustomAlertComponent) alert: CustomAlertComponent;
   @ViewChild('popover') popover: IonPopover;
   @ViewChild('slide') slides: IonSlides;
-  @ViewChild('segment') segment: IonSegment;
   @ViewChild('dailyTabs') myTabs: TabsComponent;
+  //@ViewChild('segment') segment: IonSegment;
   //@ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll
   tabs = []
   categoryList = []
@@ -39,7 +39,6 @@ export class DailyDevotionalPage implements OnInit {
   notes
   notePages = {}
   slideIndex = 0
-  checked
   showFab = false
   isAutoScrollingUp = false
   categoryEditSize: string = 'none'
@@ -234,8 +233,10 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   async loadCategories(){
-    //this.categoryList = await this.storageService.getData("categories")
-    this.categoryList = this.storageService.categories
+    this.categoryList = await this.storageService.getCategories()
+    setTimeout(()=>{
+      this.categoryList = this.storageService.categories
+    },800)
     this.fillTabs()
   }
 

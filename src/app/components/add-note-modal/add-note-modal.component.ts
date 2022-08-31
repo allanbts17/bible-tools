@@ -146,9 +146,7 @@ export class AddNoteModalComponent implements OnInit {
   }
 
   async editNote(data,category){
-    if(!this.newNote){
-      await this.storageService.editNote(data,this.prevCategory)
-    }
+    await this.storageService.editNote(data,this.prevCategory)
     //await this.storageService.editItemByID('notes',data)
     this.addNoteEvent.emit()
   }

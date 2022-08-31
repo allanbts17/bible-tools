@@ -37,6 +37,7 @@ export class TabsComponent implements OnInit {
   }
 
   tabSelected(tab,index,parentsTabSelected = false){
+    //console.log('selee:',tab,index,parentsTabSelected)
     let buttons = this.getButtons()
     let buttonClientRect = buttons[index].getBoundingClientRect()
     let firstButtonX = buttons[0].getBoundingClientRect().x

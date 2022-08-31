@@ -33,6 +33,7 @@ export class AddVerseModalComponent implements OnInit {
   verseInputTimeout
   passageText
   showNotFoundMessage = false
+  prevTopic: string
 
 
   selectTopicName = ""
@@ -160,17 +161,21 @@ export class AddVerseModalComponent implements OnInit {
   }
 
   async saveVerse(){
+    let verseTopicName
     if(this.newVerse)
       this.verse.date = moment().format('lll')
 
     if(this.showNewTopicInput){
       if(this.newTopic.name != ""){
-        var topic = await this.addTopics(this.newTopic)
+        let topic = await this.addTopics(this.newTopic)
+        verseTopicName = topic.name
         this.verse.topic = topic.id
       }
     } else {
       if(this.selectTopicName != ""){
-        this.verse.topic = this.topicList.find(top => top.name == this.selectTopicName).id
+        let topic = this.topicList.find(top => top.name == this.selectTopicName)
+        this.verse.topic = topic.id
+        verseTopicName = topic.name
       }
     }
 
@@ -178,9 +183,9 @@ export class AddVerseModalComponent implements OnInit {
     if(this.validateVerse() && !this.showInputMessage && !this.showNotFoundMessage){
       //console.log('enter, newNote',this.newVerse)
       if(this.newVerse)
-        this.addVerse(this.verse)
+        this.addVerse(this.verse,verseTopicName)
       else
-        this.editVerse(this.verse)
+        this.editVerse(this.verse,verseTopicName)
       this.resetValues()
       this.modal.dismiss()
     } else {
@@ -206,25 +211,25 @@ export class AddVerseModalComponent implements OnInit {
     return array
   }
 
-  async addVerse(data){
-    await this.storageService.addData('my-verses',data)
+  async addVerse(data,topic){
+    await this.storageService.addVerse(data,topic)
     this.addVerseEvent.emit()
   }
 
-  async editVerse(data){
-    await this.storageService.editItemByID('my-verses',data)
+  async editVerse(data,topic){
+    await this.storageService.editVerse(data,topic)
     this.addVerseEvent.emit()
   }
 
   async addTopics(data){
-    var topArr = await this.storageService.addData('topics',data)
+    var topArr = await this.storageService.addTopic(data)
     this.addTopicEvent.emit()
     this.loadTopics()
     return topArr.slice(-1)[0]
   }
 
   async loadTopics(){
-    this.topicList = await this.storageService.getData("topics")
+    //this.topicList = await this.storageService.getData("topics")
   }
 
   handleSelectChange(e){
