@@ -75,12 +75,7 @@
 <ion-content>
   <!-- Scrollable Segment -->
   <div class="sticky top-0 z-10 segment-background">
-    <!--<ion-segment  scrollable value="{{tabs[0]}}">
-      <ion-segment-button (click)="tabSelected(tab)" *ngFor="let tab of tabs" value="{{tab}}">
-        <ion-label>{{tab}}</ion-label>
-      </ion-segment-button>
-    </ion-segment>-->
-    <app-tabs #dailyTabs [tabs]="tabs" (selectedTabEvent)="tabSelected($event)"></app-tabs>
+    <app-tabs #dailyTabs [segmentId]="'verse-div'" [tabs]="tabs" (selectedTabEvent)="tabSelected($event)"></app-tabs>
   </div>
   <div class="w-full flex justify-center">
     <ion-button *ngIf="filterOn" fill="outline" shape="round" (click)="quiteFilter()">

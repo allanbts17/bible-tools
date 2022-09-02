@@ -58,16 +58,7 @@ export class VerseIndexPage implements OnInit {
     public popoverController: PopoverController,
     public sharedInfo: SharedInfoService,
     public apiService: ApiService,
-    public toastController: ToastController) {
-      console.log('tesssst: ',this.testArr)
-      setTimeout(()=>{
-        //this.testArr =  [1,2,3,4]
-        let ff = [1,2,3,4]
-        this.testArr.push(...ff)
-        //Object.assign(this.testObj,{'prop3':'Its prop 3'})
-        //this.testObj.prop1 = 'not'
-      },300)
-    }
+    public toastController: ToastController) {}
 
   ngOnInit() {
     this.loadData()
@@ -80,8 +71,8 @@ export class VerseIndexPage implements OnInit {
   async loadData(){
     this.verses = this.storageService.verses
     this.versePages = this.storageService.versePages
-    console.log(this.versePages)
-    console.log(this.verses)
+    //console.log(this.versePages)
+    //console.log(this.verses)
     this.loadTopics()
     this.addScrollListener()
   }
@@ -302,8 +293,6 @@ export class VerseIndexPage implements OnInit {
     this.selectedTab = this.tabs[0]
     //console.log(this.tabs)
     console.log('tabs: ',this.tabs)
-    setTimeout(()=>console.log('topics',this.topicList),1000)
-    setTimeout(()=>console.log('service',this.storageService.topics),1000)
   }
 
   tabSelected(e){

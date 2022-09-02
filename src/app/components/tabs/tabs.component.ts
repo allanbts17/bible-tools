@@ -10,6 +10,7 @@ import { ConfigService } from 'src/app/services/config.service';
 })
 export class TabsComponent implements OnInit {
   @Input() tabs
+  @Input() segmentId
   @Output() selectedTabEvent = new EventEmitter<any>()
   @ViewChild('segment') segment: IonSegment;
   checked
@@ -20,13 +21,13 @@ export class TabsComponent implements OnInit {
   constructor(public config: ConfigService) { }
 
   ngOnInit() {}
-
+  //test
   scrollTabs(index){
     setTimeout(()=>{
       var buttons = document.getElementsByTagName('ion-segment-button')
       let rect = buttons[index].getBoundingClientRect()
       let windowWidth = window.innerWidth
-      let scrollableSegment = document.getElementById('tab-segment')
+      let scrollableSegment = document.getElementById(this.segmentId)
       if((rect.x+rect.width) > windowWidth){
         let move = rect.x+rect.width - windowWidth
         scrollableSegment.scrollBy(move,0)
@@ -41,10 +42,18 @@ export class TabsComponent implements OnInit {
     let buttons = this.getButtons()
     let buttonClientRect = buttons[index].getBoundingClientRect()
     let firstButtonX = buttons[0].getBoundingClientRect().x
-    let customIndicator = document.getElementById('custom-indicator')
+    let indicatorId = 'custom-indicator'
+    //console.log(buttons)
+    //console.log(indicatorId)
+    //let segment = document.getElementById(this.segmentId)
+    //let customIndicator = <HTMLElement>segment.querySelector(indicatorId)
+    let text = '#'+this.segmentId+' #'+indicatorId
+    let customIndicator = <HTMLElement>document.querySelector(text)
+    //console.log('segm: ',segment.childNodes)
+    //console.log('custInd: ',customIndicator)
 
     if(!this.start){
-      let segmentEl =  document.getElementById('tab-segment')
+      let segmentEl =  document.getElementById(this.segmentId)
       let firstButtonWidth = buttons[0].getBoundingClientRect().width
       customIndicator.style.width = `${firstButtonWidth}px`
       customIndicator.style.left = `${firstButtonX}px`
@@ -56,6 +65,8 @@ export class TabsComponent implements OnInit {
     setTimeout(()=>{
       customIndicator.style.width = `${buttonClientRect.width}px`
       customIndicator.style.left = `${buttonClientRect.x-firstButtonX}px`
+      /*console.log('width: ',customIndicator.style.width,
+      'left: ',customIndicator.style.left)*/
       this.scrollTabs(index)
     })
 
@@ -69,7 +80,7 @@ export class TabsComponent implements OnInit {
   }
 
   getButtons() {
-    let con = document.getElementById('daily-div')
+    let con = document.getElementById(this.segmentId)
     return Array.from(con.querySelectorAll('ion-segment-button'));
   }
 

@@ -37,7 +37,6 @@ export class StorageService {
     await this.storage.create()
     await this.fillValues()
     console.log('all values: ',this.notes)
-
   }
 
   async fillValues(){

@@ -77,8 +77,8 @@
 <ion-content scroll-y="false">
   <section class="h-full flex flex-col">
     <!-- Scrollable Segment -->
-    <div id="daily-div" class="sticky top-0 z-10 segment-background flex-none">
-      <app-tabs #dailyTabs [tabs]="tabs" (selectedTabEvent)="tabSelected($event)"></app-tabs>
+    <div class="sticky top-0 z-10 segment-background flex-none">
+      <app-tabs #dailyTabs [segmentId]="'daily-div'" [tabs]="tabs" (selectedTabEvent)="tabSelected($event)"></app-tabs>
 
       <!-- Filter select -->
       <div *ngIf="filterOn" class="mx-2 mt-1 flex justify-center items-center relative">
