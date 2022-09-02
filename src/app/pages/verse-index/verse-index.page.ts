@@ -71,8 +71,8 @@ export class VerseIndexPage implements OnInit {
   async loadData(){
     this.verses = this.storageService.verses
     this.versePages = this.storageService.versePages
-    //console.log(this.versePages)
-    //console.log(this.verses)
+    console.log(this.versePages)
+    console.log(this.verses)
     this.loadTopics()
     this.addScrollListener()
   }

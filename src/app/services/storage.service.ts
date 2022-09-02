@@ -61,7 +61,7 @@ export class StorageService {
     /** Verses **/
     Object.assign(this.verses,{'all':allVerses})
     for(let topic of this.topics){
-      let top = await this.filterNotesByCategory(topic.id)
+      let top = await this.filterVersesByTopic(topic.id)
       Object.assign(this.verses,{[topic.name]:top})
     }
     for (const item in this.verses) {
