@@ -24,7 +24,8 @@ export class TabsComponent implements OnInit {
   //test
   scrollTabs(index){
     setTimeout(()=>{
-      var buttons = document.getElementsByTagName('ion-segment-button')
+      let segment = document.getElementById(this.segmentId)
+      var buttons = segment.getElementsByTagName('ion-segment-button')
       let rect = buttons[index].getBoundingClientRect()
       let windowWidth = window.innerWidth
       let scrollableSegment = document.getElementById(this.segmentId)

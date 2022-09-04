@@ -292,7 +292,7 @@ export class VerseIndexPage implements OnInit {
       this.topicList.forEach(tab => this.tabs.push(tab.name))
     this.selectedTab = this.tabs[0]
     //console.log(this.tabs)
-    console.log('tabs: ',this.tabs)
+    //console.log('tabs: ',this.tabs)
   }
 
   tabSelected(e){

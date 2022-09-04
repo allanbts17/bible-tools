@@ -72,59 +72,61 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <!-- Scrollable Segment -->
-  <div class="sticky top-0 z-10 segment-background">
-    <app-tabs #dailyTabs [segmentId]="'verse-div'" [tabs]="tabs" (selectedTabEvent)="tabSelected($event)"></app-tabs>
-  </div>
-  <div class="w-full flex justify-center">
-    <ion-button *ngIf="filterOn" fill="outline" shape="round" (click)="quiteFilter()">
-      Quitar filtro
-      <ion-icon name="close-outline"></ion-icon>
-    </ion-button>
-  </div>
+<ion-content scroll-y="false">
+  <section class="h-full flex flex-col">
+    <!-- Scrollable Segment -->
+    <div class="sticky top-0 z-10 segment-background flex-none">
+      <app-tabs #dailyTabs [segmentId]="'verse-div'" [tabs]="tabs" (selectedTabEvent)="tabSelected($event)"></app-tabs>
+    </div>
+    <div class="w-full flex justify-center flex-none">
+      <ion-button *ngIf="filterOn" fill="outline" shape="round" (click)="quiteFilter()">
+        Quitar filtro
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </div>
 
-  <!-- Verses -->
-  <ion-slides #slide class="flex-1 w-full" (ionSlideTransitionStart)="transitionStarted()">
-    <ion-slide class="h-full w-full" *ngFor="let tab of tabs">
-      <div id="slide-{{tab}}-verses" class="scrolled-slide-verses h-full w-full overflow-y-scroll ion-content-scroll-host">
-        <ion-card *ngFor="let verse of getPaginatedVerses(tab)">
-          <ion-item class="">
-            <ion-label>{{verse.passage.reference}}</ion-label>
-            <ion-button (click)="openBibleModal(verse)" fill="" shape="round" >{{verse.bible.reference}}</ion-button>
-            <ion-button fill="" shape="round" (click)="deleteVerse(verse)">
-              <ion-icon name="trash-outline"></ion-icon>
-            </ion-button>
-          </ion-item>
-          <ion-card-content class="" style="white-space: pre-line">
-            {{verse.text}}
-          </ion-card-content>
-        </ion-card>
-        <p class="text-slate-500 w-full text-center mt-2" *ngIf="verses[tab]?.length == 0 && filterOn">No existen versículos para este filtro</p>
-        <p class="text-slate-500 w-full text-center mt-2" *ngIf="verses[tab]?.length == 0 && !filterOn">No existen versículos con este tema</p>
+    <!-- Verses -->
+    <ion-slides #slide class="flex-1 w-full" (ionSlideTransitionStart)="transitionStarted()">
+      <ion-slide class="h-full w-full" *ngFor="let tab of tabs">
+        <div id="slide-{{tab}}-verses" class="scrolled-slide-verses h-full w-full overflow-y-scroll ion-content-scroll-host">
+          <ion-card *ngFor="let verse of getPaginatedVerses(tab)">
+            <ion-item class="">
+              <ion-label>{{verse.passage.reference}}</ion-label>
+              <ion-button (click)="openBibleModal(verse)" fill="" shape="round" >{{verse.bible.reference}}</ion-button>
+              <ion-button fill="" shape="round" (click)="deleteVerse(verse)">
+                <ion-icon name="trash-outline"></ion-icon>
+              </ion-button>
+            </ion-item>
+            <ion-card-content class="" style="white-space: pre-line">
+              {{verse.text}}
+            </ion-card-content>
+          </ion-card>
+          <p class="text-slate-500 w-full text-center mt-2" *ngIf="verses[tab]?.length == 0 && filterOn">No existen versículos para este filtro</p>
+          <p class="text-slate-500 w-full text-center mt-2" *ngIf="verses[tab]?.length == 0 && !filterOn">No existen versículos con este tema</p>
 
-        <ion-infinite-scroll threshold="100px" id="infinite-scroll" class="" (ionInfinite)="onScroll($event)">
-          <ion-infinite-scroll-content
-            loading-spinner="bubbles"
-            loading-text="Cargando más versículos...">
-          </ion-infinite-scroll-content>
-        </ion-infinite-scroll>
-      </div>
-    </ion-slide>
-  </ion-slides>
+          <ion-infinite-scroll threshold="100px" id="infinite-scroll" class="" (ionInfinite)="onScroll($event)">
+            <ion-infinite-scroll-content
+              loading-spinner="bubbles"
+              loading-text="Cargando más versículos...">
+            </ion-infinite-scroll-content>
+          </ion-infinite-scroll>
+        </div>
+      </ion-slide>
+    </ion-slides>
 
-  <!-- fab placed to the bottom end -->
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed"
-  [ngClass]="{'animate__fadeInUp':getStatus(),'animate__fadeOutDown':!getStatus()}"
-  class="animate__animated animate__faster">
-    <ion-fab-button color="medium" (click)="scrollToTop()">
-      <ion-icon name="arrow-up-outline"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+    <!-- fab placed to the bottom end -->
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed"
+    [ngClass]="{'animate__fadeInUp':getStatus(),'animate__fadeOutDown':!getStatus()}"
+    class="animate__animated animate__faster">
+      <ion-fab-button color="medium" (click)="scrollToTop()">
+        <ion-icon name="arrow-up-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
 
-  <app-topic-modal [topicList]="topicList" (addTopicEvent)="loadTopics()"></app-topic-modal>
-  <app-select-passage-modal [bible]="selectedBible || sharedInfo.defaultBible" (passageSelectedEvent)="chapterChange($event)"></app-select-passage-modal>
-  <app-select-bible-modal [changeShared]="false" [(isOpen)]="isOpenBibleModal" (bibleSelectedEvent)="bibleChange($event)"></app-select-bible-modal>
-  <app-add-verse-modal (selectChapterEvent)="openChapterModal()" (selectBibleEvent)="openBibleModal()" [selectedBible]="selectedBible || sharedInfo.defaultBible" [selectedChapter]="selectedChapter || sharedInfo.defaultChapter" [topicList]="topicList" (addTopicEvent)="loadTopics()" (addVerseEvent)="loadVerses()"></app-add-verse-modal>
-  <app-custom-alert (versesChangedEvent)="loadVerses()" (topicErasedEvent)="loadTopics()" [topics]="topicList" [verses]="verseList"></app-custom-alert>
+    <app-topic-modal [topicList]="topicList" (addTopicEvent)="loadTopics()"></app-topic-modal>
+    <app-select-passage-modal [bible]="selectedBible || sharedInfo.defaultBible" (passageSelectedEvent)="chapterChange($event)"></app-select-passage-modal>
+    <app-select-bible-modal [changeShared]="false" [(isOpen)]="isOpenBibleModal" (bibleSelectedEvent)="bibleChange($event)"></app-select-bible-modal>
+    <app-add-verse-modal (selectChapterEvent)="openChapterModal()" (selectBibleEvent)="openBibleModal()" [selectedBible]="selectedBible || sharedInfo.defaultBible" [selectedChapter]="selectedChapter || sharedInfo.defaultChapter" [topicList]="topicList" (addTopicEvent)="loadTopics()" (addVerseEvent)="loadVerses()"></app-add-verse-modal>
+    <app-custom-alert (versesChangedEvent)="loadVerses()" (topicErasedEvent)="loadTopics()" [topics]="topicList" [verses]="verseList"></app-custom-alert>
+  </section>
 </ion-content>
