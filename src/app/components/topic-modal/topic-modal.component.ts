@@ -69,18 +69,19 @@ export class TopicModalComponent implements OnInit {
   }
 
   async loadTopics(){
-    this.topicList = await this.storageService.getData("topics")
+    //this.topicList = await this.storageService.getData("topics")
   }
 
   async saveTopic(){
     if(this.validateTopic()){
       if(this.newTopic){
         console.log('new topic')
-        var arr = await this.storageService.addData('topics',this.topic)
+        var arr = await this.storageService.addTopic(this.topic)
         console.log(arr.slice(-1)[0])
       } else {
         //console.log('enter on save edit: ',this.category)
-        await this.storageService.editItemByID('topics',this.topic)
+        //await this.storageService.editItemByID('topics',this.topic)
+        await this.storageService.editTopic(this.topic,this.initialTopicName)
       }
       this.addTopicEvent.emit()
       this.loadTopics()
