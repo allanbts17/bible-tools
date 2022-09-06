@@ -189,6 +189,10 @@ export class VerseIndexPage implements OnInit {
     ////this.alert.moveNotesAlert(cat)
   }
 
+  changeVerseTopic(verse: Verse){
+    this.alert.changeVerseTopicAlert(verse)
+  }
+
   deleteVerse(verse: Verse){
     this.alert.verseDeleteConfirmationAlert(verse)
   }

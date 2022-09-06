@@ -21,6 +21,7 @@ export class CustomAlertComponent implements OnInit {
   @Output() notesChangedEvent = new EventEmitter<any>()
   @Output() topicErasedEvent = new EventEmitter<any>()
   @Output() versesChangedEvent = new EventEmitter<any>()
+  @Output() topicAddedEvent = new EventEmitter<any>()
   newCatToMove
   newTopToMove
 
@@ -177,7 +178,6 @@ export class CustomAlertComponent implements OnInit {
           text: 'Eliminar',
           id: 'confirm-button',
           handler: async () => {
-            //console.log(verse)
             await this.storageService.deleteVerse(verse)
             this.versesChangedEvent.emit()
           }
@@ -188,7 +188,6 @@ export class CustomAlertComponent implements OnInit {
   }
 
   async noteDeleteConfirmationAlert(note){
-    //console.log('confirm',cat)
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
       header: 'Confirmación',
@@ -205,9 +204,111 @@ export class CustomAlertComponent implements OnInit {
           id: 'confirm-button',
           handler: async () => {
             console.log(note)
-            //await this.storageService.removeItemByID('notes',note)
             await this.storageService.deleteNote(note)
             this.notesChangedEvent.emit()
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  categoryHaveNotes(cat){
+    return this.notes[cat.category].findIndex(note => note.category == cat.id) != -1
+  }
+
+  topicHaveVerses(top){
+    return this.verses[top.name].findIndex(verse => verse.topic == top.id) != -1
+  }
+
+  async changeVerseTopicAlert(verse: Verse){
+    var radios = []
+    var newTopics = this.topics.slice()
+    let actualTopic = newTopics.find(topic => topic.id == verse.topic)
+    delete newTopics[newTopics.findIndex(topic => topic.id == verse.topic)]
+    newTopics.forEach(newTop=> radios.push({
+        name: newTop.id,
+        type: 'radio',
+        label: newTop.name,
+        value: newTop,
+        handler: (val) => {
+          this.newTopToMove = val.value
+          console.log(val.value)
+        },
+        checked: false
+    }))
+    radios.push({
+      name: 'new',
+      type: 'radio',
+      label: 'Nuevo tópico',
+      value: 'addNewTopic',
+      handler: (val) => {
+        this.newTopToMove = val.value
+        console.log(val.value)
+      },
+      checked: false
+  })
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Cambiando el tópico',
+      message: '¿A cuál tópico desear cambiar?',
+      inputs: radios,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Confirm Cancel');
+          }
+        }, {
+          text: 'Mover',
+          handler: async () => {
+            if(this.newTopToMove === 'addNewTopic'){
+              this.addNewTopicAlert(verse,actualTopic)
+            } else {
+              await this.moveOneVerse(verse,actualTopic)
+              this.versesChangedEvent.emit()
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async addNewTopicAlert(verse: Verse,actualTopic) {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Nuevo tópico',
+      message: 'Escriba el nombre del nuevo tópico',
+      inputs: [
+        {
+          name: 'newTopic',
+          type: 'text',
+          placeholder: 'Escribir nombre'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Confirm Cancel');
+          }
+        }, {
+          text: 'Ok',
+          handler: async (value) => {
+            let topic = {name: value.newTopic}
+            let newArray = await this.storageService.addTopic(topic)
+            this.newTopToMove = newArray.slice(-1)[0]
+            this.topicAddedEvent.emit()
+            setTimeout(async ()=> {
+              await this.moveOneVerse(verse,actualTopic)
+            this.versesChangedEvent.emit()
+            //console.log('Confirm Ok',this.newTopToMove);
+            })
           }
         }
       ]
@@ -216,16 +317,15 @@ export class CustomAlertComponent implements OnInit {
     await alert.present();
   }
 
-  categoryHaveNotes(cat){
-    //Object.keys(this.notes)
-    //Object.keys(this.notes).findIndex(noteCategory => noteCategory == cat.id) != -1
-    return this.notes[cat.category].findIndex(note => note.category == cat.id) != -1
+  async addTopic(topic: Topic){
   }
 
-  topicHaveVerses(top){
-    //return this.verses.findIndex(verse => verse.topic == top.id) != -1
-    return this.verses[top.name].findIndex(verse => verse.topic == top.id) != -1
+  async moveOneVerse(verse: Verse,prevTopic){
+    verse.topic = this.newTopToMove.id
+    console.log('verse with new id',verse)
+    await this.storageService.editVerse(verse,prevTopic.name)
   }
+
 
   async moveVerseAlert(top){
     var radios = []
@@ -244,7 +344,7 @@ export class CustomAlertComponent implements OnInit {
     }))
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
-      header: 'Moviendo notas',
+      header: 'Moviendo versículos',
       message: '¿A donde desea mover los versículos?',
       inputs: radios,
       buttons: [
@@ -345,256 +445,5 @@ export class CustomAlertComponent implements OnInit {
       await this.storageService.deleteVerse(filteredVerses[i])
     }
   }
-
-
-
-  async presentAlertPrompt() {
-    const alert = await this.alertController.create({
-      cssClass: 'my-custom-class',
-      header: 'Prompt!',
-      inputs: [
-        {
-          name: 'name1',
-          type: 'text',
-          placeholder: 'Placeholder 1'
-        },
-        {
-          name: 'name2',
-          type: 'text',
-          id: 'name2-id',
-          value: 'hello',
-          placeholder: 'Placeholder 2'
-        },
-        // multiline input.
-        {
-          name: 'paragraph',
-          id: 'paragraph',
-          type: 'textarea',
-          placeholder: 'Placeholder 3'
-        },
-        {
-          name: 'name3',
-          value: 'http://ionicframework.com',
-          type: 'url',
-          placeholder: 'Favorite site ever'
-        },
-        // input date with min & max
-        {
-          name: 'name4',
-          type: 'date',
-          min: '2017-03-01',
-          max: '2018-01-12'
-        },
-        // input date without min nor max
-        {
-          name: 'name5',
-          type: 'date'
-        },
-        {
-          name: 'name6',
-          type: 'number',
-          min: -5,
-          max: 10
-        },
-        {
-          name: 'name7',
-          type: 'number'
-        },
-        {
-          name: 'name8',
-          type: 'password',
-          placeholder: 'Advanced Attributes',
-          cssClass: 'specialClass',
-          attributes: {
-            maxlength: 4,
-            inputmode: 'decimal'
-          }
-        }
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: () => {
-            console.log('Confirm Cancel');
-          }
-        }, {
-          text: 'Ok',
-          handler: () => {
-            console.log('Confirm Ok');
-          }
-        }
-      ]
-    });
-
-    await alert.present();
-  }
-
-  async presentAlertRadio() {
-    const alert = await this.alertController.create({
-      cssClass: 'my-custom-class',
-      header: 'Radio',
-      inputs: [
-        {
-          name: 'radio1',
-          type: 'radio',
-          label: 'Radio 1',
-          value: 'value1',
-          handler: () => {
-            console.log('Radio 1 selected');
-          },
-          checked: true
-        },
-        {
-          name: 'radio2',
-          type: 'radio',
-          label: 'Radio 2',
-          value: 'value2',
-          handler: () => {
-            console.log('Radio 2 selected');
-          }
-        },
-        {
-          name: 'radio3',
-          type: 'radio',
-          label: 'Radio 3',
-          value: 'value3',
-          handler: () => {
-            console.log('Radio 3 selected');
-          }
-        },
-        {
-          name: 'radio4',
-          type: 'radio',
-          label: 'Radio 4',
-          value: 'value4',
-          handler: () => {
-            console.log('Radio 4 selected');
-          }
-        },
-        {
-          name: 'radio5',
-          type: 'radio',
-          label: 'Radio 5',
-          value: 'value5',
-          handler: () => {
-            console.log('Radio 5 selected');
-          }
-        },
-        {
-          name: 'radio6',
-          type: 'radio',
-          label: 'Radio 6 Radio 6 Radio 6 Radio 6 Radio 6 Radio 6 Radio 6 Radio 6 Radio 6 Radio 6 ',
-          value: 'value6',
-          handler: () => {
-            console.log('Radio 6 selected');
-          }
-        }
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: () => {
-            console.log('Confirm Cancel');
-          }
-        }, {
-          text: 'Ok',
-          handler: () => {
-            console.log('Confirm Ok');
-          }
-        }
-      ]
-    });
-
-    await alert.present();
-  }
-
-  async presentAlertCheckbox() {
-    const alert = await this.alertController.create({
-      cssClass: 'my-custom-class',
-      header: 'Checkbox',
-      inputs: [
-        {
-          name: 'checkbox1',
-          type: 'checkbox',
-          label: 'Checkbox 1',
-          value: 'value1',
-          handler: () => {
-            console.log('Checkbox 1 selected');
-          },
-          checked: true
-        },
-
-        {
-          name: 'checkbox2',
-          type: 'checkbox',
-          label: 'Checkbox 2',
-          value: 'value2',
-          handler: () => {
-            console.log('Checkbox 2 selected');
-          }
-        },
-
-        {
-          name: 'checkbox3',
-          type: 'checkbox',
-          label: 'Checkbox 3',
-          value: 'value3',
-          handler: () => {
-            console.log('Checkbox 3 selected');
-          }
-        },
-
-        {
-          name: 'checkbox4',
-          type: 'checkbox',
-          label: 'Checkbox 4',
-          value: 'value4',
-          handler: () => {
-            console.log('Checkbox 4 selected');
-          }
-        },
-
-        {
-          name: 'checkbox5',
-          type: 'checkbox',
-          label: 'Checkbox 5',
-          value: 'value5',
-          handler: () => {
-            console.log('Checkbox 5 selected');
-          }
-        },
-
-        {
-          name: 'checkbox6',
-          type: 'checkbox',
-          label: 'Checkbox 6 Checkbox 6 Checkbox 6 Checkbox 6 Checkbox 6 Checkbox 6 Checkbox 6 Checkbox 6 Checkbox 6 Checkbox 6',
-          value: 'value6',
-          handler: () => {
-            console.log('Checkbox 6 selected');
-          }
-        }
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: () => {
-            console.log('Confirm Cancel');
-          }
-        }, {
-          text: 'Ok',
-          handler: () => {
-            console.log('Confirm Ok');
-          }
-        }
-      ]
-    });
-
-    await alert.present();
-  }
+  
 }

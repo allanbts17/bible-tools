@@ -93,7 +93,7 @@
             <ion-item class="">
               <ion-label>{{verse.passage.reference}}</ion-label>
               <ion-button (click)="openBibleModal(verse)" fill="" shape="round" >{{verse.bible.reference}}</ion-button>
-              <ion-button fill="" shape="round">
+              <ion-button fill="" shape="round" (click)="changeVerseTopic(verse)">
                 <ion-icon name="repeat-outline"></ion-icon>
               </ion-button>
               <ion-button fill="" shape="round" (click)="deleteVerse(verse)">
@@ -130,6 +130,6 @@
     <app-select-passage-modal [bible]="selectedBible || sharedInfo.defaultBible" (passageSelectedEvent)="chapterChange($event)"></app-select-passage-modal>
     <app-select-bible-modal [changeShared]="false" [(isOpen)]="isOpenBibleModal" (bibleSelectedEvent)="bibleChange($event)"></app-select-bible-modal>
     <app-add-verse-modal (selectChapterEvent)="openChapterModal()" (selectBibleEvent)="openBibleModal()" [selectedBible]="selectedBible || sharedInfo.defaultBible" [selectedChapter]="selectedChapter || sharedInfo.defaultChapter" [topicList]="topicList" (addTopicEvent)="loadTopics()" (addVerseEvent)="loadVerses()"></app-add-verse-modal>
-    <app-custom-alert (versesChangedEvent)="loadVerses()" (topicErasedEvent)="loadTopics()" [topics]="topicList" [verses]="verses"></app-custom-alert>
+    <app-custom-alert (versesChangedEvent)="loadVerses()" (topicAddedEvent)="loadTopics()" (topicErasedEvent)="loadTopics()" [topics]="topicList" [verses]="verses"></app-custom-alert>
   </section>
 </ion-content>
