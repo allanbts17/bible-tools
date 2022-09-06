@@ -146,7 +146,7 @@ export class StorageService {
     //console.log('on delete note')
     //console.log(note)
     await this.removeItemByID(MY_VERSES_KEY,verse)
-    let topicName = this.topics.find(top => top.id === verse.topic)['topic']
+    let topicName = this.topics.find(top => top.id === verse.topic)['name']
     this.verses[topicName] = this.verses[topicName].filter(arrVerse => arrVerse !== verse)
     //console.log('with array: ',this.notes['all'].filter(arrNote => arrNote === note),
     //'without array: ',this.notes['all'].filter(arrNote => arrNote !== note))
@@ -154,17 +154,19 @@ export class StorageService {
     //console.log(this.notes['all'])
   }
 
-  async editVerse(verse: Verse, prevVerseName){
+  async editVerse(verse: Verse, prevTopicName){
     await this.editItemByID(MY_VERSES_KEY,verse)
-    let newTopicName = this.topics.find(top => top.id === verse.topic)['topic']
+    let newTopicName = this.topics.find(top => top.id === verse.topic)['name']
     //let noteCatIndex = this.notes[prevCategoryName].findIndex(arrNote => arrNote.id === note.id)
     let verseAllIndex = this.verses['all'].findIndex(arrVerse => arrVerse.id === verse.id)
     this.verses['all'][verseAllIndex] = verse
-    if(prevVerseName !== newTopicName){
+    if(prevTopicName !== newTopicName){
+
       this.verses[newTopicName].unshift(verse)
-      this.verses[newTopicName] = this.verses[newTopicName].filter(arrVerse => arrVerse.id !== verse.id)
+      this.verses[prevTopicName] = this.verses[prevTopicName].filter(arrVerse => arrVerse.id !== verse.id)
+      console.log('on edit verse',this.verses,prevTopicName,this.topics.find(top => top.id === verse.topic))
     } else {
-      let verseTopIndex = this.verses[newTopicName].findIndex(arrVerse => arrVerse.id === verse.id)
+      let verseTopIndex = this.verses[prevTopicName].findIndex(arrVerse => arrVerse.id === verse.id)
       this.verses[newTopicName][verseTopIndex] = verse
     }
   }

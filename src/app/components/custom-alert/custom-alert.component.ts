@@ -22,7 +22,7 @@ export class CustomAlertComponent implements OnInit {
   @Output() topicErasedEvent = new EventEmitter<any>()
   @Output() versesChangedEvent = new EventEmitter<any>()
   newCatToMove
-  newTopToMove = 0
+  newTopToMove
 
   constructor(public alertController: AlertController,public storageService: StorageService) {}
 
@@ -121,7 +121,7 @@ export class CustomAlertComponent implements OnInit {
           text: 'Eliminar',
           id: 'confirm-button',
           handler: async () => {
-            await this.storageService.removeItemByID('topics',top)
+            await this.storageService.deleteTopic(top)
             this.topicErasedEvent.emit()
             this.versesChangedEvent.emit()
           }
@@ -178,7 +178,7 @@ export class CustomAlertComponent implements OnInit {
           id: 'confirm-button',
           handler: async () => {
             //console.log(verse)
-            await this.storageService.removeItemByID('my-verses',verse)
+            await this.storageService.deleteVerse(verse)
             this.versesChangedEvent.emit()
           }
         }
@@ -223,7 +223,8 @@ export class CustomAlertComponent implements OnInit {
   }
 
   topicHaveVerses(top){
-    return this.verses.findIndex(verse => verse.topic == top.id) != -1
+    //return this.verses.findIndex(verse => verse.topic == top.id) != -1
+    return this.verses[top.name].findIndex(verse => verse.topic == top.id) != -1
   }
 
   async moveVerseAlert(top){
@@ -234,7 +235,7 @@ export class CustomAlertComponent implements OnInit {
         name: newTop.id,
         type: 'radio',
         label: newTop.name,
-        value: newTop.id,
+        value: newTop,
         handler: (val) => {
           this.newTopToMove = val.value
           console.log(val.value)
@@ -258,7 +259,7 @@ export class CustomAlertComponent implements OnInit {
           text: 'Mover',
           handler: async () => {
             await this.moveVerses(top)
-            await this.storageService.removeItemByID('topics',top)
+            await this.storageService.deleteTopic(top)
             this.topicErasedEvent.emit()
             this.versesChangedEvent.emit()
           }
@@ -321,10 +322,12 @@ export class CustomAlertComponent implements OnInit {
   }
 
   async moveVerses(prevTop){
-    var filteredVerses = this.verses.filter(verse => verse.topic == prevTop.id)
+    console.log('jaja',prevTop)
+    //var filteredVerses = this.verses.filter(verse => verse.topic == prevTop.id)
+    var filteredVerses = this.verses[prevTop.name]//.filter(verse => verse.topic == prevTop.id)
     for(let i=0;i<filteredVerses.length;i++){
-      filteredVerses[i].topic = this.newTopToMove
-      await this.storageService.editItemByID('my-verses',filteredVerses[i])
+      filteredVerses[i].topic = this.newTopToMove.id
+      await this.storageService.editVerse(filteredVerses[i],prevTop.name)
     }
   }
 
@@ -337,9 +340,9 @@ export class CustomAlertComponent implements OnInit {
   }
 
   async deleteVerses(prevTop){
-    var filteredVerses = this.verses.filter(verse => verse.topic == prevTop.id)
+    var filteredVerses = this.verses[prevTop.name]//.filter(verse => verse.topic == prevTop.id)
     for(let i=0;i<filteredVerses.length;i++){
-      await this.storageService.removeItemByID('my-verses',filteredVerses[i])
+      await this.storageService.deleteVerse(filteredVerses[i])
     }
   }
 
