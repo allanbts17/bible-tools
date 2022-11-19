@@ -56,14 +56,19 @@ export class AppComponent {
         }
 
 
-        let data = await this.sqlite.createConnection('YOUR_DB1.db',false,'encryption',1)
+        let data = await this.sqlite.createConnection('YOUR_DB1.db',false,'encryption',1,false)
         console.log(data)
         let op = await this.sqlite.open()
         console.log(op);
-        let msg = await this.sqlite.echo('holaa mundo');
+       // let msg = await this.sqlite.echo('holaa mundo');
         let response = await this.sqlite.execute('CREATE TABLE IF NOT EXISTS Messages (id INTEGER PRIMARY KEY AUTOINCREMENT, message TEXT)')
+       // await this.sqlite.execute("INSERT INTO Messages (message) VALUES ('bATATA')")
+        //await this.sqlite.execute("INSERT INTO Messages (message) VALUES ('hello world')")
+        //let res = await this.sqlite.execute("SELECT * FROM Messages ORDER BY id DESC")
+       /// console.log(res);
+
         console.log(response)
-        console.log(msg)
+        //console.log(msg)
         console.log(`>>>> in App  this.initPlugin ${this.initPlugin}`);
       });
     });
