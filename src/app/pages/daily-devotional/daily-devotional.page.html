@@ -130,10 +130,10 @@
     </ion-fab>
 
     <!-- Modals -->
-    <app-add-note-modal [categoryList]="categoryList" (addCategoryEvent)="loadCategories()" (addNoteEvent)="addNewNote($event)"></app-add-note-modal>
+    <app-add-note-modal [categoryList]="categoryList" (addCategoryEvent)="loadCategories()"></app-add-note-modal>
     <app-add-category [categoryList]="categoryList" (addCategoryEvent)="loadCategories()"></app-add-category>
 
     <!-- Alert -->
-    <app-custom-alert (notesChangedEvent)="loadNotes($event)" (categoryErasedEvent)="loadCategories()" [categories]="categoryList" [notes]="notes"></app-custom-alert>
+    <app-custom-alert (categoryErasedEvent)="loadCategories()" [categories]="categoryList" [notes]="notes"></app-custom-alert>
   </section>
 </ion-content>

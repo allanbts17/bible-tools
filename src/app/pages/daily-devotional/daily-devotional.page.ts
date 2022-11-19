@@ -7,7 +7,7 @@ import { AddCategoryComponent } from 'src/app/components/add-category/add-catego
 import { Category } from 'src/app/interfaces/category';
 import { CustomAlertComponent } from 'src/app/components/custom-alert/custom-alert.component';
 import { Note } from 'src/app/interfaces/note';
-import { IonInfiniteScroll, IonPopover, IonSegment, IonSlides, PopoverController } from '@ionic/angular';
+import { IonPopover, IonSlides, PopoverController } from '@ionic/angular';
 import { TabsComponent } from 'src/app/components/tabs/tabs.component';
 
 const pagSize = 10
@@ -24,12 +24,8 @@ export class DailyDevotionalPage implements OnInit {
   @ViewChild('popover') popover: IonPopover;
   @ViewChild('slide') slides: IonSlides;
   @ViewChild('dailyTabs') myTabs: TabsComponent;
-  //@ViewChild('segment') segment: IonSegment;
-  //@ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll
   tabs = []
   categoryList = []
-  noteList = [{category:0,title:"Mens",text:"este es un texto",color:"#fff",date:""}]
-  filteredNoteList = [{category:0,title:"Mens",text:"este es un texto",color:"#fff",date:""}]
   selectedTab = ""
   filterType: 'all' | 'date' | 'title' | 'text' = 'all'
   searchTerm = ""
@@ -51,9 +47,6 @@ export class DailyDevotionalPage implements OnInit {
 
   ngOnInit() {
     this.loadData()
-
-    //this.loadNotes()
-    //this.filterNotes(this.selectedTab)
   }
 
   async loadData(){
@@ -164,7 +157,6 @@ export class DailyDevotionalPage implements OnInit {
 
   clearSearchTerm(){
     this.searchTerm = ""
-    //this.filterNotes()
   }
 
   cancelFilter(){
@@ -181,11 +173,10 @@ export class DailyDevotionalPage implements OnInit {
     this.searchTerm = formattedDate
     console.log(this.searchTerm)
     //this.filterNotes()
-    if(this.filteredNoteList.length > 0) this.showDate = false
+    //if(this.filteredNoteList.length > 0) this.showDate = false
   }
 
   presentNoteModal(note: Note = null){
-    //this.popover.dismiss()
     if(note == null)
       this.addNoteModal.setToNewFunction()
     else
@@ -213,7 +204,6 @@ export class DailyDevotionalPage implements OnInit {
 
 
   presentCategoryModal(category: Category = null){
-    //this.popover.dismiss()
     if(category == null)
       this.addCategoryModal.setToNewFunction()
     else
@@ -222,13 +212,10 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   deleteCategory(cat){
-    //this.popover.dismiss()
     this.alert.deleteCategoryAlert(cat)
-    //this.alert.moveNotesAlert(cat)
   }
 
   toogleFilter(){
-    //this.popover.dismiss()
     this.filterOn=!this.filterOn
   }
 
@@ -248,20 +235,6 @@ export class DailyDevotionalPage implements OnInit {
     })
   }
 
-  async loadNotes(data = null){
-
-  }
-
-  async addNewNote(data){
-    /*await this.sortNotes()
-    this.notes[data.categoryName].unshift(data.data)
-    this.notes.all.unshift(data.data)*/
-  }
-
-  eraseNote(){
-
-  }
-
   fillTabs(){
     this.tabs = ['all']
     if(this.categoryList !== null)
@@ -271,18 +244,8 @@ export class DailyDevotionalPage implements OnInit {
 
   tabSelected(e){
     this.selectedTab = e.tab
-    //this.filterNotes(e.tab)
     this.slides.slideTo(e.index)
   }
-
-  /*filterNotes(tab=this.selectedTab){
-    if(this.filterOn){
-      var tabFilteredList = this.filterByCategory(tab)
-      this.filteredNoteList = this.filterByCustomType(tabFilteredList)
-    } else{
-      this.filteredNoteList = this.filterByCategory(tab)
-    }
-  }*/
 
   getFilteredNotes(tab){
     if(this.filterOn)
@@ -294,22 +257,6 @@ export class DailyDevotionalPage implements OnInit {
   getPaginatedNotes(tab){
     return this.getFilteredNotes(tab)?.slice(0,pagSize*(this.notePages[tab]+1))
   }
-
-  /*filterByCategory(tab){
-    var filtered
-    if(tab === this.config.getData().daly_devotional.tab){
-      filtered = this.noteList
-    } else {
-      //this.filteredNoteList = this.noteList.filter(note => note.category === tab)
-      filtered = this.noteList.filter(note => {
-        var cat = this.categoryList.find(cat => {
-          return cat.id == note.category
-        })?.category
-        return cat === tab
-      })
-    }
-    return filtered
-  }*/
 
   filterByCustomType(tabFilteredList){
     var filtered

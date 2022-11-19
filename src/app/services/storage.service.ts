@@ -5,6 +5,7 @@ import { Category } from '../interfaces/category';
 import  * as moment  from 'moment'
 import { Verse } from '../interfaces/verse';
 import { Topic } from '../interfaces/topic';
+import * as cordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
 
 const NOTES_KEY = 'notes'
 const CATEGORY_KEY = 'categories'
@@ -35,7 +36,10 @@ export class StorageService {
 
   async init(){
     await this.storage.create()
+    await this.storage.defineDriver(cordovaSQLiteDriver)
     await this.fillValues()
+    let name = this.storage.driver
+    console.log(name)
     console.log('all values: ',this.notes)
   }
 
