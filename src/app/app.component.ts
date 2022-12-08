@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { StatusBar } from '@capacitor/status-bar';
 import { Platform } from '@ionic/angular';
+import { Product } from './interfaces/Product';
+import { ProductDefaultQueryRepository } from './repositories/product.default.query.repository';
+import { ProductRepository } from './repositories/product.repository';
 import { ConfigService } from './services/config.service';
 import { SQLiteService } from './services/sqlite.service';
 import { StorageService } from './services/storage.service';
@@ -23,12 +26,14 @@ export class AppComponent {
   darkMode = false
   settings
   private initPlugin: boolean;
+  products: Product[] = [];
   public isWeb: boolean = false;
   constructor(public config: ConfigService,
     public storage: StorageService,
     public theme: ThemeService,
     private platform: Platform,
     private sqlite: SQLiteService,
+    private productRepository: ProductRepository, private productDefaultQueryRepository: ProductDefaultQueryRepository
    /* private _detail: DetailService,*/) {
     this.init()
   }
@@ -39,39 +44,48 @@ export class AppComponent {
     this.initializeApp()
   }
 
+  async getProducts() {
+    // await this.productRepository.createTestData();
+    this.products = await this.productRepository.getProducts();
+    console.log(`databaseService used: products:`);
+    console.log(this.products);
+    if(this.products.length == 0)
+      await this.productRepository.createTestData();
+
+    //this.productRepository.deleteProductById(3)
+    //normal db open db close version
+    // await this.productDefaultQueryRepository.getProducts();
+    // console.log(`default dbopen dbclose used:`);
+    // console.log(this.products);
+  }
+
   initializeApp() {
-    this.platform.ready().then(async () => {
-      this.sqlite.initializePlugin().then(async (ret) => {
-        this.initPlugin = ret;
-        if( this.sqlite.platform === "web") {
-          this.isWeb = true;
-          await customElements.whenDefined('jeep-sqlite');
-          const jeepSqliteEl = document.querySelector('jeep-sqlite');
-          if(jeepSqliteEl != null) {
-            await this.sqlite.initWebStore();
-            console.log(`>>>> isStoreOpen ${await jeepSqliteEl.isStoreOpen()}`);
-          } else {
-            console.log('>>>> jeepSqliteEl is null');
-          }
-        }
+    this.getProducts()
+    // this.platform.ready().then(async () => {
+    //   this.sqlite.initializePlugin().then(async (ret) => {
+    //     this.initPlugin = ret;
+    //     if( this.sqlite.platform === "web") {
+    //       this.isWeb = true;
+    //       await customElements.whenDefined('jeep-sqlite');
+    //       const jeepSqlite = document.querySelector('jeep-sqlite');
+    //       if(jeepSqlite != null) {
+    //         await this.sqlite.initWebStore();
+    //         console.log(`>>>> isStoreOpen ${await jeepSqlite.isStoreOpen()}`);
 
-
-        let data = await this.sqlite.createConnection('YOUR_DB1.db',false,'encryption',1,false)
-        console.log(data)
-        let op = await this.sqlite.open()
-        console.log(op);
-       // let msg = await this.sqlite.echo('holaa mundo');
-        let response = await this.sqlite.execute('CREATE TABLE IF NOT EXISTS Messages (id INTEGER PRIMARY KEY AUTOINCREMENT, message TEXT)')
-       // await this.sqlite.execute("INSERT INTO Messages (message) VALUES ('bATATA')")
-        //await this.sqlite.execute("INSERT INTO Messages (message) VALUES ('hello world')")
-        //let res = await this.sqlite.execute("SELECT * FROM Messages ORDER BY id DESC")
-       /// console.log(res);
-
-        console.log(response)
-        //console.log(msg)
-        console.log(`>>>> in App  this.initPlugin ${this.initPlugin}`);
-      });
-    });
+    //         await jeepSqlite.createConnection({
+    //           database:"testNew",
+    //           version: 1
+    //       });
+    //       } else {
+    //         console.log('>>>> jeepSqliteEl is null');
+    //       }
+    //     }
+    //     let data = await this.sqlite.createConnection('YOUR_DB1.db',false,'encryption',1,false)
+    //     console.log(data)
+    //     //console.log(msg)
+    //     console.log(`>>>> in App  this.initPlugin ${this.initPlugin}`);
+    //   });
+    // });
   }
 
   async getSettings(){

@@ -1,4 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
@@ -14,6 +14,16 @@ import { Drivers } from '@ionic/storage';
 import { StatusBar } from '@capacitor/status-bar';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { SQLiteService } from './services/sqlite.service';
+import { InitializeAppService } from './services/initialize.app.service';
+import { DetailService } from './services/detail.service';
+import { DatabaseService } from './services/database.service';
+import { MigrationService } from './services/migrations.service';
+import { ProductRepository } from './repositories/product.repository';
+
+export function initializeFactory(init: InitializeAppService) {
+  return () => init.initializeApp();
+}
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -21,16 +31,28 @@ import { SQLiteService } from './services/sqlite.service';
     IonicModule.forRoot(),
     FormsModule,
     IonicStorageModule.forRoot({
-      name:"new-database",
+      name: "new-database",
       driverOrder: [CordovaSQLiteDriver._driver, Drivers.IndexedDB]
     }),
     AppRoutingModule,
     HttpClientModule],
   providers: [
     SQLiteService,
+    DetailService,
+    DatabaseService,
+    InitializeAppService,
+  //  ProductRepository,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeFactory,
+      deps: [InitializeAppService],
+      multi: true
+    },
+
+    MigrationService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AppModule {}
+export class AppModule { }

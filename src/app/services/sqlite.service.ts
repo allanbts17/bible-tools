@@ -1,10 +1,10 @@
+// import { DownloadFromHTTP } from './../test/downloadfromhttp/downloadfromhttp.page';
 import { Injectable } from '@angular/core';
 
 import { Capacitor } from '@capacitor/core';
 import { CapacitorSQLite, SQLiteDBConnection, SQLiteConnection, capSQLiteSet,
          capSQLiteChanges, capSQLiteValues, capEchoResult, capSQLiteResult,
-         capNCDatabasePathResult,
-         CapacitorSQLitePlugin} from '@capacitor-community/sqlite';
+         capNCDatabasePathResult } from '@capacitor-community/sqlite';
 
 @Injectable()
 
@@ -12,7 +12,7 @@ export class SQLiteService {
     sqlite: SQLiteConnection;
     isService: boolean = false;
     platform: string;
-    sqlitePlugin: CapacitorSQLitePlugin;
+    sqlitePlugin: any;
     native: boolean = false;
 
     constructor() {
@@ -29,14 +29,6 @@ export class SQLiteService {
             this.isService = true;
             resolve(true);
         });
-    }
-
-    async execute(commands){
-      return await this.sqlitePlugin.execute({database:'YOUR_DB1',statements:commands})
-    }
-
-    async open(){
-      return await this.sqlitePlugin.open({database:'YOUR_DB1',readonly:false})
     }
     getPlatform() {
         return this.platform;
@@ -252,6 +244,15 @@ export class SQLiteService {
                            ): Promise<SQLiteDBConnection> {
         if(this.sqlite != null) {
             try {
+/*                if(encrypted) {
+                    if(this.native) {
+                        const isSet = await this.sqlite.isSecretStored()
+                        if(!isSet.result) {
+                            return Promise.reject(new Error(`no secret phrase registered`));
+                        }
+                    }
+                }
+*/
                const readOnly = readonly ? readonly : false;
                const db: SQLiteDBConnection = await this.sqlite.createConnection(
                                 database, encrypted, mode, version, readOnly);
@@ -474,6 +475,18 @@ export class SQLiteService {
             return this.sqlite.moveDatabasesAndAddSuffix(path, dbList);
         } else {
             throw new Error(`can't move the databases`);
+        }
+    }
+
+    async getFromHTTPRequest(url: string, overwrite?: boolean): Promise<void> {
+        const mOverwrite: boolean = overwrite != null ? overwrite : true;
+        if (url.length === 0) {
+            return Promise.reject(new Error(`Must give an url to download`));
+        }
+        if(this.sqlite != null) {
+            return this.sqlite.getFromHTTPRequest(url, mOverwrite);
+        } else {
+            throw new Error(`can't download the database`);
         }
     }
 
