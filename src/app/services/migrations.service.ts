@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { DatabaseService } from './database.service';
 import { SQLiteService } from './sqlite.service';
+import { CreateTables } from '../repositories/create-table-schemas';
 
 export const createSchemaProducts: string = `
 CREATE TABLE IF NOT EXISTS products (
@@ -35,6 +36,15 @@ export class MigrationService {
   async migrate(): Promise<any> {
     await this.createTestTable();
     await this.createProductsTable();
+    await this.createTables()
+  }
+
+  async createTables() {
+    for (let table of CreateTables) {
+      await this.databaseService.executeQuery(async (db) => {
+        await db.execute(table);
+      });
+    }
   }
 
   async createProductsTable(): Promise<any> {
