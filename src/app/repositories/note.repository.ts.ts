@@ -3,22 +3,49 @@ import { DBSQLiteValues, SQLiteDBConnection } from '@capacitor-community/sqlite'
 import { Injectable } from '@angular/core';
 import { DatabaseService } from '../services/database.service';
 import { Note } from '../interfaces/note';
-
-const pagSize = 10
+import { StorageService } from '../services/storage.service';
 
 @Injectable({
     providedIn: 'root'
 })
 
 export class NoteRepository {
+    private pagSize = 10
     constructor(private _databaseService: DatabaseService) {
+        //this.deleteAll()
+        //this.fillIfEmpty()
     }
+
+    async fillIfEmpty(data: any){
+        let notes = await this.getNotes()
+        console.log('noteRep',notes);
+        //console.log();
+        // for(let note of data){
+        //    // console.log('noteRep',note);
+        //    await this.createNote(note)
+        // }
+        //
+    }
+
     async getNotes(): Promise<Note[]> {
         return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
             var notes: DBSQLiteValues = await db.query("select * from notes");
             return notes.values as Note[];
         });
     }
+
+    async getPaginatedNotes(lastId = 0): Promise<Note[]> {
+        return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
+            let sqlcmd: string = `
+            select * from notes
+            where id > ${lastId}
+            ORDER BY id ASC
+            LIMIT ${this.pagSize}`;
+            var notes: DBSQLiteValues = await db.query(sqlcmd);
+            return notes.values as Note[];
+        });
+    }
+
 
     async createNote(note: Note) {
         return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
@@ -68,14 +95,30 @@ export class NoteRepository {
             select * from notes
             where category = ? AND id > ${lastId}
             ORDER BY id ASC
-            LIMIT ${pagSize}`;
+            LIMIT ${this.pagSize}`;
             let values: Array<any> = [category];
             let ret: any = await db.query(sqlcmd, values);
+            console.log('ret',ret);
+
             if (ret.values.length > 0) {
                 return ret.values as Note[];
+            } else {
+                return ret.values as Note[];
             }
-            throw Error('get notes by category failed');
+            //throw Error('get notes by category failed');
         });
+    }
+
+    setPageSize(size: number){
+        this.pagSize = size;
+    }
+
+    async deleteAll(){
+        await this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
+            //delete all products
+            let sqlcmd: string = "DELETE FROM notes;";
+            await db.execute(sqlcmd, false);
+          });
     }
 
 }

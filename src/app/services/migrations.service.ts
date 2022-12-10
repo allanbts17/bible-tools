@@ -34,8 +34,14 @@ export class MigrationService {
   }
 
   async migrate(): Promise<any> {
-    await this.createTestTable();
-    await this.createProductsTable();
+    // await this.databaseService.executeQuery(async (db) => {
+    //   await db.execute(`
+    //   ALTER TABLE notes
+    //   ADD date TEXT NOT NULL;
+    //   `);
+    // });
+    //await this.createTestTable();
+    //await this.createProductsTable();
     await this.createTables()
   }
 
@@ -65,7 +71,7 @@ export class MigrationService {
               name TEXT NOT NULL
             );
             `
-    console.log(`query ${query}`)
+    //console.log(`query ${query}`)
 
     const res: any = await db.execute(query);
     console.log(`res: ${JSON.stringify(res)}`)

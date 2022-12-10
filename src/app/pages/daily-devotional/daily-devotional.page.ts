@@ -67,9 +67,9 @@ export class DailyDevotionalPage implements OnInit {
     setTimeout(async () => {
       let tab = this.selectedTab
       this.notePages[tab] += 1
-      let newData = this.getFilteredNotes(tab)?.slice(pagSize*this.notePages[tab],pagSize*(this.notePages[tab]+1))
+      let empty = await this.storageService.loadMoreNotes(tab) //this.getFilteredNotes(tab)?.slice(pagSize*this.notePages[tab],pagSize*(this.notePages[tab]+1))
       e.target.complete();
-      if(newData.length === 0){
+      if(empty){
         e.target.disabled = true;
       }
     }, 500);
@@ -255,7 +255,7 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   getPaginatedNotes(tab){
-    return this.getFilteredNotes(tab)?.slice(0,pagSize*(this.notePages[tab]+1))
+    return this.getFilteredNotes(tab) //?.slice(0,pagSize*(this.notePages[tab]+1))
   }
 
   filterByCustomType(tabFilteredList){
