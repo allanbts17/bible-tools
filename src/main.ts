@@ -17,13 +17,13 @@ window.addEventListener('DOMContentLoaded', async () => {
   const sqlite: SQLiteConnection = new SQLiteConnection(CapacitorSQLite)
   try {
     if(platform === "web") {
-      console.log('in index.ts')
+      //console.log('in index.ts')
       const jeepEl = document.createElement("jeep-sqlite");
       document.body.appendChild(jeepEl);
       await customElements.whenDefined('jeep-sqlite');
-      console.log('in index.ts after customElements')
+      //console.log('in index.ts after customElements')
       await sqlite.initWebStore();
-      console.log('after sqlite.initWebStore()');
+      //console.log('after sqlite.initWebStore()');
     }
     await sqlite.checkConnectionsConsistency();
 

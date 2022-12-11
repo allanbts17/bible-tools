@@ -156,6 +156,8 @@ export class AddNoteModalComponent implements OnInit {
     var catArr = await this.storageService.addCategories(data)
     this.addCategoryEvent.emit()
     this.loadCategories()
+    console.log('newCat',catArr,catArr.slice(-1)[0]);
+
     return catArr.slice(-1)[0]
   }
 

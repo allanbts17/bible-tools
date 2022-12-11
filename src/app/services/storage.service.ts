@@ -49,6 +49,8 @@ export class StorageService {
 
   async fillValues() {
     let cat = await this.categoryrRep.getCategories()
+    console.log('cat',cat);
+
     //let cat = await this.getData(CATEGORY_KEY)
     let top = await this.getData(TOPIC_KEY)
     this.topics.push(...top)
@@ -64,10 +66,13 @@ export class StorageService {
     for (let category of this.categories) {
       console.log(category.category);
 
-      let cat = await this.noteRep.getNotesByCategory(category.category)
+      let nt = await this.noteRep.getNotesByCategory(category.id)
+      console.log('note by cat',nt);
+
       //let cat = await this.filterNotesByCategory(category.id)
-      Object.assign(this.notes, { [category.category]: cat })
+      Object.assign(this.notes, { [category.category]: nt })
     }
+
     for (const item in this.notes) {
       Object.assign(this.notePages, { [item]: this.getLastId(this.notes[item]) })
     }
@@ -88,7 +93,8 @@ export class StorageService {
   }
 
   getLastId(arr: Array<any>){
-    return arr.slice(-1)[0].id
+    //console.log('id err',arr);
+    return arr.slice(-1)[0]?.id
   }
 
   /***************** Notes *******************/
@@ -123,12 +129,12 @@ export class StorageService {
 
   async addNote(note: Note, categoryName: string) {
     await this.noteRep.createNote(note)
-    await this.addData(NOTES_KEY, note)
-    await this.sortData(NOTES_KEY, (a, b) => {
-      var ma = moment(a.date)
-      var mb = moment(b.date)
-      return mb.diff(ma)
-    })
+    // await this.addData(NOTES_KEY, note)
+    // await this.sortData(NOTES_KEY, (a, b) => {
+    //   var ma = moment(a.date)
+    //   var mb = moment(b.date)
+    //   return mb.diff(ma)
+    // })
     this.notes[categoryName].unshift(note)
     this.notes['all'].unshift(note)
   }
@@ -136,7 +142,8 @@ export class StorageService {
   async deleteNote(note: Note) {
     //console.log('on delete note')
     //console.log(note)
-    await this.removeItemByID(NOTES_KEY, note)
+   //  await this.removeItemByID(NOTES_KEY, note)
+    await this.noteRep.deleteNoteById(note.id)
     let categoryName = this.categories.find(cat => cat.id === note.category)['category']
     this.notes[categoryName] = this.notes[categoryName].filter(arrNote => arrNote !== note)
     //console.log('with array: ',this.notes['all'].filter(arrNote => arrNote === note),
@@ -146,7 +153,8 @@ export class StorageService {
   }
 
   async editNote(note: Note, prevCategoryName) {
-    await this.editItemByID(NOTES_KEY, note)
+    //await this.editItemByID(NOTES_KEY, note)
+    await this.noteRep.updateNote(note)
     let newCategoryName = this.categories.find(cat => cat.id === note.category)['category']
     //let noteCatIndex = this.notes[prevCategoryName].findIndex(arrNote => arrNote.id === note.id)
     let noteAllIndex = this.notes['all'].findIndex(arrNote => arrNote.id === note.id)
@@ -215,15 +223,17 @@ export class StorageService {
 
   /***************** Categories *******************/
   async addCategories(category: Category) {
-    let categoryArray = await this.addData(CATEGORY_KEY, category)
+    //let categoryArray = await this.addData(CATEGORY_KEY, category)
+    let _category = await this.categoryrRep.createCategory(category)
     this.categories.push(category)
     Object.assign(this.notes, { [category.category]: [] })
     Object.assign(this.notePages, { [category.category]: 0 })
-    return categoryArray
+    return await this.categoryrRep.getCategories()
   }
 
   async editCategories(category: Category, prevCategoryName: string) {
-    await this.editItemByID(CATEGORY_KEY, category)
+    //await this.editItemByID(CATEGORY_KEY, category)
+    await this.categoryrRep.updateCategory(category)
     let index = this.categories.findIndex(cat => cat.id === category.id)
     this.categories[index] = category
     if (category.category !== prevCategoryName) {
@@ -236,12 +246,14 @@ export class StorageService {
   }
 
   async deleteCategory(category: Category) {
-    await this.removeItemByID(CATEGORY_KEY, category)
+    // await this.removeItemByID(CATEGORY_KEY, category)
+    await this.categoryrRep.deleteCategoryById(category.id)
     this.categories = this.categories.filter(arrCategory => arrCategory !== category)
   }
 
   async getCategories() {
-    let categories = await this.getData(CATEGORY_KEY)
+    // let categories = await this.getData(CATEGORY_KEY)
+    let categories = await this.categoryrRep.getCategories()
     return categories
   }
 

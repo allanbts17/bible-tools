@@ -21,12 +21,16 @@ export class GeneralNoteComponent implements OnInit {
   constructor(/*public popoverController: PopoverController*/) { }
 
   ngOnInit() {
+    console.log('general note',this.note);
+    //this.getCategoryValues(true)
     //console.log(this.index)
   }
 
-  getCategoryValues(){
+  getCategoryValues(debug?){
     //console.log('param: ',prop,'categories: ',this.categories,'note: ',this.note)
     const category = this.categories.find(cat => cat.id == this.note.category)
+    if(debug || category?.id === 9) console.log('cat values',category,this.categories);
+
     return category
   }
 

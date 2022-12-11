@@ -41,51 +41,6 @@ export class AppComponent {
   async init(){
     await this.getSettings()
     this.setText()
-    this.initializeApp()
-  }
-
-  async getProducts() {
-    // await this.productRepository.createTestData();
-    this.products = await this.productRepository.getProducts();
-    console.log(`databaseService used: products:`);
-    console.log(this.products);
-    if(this.products.length == 0)
-      await this.productRepository.createTestData();
-
-    //this.productRepository.deleteProductById(3)
-    //normal db open db close version
-    // await this.productDefaultQueryRepository.getProducts();
-    // console.log(`default dbopen dbclose used:`);
-    // console.log(this.products);
-  }
-
-  initializeApp() {
-    this.getProducts()
-    // this.platform.ready().then(async () => {
-    //   this.sqlite.initializePlugin().then(async (ret) => {
-    //     this.initPlugin = ret;
-    //     if( this.sqlite.platform === "web") {
-    //       this.isWeb = true;
-    //       await customElements.whenDefined('jeep-sqlite');
-    //       const jeepSqlite = document.querySelector('jeep-sqlite');
-    //       if(jeepSqlite != null) {
-    //         await this.sqlite.initWebStore();
-    //         console.log(`>>>> isStoreOpen ${await jeepSqlite.isStoreOpen()}`);
-
-    //         await jeepSqlite.createConnection({
-    //           database:"testNew",
-    //           version: 1
-    //       });
-    //       } else {
-    //         console.log('>>>> jeepSqliteEl is null');
-    //       }
-    //     }
-    //     let data = await this.sqlite.createConnection('YOUR_DB1.db',false,'encryption',1,false)
-    //     console.log(data)
-    //     //console.log(msg)
-    //     console.log(`>>>> in App  this.initPlugin ${this.initPlugin}`);
-    //   });
-    // });
   }
 
   async getSettings(){

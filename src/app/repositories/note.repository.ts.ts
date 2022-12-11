@@ -16,9 +16,9 @@ export class NoteRepository {
         //this.fillIfEmpty()
     }
 
-    async fillIfEmpty(data: any){
+    async fillIfEmpty(data: any) {
         let notes = await this.getNotes()
-        console.log('noteRep',notes);
+        console.log('noteRep', notes);
         //console.log();
         // for(let note of data){
         //    // console.log('noteRep',note);
@@ -34,13 +34,21 @@ export class NoteRepository {
         });
     }
 
-    async getPaginatedNotes(lastId = 0): Promise<Note[]> {
+    async getPaginatedNotes(lastId?: number): Promise<Note[]> {
         return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
-            let sqlcmd: string = `
-            select * from notes
-            where id > ${lastId}
-            ORDER BY id ASC
-            LIMIT ${this.pagSize}`;
+            let sqlcmd: string;
+            if (lastId) {
+                sqlcmd = `
+                select * from notes
+                where id < ${lastId}
+                ORDER BY id DESC
+                LIMIT ${this.pagSize}`;
+            } else {
+                sqlcmd = `
+                select * from notes
+                ORDER BY id DESC
+                LIMIT ${this.pagSize}`;
+            }
             var notes: DBSQLiteValues = await db.query(sqlcmd);
             return notes.values as Note[];
         });
@@ -89,16 +97,25 @@ export class NoteRepository {
         });
     }
 
-    async getNotesByCategory(category: string, lastId = 0): Promise<Note[]> {
+    async getNotesByCategory(category: string, lastId?: number): Promise<Note[]> {
         return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
-            let sqlcmd: string = `
-            select * from notes
-            where category = ? AND id > ${lastId}
-            ORDER BY id ASC
-            LIMIT ${this.pagSize}`;
+            let sqlcmd: string;
+            if (lastId) {
+                sqlcmd = `
+                select * from notes
+                where category = ? AND id < ${lastId}
+                ORDER BY id DESC
+                LIMIT ${this.pagSize}`;
+            } else {
+                sqlcmd = `
+                select * from notes
+                where category = ?
+                ORDER BY id DESC
+                LIMIT ${this.pagSize}`;
+            }
             let values: Array<any> = [category];
             let ret: any = await db.query(sqlcmd, values);
-            console.log('ret',ret);
+            console.log('ret', ret);
 
             if (ret.values.length > 0) {
                 return ret.values as Note[];
@@ -109,16 +126,16 @@ export class NoteRepository {
         });
     }
 
-    setPageSize(size: number){
+    setPageSize(size: number) {
         this.pagSize = size;
     }
 
-    async deleteAll(){
+    async deleteAll() {
         await this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
             //delete all products
             let sqlcmd: string = "DELETE FROM notes;";
             await db.execute(sqlcmd, false);
-          });
+        });
     }
 
 }

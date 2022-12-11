@@ -221,9 +221,9 @@ export class DailyDevotionalPage implements OnInit {
 
   async loadCategories(){
     this.categoryList = await this.storageService.getCategories()
-    setTimeout(()=>{
-      this.categoryList = this.storageService.categories
-    },800)
+    // setTimeout(()=>{
+    //   this.categoryList = this.storageService.categories
+    // },800)
     this.fillTabs()
   }
 
