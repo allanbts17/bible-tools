@@ -33,7 +33,6 @@ export class StorageService {
   constructor(private storage: Storage,
     private noteRep: NoteRepository,
     private categoryrRep: CategoryRepository) {
-    console.log('storTest', this.topics)
     //this.init();
     //setTimeout(()=> this.removeItem(CATEGORY_KEY,200),4000)
   }
@@ -42,34 +41,22 @@ export class StorageService {
     await this.storage.create()
     await this.storage.defineDriver(cordovaSQLiteDriver)
     await this.fillValues()
-    let name = this.storage.driver
-    console.log(name)
-    console.log('all values: ', this.notes)
+    //console.log('all values: ', this.notes)
   }
 
   async fillValues() {
     let cat = await this.categoryrRep.getCategories()
-    console.log('cat',cat);
-
-    //let cat = await this.getData(CATEGORY_KEY)
     let top = await this.getData(TOPIC_KEY)
     this.topics.push(...top)
     this.categories.push(...cat)
 
-    //let allNotes = await this.filterNotesByCategory()
-    //let da = await this.filterNotesByCategory()
     let allVerses = await this.filterVersesByTopic()
     let allNotes = await this.noteRep.getPaginatedNotes()
 
     /** Notes **/
     Object.assign(this.notes, { 'all': allNotes })
     for (let category of this.categories) {
-      console.log(category.category);
-
       let nt = await this.noteRep.getNotesByCategory(category.id)
-      console.log('note by cat',nt);
-
-      //let cat = await this.filterNotesByCategory(category.id)
       Object.assign(this.notes, { [category.category]: nt })
     }
 
@@ -105,9 +92,13 @@ export class StorageService {
    */
   async loadMoreNotes(category: string){
     let lastId = this.notePages[category]
+   // console.log('notePages',this.notePages);
+
     let newNotes
     if(category== 'all') {
       newNotes = await this.noteRep.getPaginatedNotes(lastId);
+      //console.log('more notes',lastId,newNotes,this.notes);
+
     } else {
       newNotes = await this.noteRep.getNotesByCategory(category,lastId);
     }
@@ -117,44 +108,36 @@ export class StorageService {
     return newNotes.length === 0
   }
 
-  async filterNotesByCategory(categoryId = null, pag = -1) {
-    let allNotes = await this.getData(NOTES_KEY)
-    if (categoryId !== null) {
-      let filtered = allNotes.filter(note => note.category === categoryId)
-      return pag === -1 ? filtered : filtered.slice(pagSize * pag, pagSize * (pag + 1))
-    } else {
-      return pag === -1 ? allNotes : allNotes.slice(pagSize * pag, pagSize * (pag + 1))
-    }
-  }
+  // async filterNotesByCategory(categoryId = null, pag = -1) {
+  //   let allNotes = await this.getData(NOTES_KEY)
+  //   if (categoryId !== null) {
+  //     let filtered = allNotes.filter(note => note.category === categoryId)
+  //     return pag === -1 ? filtered : filtered.slice(pagSize * pag, pagSize * (pag + 1))
+  //   } else {
+  //     return pag === -1 ? allNotes : allNotes.slice(pagSize * pag, pagSize * (pag + 1))
+  //   }
+  // }
 
   async addNote(note: Note, categoryName: string) {
-    await this.noteRep.createNote(note)
-    // await this.addData(NOTES_KEY, note)
-    // await this.sortData(NOTES_KEY, (a, b) => {
-    //   var ma = moment(a.date)
-    //   var mb = moment(b.date)
-    //   return mb.diff(ma)
-    // })
-    this.notes[categoryName].unshift(note)
-    this.notes['all'].unshift(note)
+    let _note = await this.noteRep.createNote(note)
+    this.notes[categoryName].unshift(_note)
+    this.notes['all'].unshift(_note)
   }
 
   async deleteNote(note: Note) {
-    //console.log('on delete note')
-    //console.log(note)
-   //  await this.removeItemByID(NOTES_KEY, note)
     await this.noteRep.deleteNoteById(note.id)
     let categoryName = this.categories.find(cat => cat.id === note.category)['category']
     this.notes[categoryName] = this.notes[categoryName].filter(arrNote => arrNote !== note)
-    //console.log('with array: ',this.notes['all'].filter(arrNote => arrNote === note),
-    //'without array: ',this.notes['all'].filter(arrNote => arrNote !== note))
     this.notes['all'] = this.notes['all'].filter(arrNote => arrNote !== note)
-    //console.log(this.notes['all'])
   }
 
   async editNote(note: Note, prevCategoryName) {
+    console.log('is editing note',note);
+
     //await this.editItemByID(NOTES_KEY, note)
     await this.noteRep.updateNote(note)
+    console.log('category of note',this.categories.find(cat => cat.id === note.category),this.categories);
+
     let newCategoryName = this.categories.find(cat => cat.id === note.category)['category']
     //let noteCatIndex = this.notes[prevCategoryName].findIndex(arrNote => arrNote.id === note.id)
     let noteAllIndex = this.notes['all'].findIndex(arrNote => arrNote.id === note.id)
@@ -225,9 +208,11 @@ export class StorageService {
   async addCategories(category: Category) {
     //let categoryArray = await this.addData(CATEGORY_KEY, category)
     let _category = await this.categoryrRep.createCategory(category)
-    this.categories.push(category)
+    this.categories.push(_category)
+    console.log('new category and list',category,this.categories);
+
     Object.assign(this.notes, { [category.category]: [] })
-    Object.assign(this.notePages, { [category.category]: 0 })
+    Object.assign(this.notePages, { [category.category]: undefined })
     return await this.categoryrRep.getCategories()
   }
 

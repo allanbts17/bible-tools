@@ -9,6 +9,7 @@ import { CustomAlertComponent } from 'src/app/components/custom-alert/custom-ale
 import { Note } from 'src/app/interfaces/note';
 import { IonPopover, IonSlides, PopoverController } from '@ionic/angular';
 import { TabsComponent } from 'src/app/components/tabs/tabs.component';
+import { environment } from 'src/environments/environment';
 
 const pagSize = 10
 @Component({
@@ -39,10 +40,13 @@ export class DailyDevotionalPage implements OnInit {
   isAutoScrollingUp = false
   categoryEditSize: string = 'none'
   categoryDeleteSize: string = 'none'
+  pageSize
 
   constructor(public config: ConfigService,
     public storageService: StorageService,
-    public popoverController: PopoverController) {}
+    public popoverController: PopoverController) {
+      this.pageSize = environment.pageSize
+    }
 
 
   ngOnInit() {
@@ -66,7 +70,7 @@ export class DailyDevotionalPage implements OnInit {
   onScroll(e){
     setTimeout(async () => {
       let tab = this.selectedTab
-      this.notePages[tab] += 1
+      //this.notePages[tab] += 1
       let empty = await this.storageService.loadMoreNotes(tab) //this.getFilteredNotes(tab)?.slice(pagSize*this.notePages[tab],pagSize*(this.notePages[tab]+1))
       e.target.complete();
       if(empty){
@@ -255,6 +259,8 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   getPaginatedNotes(tab){
+   // console.log(this.getFilteredNotes(tab).length > this.pageSize);
+
     return this.getFilteredNotes(tab) //?.slice(0,pagSize*(this.notePages[tab]+1))
   }
 

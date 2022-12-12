@@ -22,7 +22,7 @@ export class CategoryRepository {
             let values: Array<any> = [category.category, category.color];
             let ret: any = await db.run(sqlcmd, values);
             if (ret.changes.lastId > 0) {
-                return ret.changes as Category;
+                return {...category, id:ret.changes.lastId} as Category;
             }
             throw Error('create category failed');
         });
@@ -30,11 +30,11 @@ export class CategoryRepository {
 
     async updateCategory(category: Category) {
         return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
-            let sqlcmd: string = "update categories set category = ?, color = ?, where id = ?";
+            let sqlcmd: string = "update categories set category = ?, color = ? where id = ?";
             let values: Array<any> = [category.category, category.color, category.id];
             let ret: any = await db.run(sqlcmd, values);
             if (ret.changes.changes > 0) {
-                return await this.getCategoryById(category.id);
+                return category//await this.getCategoryById(category.id);
             }
             throw Error('update category failed');
         });

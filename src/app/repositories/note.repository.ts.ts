@@ -4,14 +4,16 @@ import { Injectable } from '@angular/core';
 import { DatabaseService } from '../services/database.service';
 import { Note } from '../interfaces/note';
 import { StorageService } from '../services/storage.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
     providedIn: 'root'
 })
 
 export class NoteRepository {
-    private pagSize = 10
+    private pagSize
     constructor(private _databaseService: DatabaseService) {
+        this.pagSize = environment.pageSize
         //this.deleteAll()
         //this.fillIfEmpty()
     }
@@ -61,7 +63,7 @@ export class NoteRepository {
             let values: Array<any> = [note.category, note.date, note.title, note.text];
             let ret: any = await db.run(sqlcmd, values);
             if (ret.changes.lastId > 0) {
-                return ret.changes as Note;
+                return {...note, id:ret.changes.lastId} as Note;
             }
             throw Error('create note failed');
         });
@@ -69,11 +71,15 @@ export class NoteRepository {
 
     async updateNote(note: Note) {
         return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
-            let sqlcmd: string = "update notes set category = ?, date = ?, title = ?, text = ?, where id = ?";
+            let sqlcmd: string = `
+            update notes
+            set category = ?, date = ?, title = ?, text = ?
+            where id = ?
+            `;
             let values: Array<any> = [note.category, note.date, note.title, note.text, note.id];
             let ret: any = await db.run(sqlcmd, values);
             if (ret.changes.changes > 0) {
-                return await this.getNoteById(note.id);
+                return note//await this.getNoteById(note.id);
             }
             throw Error('update note failed');
         });
@@ -115,7 +121,7 @@ export class NoteRepository {
             }
             let values: Array<any> = [category];
             let ret: any = await db.query(sqlcmd, values);
-            console.log('ret', ret);
+            //console.log('ret', ret);
 
             if (ret.values.length > 0) {
                 return ret.values as Note[];

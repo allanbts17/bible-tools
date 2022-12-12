@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   databaseName: 'test',
+  pageSize: 10
 };
 
 /*
