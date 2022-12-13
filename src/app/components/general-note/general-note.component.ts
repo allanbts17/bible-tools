@@ -29,8 +29,6 @@ export class GeneralNoteComponent implements OnInit {
   getCategoryValues(debug?){
     //console.log('param: ',prop,'categories: ',this.categories,'note: ',this.note)
     const category = this.categories.find(cat => cat.id == this.note.category)
-    if(debug || category?.id === 9) console.log('cat values',category,this.categories);
-
     return category
   }
 

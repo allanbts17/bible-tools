@@ -223,7 +223,10 @@ export class DailyDevotionalPage implements OnInit {
     this.filterOn=!this.filterOn
   }
 
-  async loadCategories(){
+  async loadCategories(categories?){
+    if(categories)
+    this.categoryList = categories
+    else
     this.categoryList = await this.storageService.getCategories()
     // setTimeout(()=>{
     //   this.categoryList = this.storageService.categories

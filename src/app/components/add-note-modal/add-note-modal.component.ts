@@ -111,9 +111,9 @@ export class AddNoteModalComponent implements OnInit {
     if(this.validateNote()){
       console.log('enter, newNote',this.newNote)
       if(this.newNote)
-        this.addNote(this.note,noteCategoryName)
+        await this.addNote(this.note,noteCategoryName)
       else
-        this.editNote(this.note,noteCategoryName)
+        await this.editNote(this.note,noteCategoryName)
       this.resetValues()
       this.modal.dismiss()
     } else {
@@ -154,7 +154,7 @@ export class AddNoteModalComponent implements OnInit {
   async addCategories(data){
     //var catArr = await this.storageService.addData('categories',data)
     var catArr = await this.storageService.addCategories(data)
-    this.addCategoryEvent.emit()
+    this.addCategoryEvent.emit(catArr)
     this.loadCategories()
     console.log('newCat',catArr,catArr.slice(-1)[0]);
 
