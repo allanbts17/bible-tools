@@ -14,7 +14,7 @@ import { SelectPassageModalComponent } from 'src/app/components/select-passage-m
 import { TopicModalComponent } from 'src/app/components/topic-modal/topic-modal.component';
 import { TabsComponent } from 'src/app/components/tabs/tabs.component';
 import { TestObject } from 'protractor/built/driverProviders';
-
+import _ from 'underscore'
 const pagSize = 10
 @Component({
   selector: 'app-verse-index',
@@ -35,7 +35,7 @@ export class VerseIndexPage implements OnInit {
   changeShared = true
   bibles = []
   tabs = []
-  topicList = []
+  topicList: Array<Topic> = []
   verseList: Verse[] //[{topic:0,bible:{id:'',reference:''},passage:{},text:"",date:""}]
   filteredVerseList: Verse[]// = [{id:1,topic:0,bible:{id:"822u4320j",reference:'RVR09'},passage:{id:"GEN.1.1",reference:'Génesis 1:1'},text:'Amad al Señor',date:""},{id:2,topic:0,bible:{id:"822u4320j",reference:'RVR09'},passage:{id:"GEN.1.1",reference:'Génesis 1:1'},text:'Amad al Señor',date:""}]
   selectedTab = ""
@@ -75,6 +75,10 @@ export class VerseIndexPage implements OnInit {
     console.log(this.verses)
     this.loadTopics()
     this.addScrollListener()
+    for(let i of [1,2,3,4,5,6,7,8,9,10]){
+      console.log('in');
+      //await this.storageService.addVerse(this.verses.Pasto[0],'Pasto')
+    }
   }
 
   async presentToast(msg) {
@@ -152,12 +156,14 @@ export class VerseIndexPage implements OnInit {
       reference:bible.abbreviationLocal
     }
     this.selectedVerse.text = outputText
-    await this.editVerse(this.selectedVerse)
+    _.defer(async () => await this.editVerse(this.selectedVerse))
     this.loadVerses()
   }
 
-  async editVerse(data){
-    await this.storageService.editItemByID('my-verses',data)
+  async editVerse(data: Verse){
+    let topicName = this.topicList.find((top: Topic) => top.id == data.topic).name
+    await this.storageService.editVerse(data,topicName)
+    //await this.storageService.editItemByID('my-verses',data)
   }
 
   chapterChange(chapter){
@@ -223,9 +229,6 @@ export class VerseIndexPage implements OnInit {
 
   async loadTopics(){
     this.topicList = await this.storageService.getTopics()
-    setTimeout(()=>{
-      this.topicList = this.storageService.topics
-    },800)
     this.fillTabs()
   }
 
@@ -279,9 +282,9 @@ export class VerseIndexPage implements OnInit {
     return filtered
   }
 
-  getTabs(){
-    return ['all'].concat(this.topicList)
-  }
+  // getTabs(){
+  //   return ['all'].concat(this.topicList)
+  // }
 
   getFilteredVerses(tab){
     if(this.filterOn)
@@ -314,17 +317,17 @@ export class VerseIndexPage implements OnInit {
   }
 
   getPaginatedVerses(tab){
-    return this.getFilteredVerses(tab)?.slice(0,pagSize*(this.versePages[tab]+1))
+    return this.getFilteredVerses(tab) //?.slice(0,pagSize*(this.versePages[tab]+1))
   }
 
 
   onScroll(e){
     setTimeout(async () => {
       let tab = this.selectedTab
-      this.versePages[tab] += 1
-      let newData = this.getFilteredVerses(tab)?.slice(pagSize*this.versePages[tab],pagSize*(this.versePages[tab]+1))
+      //this.versePages[tab] += 1
+      let empty = await this.storageService.loadMoreVerses(tab) //this.getFilteredNotes(tab)?.slice(pagSize*this.notePages[tab],pagSize*(this.notePages[tab]+1))
       e.target.complete();
-      if(newData.length === 0){
+      if(empty){
         e.target.disabled = true;
       }
     }, 500);

@@ -214,6 +214,7 @@ export class AddVerseModalComponent implements OnInit {
   async addVerse(data,topic){
     await this.storageService.addVerse(data,topic)
     this.addVerseEvent.emit()
+    this.addTopicEvent.emit()
   }
 
   async editVerse(data,topic){
@@ -223,7 +224,6 @@ export class AddVerseModalComponent implements OnInit {
 
   async addTopics(data){
     var topArr = await this.storageService.addTopic(data)
-    this.addTopicEvent.emit()
     this.loadTopics()
     return topArr.slice(-1)[0]
   }

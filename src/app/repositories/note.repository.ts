@@ -122,12 +122,12 @@ export class NoteRepository {
             let values: Array<any> = [category];
             let ret: any = await db.query(sqlcmd, values);
             //console.log('ret', ret);
-
-            if (ret.values.length > 0) {
-                return ret.values as Note[];
-            } else {
-                return ret.values as Note[];
-            }
+            return ret.values as Note[];
+            // if (ret.values.length > 0) {
+            //     return ret.values as Note[];
+            // } else {
+            //     return ret.values as Note[];
+            // }
             //throw Error('get notes by category failed');
         });
     }

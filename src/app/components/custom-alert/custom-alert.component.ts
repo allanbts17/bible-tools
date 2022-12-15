@@ -91,7 +91,7 @@ export class CustomAlertComponent implements OnInit {
           id: 'confirm-button',
           handler: async () => {
             await this.deleteVerses(top)
-            await this.storageService.removeItemByID('topics',top)
+            await this.storageService.deleteTopic(top)//.removeItemByID('topics',top)
             this.topicErasedEvent.emit()
             this.versesChangedEvent.emit()
           }
@@ -303,10 +303,11 @@ export class CustomAlertComponent implements OnInit {
             let topic = {name: value.newTopic}
             let newArray = await this.storageService.addTopic(topic)
             this.newTopToMove = newArray.slice(-1)[0]
-            this.topicAddedEvent.emit()
+
             setTimeout(async ()=> {
               await this.moveOneVerse(verse,actualTopic)
-            this.versesChangedEvent.emit()
+              this.topicAddedEvent.emit()
+              this.versesChangedEvent.emit()
             //console.log('Confirm Ok',this.newTopToMove);
             })
           }
@@ -445,5 +446,5 @@ export class CustomAlertComponent implements OnInit {
       await this.storageService.deleteVerse(filteredVerses[i])
     }
   }
-  
+
 }

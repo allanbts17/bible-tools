@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 import { Note } from '../interfaces/note';
 import { Category } from '../interfaces/category';
-import * as moment from 'moment'
+//import * as moment from 'moment'
 import { Verse } from '../interfaces/verse';
 import { Topic } from '../interfaces/topic';
-import * as cordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
-import { NoteRepository } from '../repositories/note.repository.ts';
+//import * as cordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
+import { NoteRepository } from '../repositories/note.repository';
 import { CategoryRepository } from '../repositories/category.repository';
+import { VerseRepository } from '../repositories/verse.repository';
+import { TopicRepository } from '../repositories/topic.repository';
 
 const NOTES_KEY = 'notes'
 const CATEGORY_KEY = 'categories'
@@ -32,25 +34,27 @@ export class StorageService {
 
   constructor(private storage: Storage,
     private noteRep: NoteRepository,
-    private categoryrRep: CategoryRepository) {
+    private verseRep: VerseRepository,
+    private categoryrRep: CategoryRepository,
+    private topicRep: TopicRepository) {
     //this.init();
     //setTimeout(()=> this.removeItem(CATEGORY_KEY,200),4000)
   }
 
   async init() {
     await this.storage.create()
-    await this.storage.defineDriver(cordovaSQLiteDriver)
+    //await this.storage.defineDriver(cordovaSQLiteDriver)
     await this.fillValues()
     //console.log('all values: ', this.notes)
   }
 
   async fillValues() {
     let cat = await this.categoryrRep.getCategories()
-    let top = await this.getData(TOPIC_KEY)
+    let top = await this.topicRep.getTopics() //await this.getData(TOPIC_KEY)
     this.topics.push(...top)
     this.categories.push(...cat)
 
-    let allVerses = await this.filterVersesByTopic()
+    let allVerses = await this.verseRep.getPaginatedVerses() //await this.filterVersesByTopic()
     let allNotes = await this.noteRep.getPaginatedNotes()
 
     /** Notes **/
@@ -65,17 +69,18 @@ export class StorageService {
     }
 
     console.log('fromS', this.notes);
+    console.log('fromS vers', this.verses);
 
     //await this.noteRep.fillIfEmpty(allNotes)
 
     /** Verses **/
     Object.assign(this.verses, { 'all': allVerses })
     for (let topic of this.topics) {
-      let top = await this.filterVersesByTopic(topic.id)
+      let top = await this.verseRep.getVersesByTopic(topic.id) // await this.filterVersesByTopic(topic.id)
       Object.assign(this.verses, { [topic.name]: top })
     }
     for (const item in this.verses) {
-      Object.assign(this.versePages, { [item]: 0 })
+      Object.assign(this.versePages, { [item]: this.getLastId(this.verses[item]) })
     }
   }
 
@@ -92,13 +97,9 @@ export class StorageService {
    */
   async loadMoreNotes(category: string){
     let lastId = this.notePages[category]
-   // console.log('notePages',this.notePages);
-
     let newNotes
     if(category== 'all') {
       newNotes = await this.noteRep.getPaginatedNotes(lastId);
-      //console.log('more notes',lastId,newNotes,this.notes);
-
     } else {
       newNotes = await this.noteRep.getNotesByCategory(category,lastId);
     }
@@ -108,15 +109,20 @@ export class StorageService {
     return newNotes.length === 0
   }
 
-  // async filterNotesByCategory(categoryId = null, pag = -1) {
-  //   let allNotes = await this.getData(NOTES_KEY)
-  //   if (categoryId !== null) {
-  //     let filtered = allNotes.filter(note => note.category === categoryId)
-  //     return pag === -1 ? filtered : filtered.slice(pagSize * pag, pagSize * (pag + 1))
-  //   } else {
-  //     return pag === -1 ? allNotes : allNotes.slice(pagSize * pag, pagSize * (pag + 1))
-  //   }
-  // }
+  async loadMoreVerses(topic: string){
+    let lastId = this.versePages[topic]
+    let newVerses
+    if(topic== 'all') {
+      newVerses = await this.verseRep.getPaginatedVerses(lastId);
+    } else {
+      newVerses = await this.verseRep.getVersesByTopic(topic,lastId);
+    }
+
+    this.verses[topic].push(...newVerses)
+    this.versePages[topic] = this.getLastId(newVerses)
+    return newVerses.length === 0
+  }
+
 
   async addNote(note: Note, categoryName: string) {
     let _note = await this.noteRep.createNote(note)
@@ -154,43 +160,33 @@ export class StorageService {
   }
 
   /***************** Verses *******************/
-  async filterVersesByTopic(topicId = null, pag = -1) {
-    let allVerses = await this.getData(MY_VERSES_KEY)
-    if (topicId !== null) {
-      let filtered = allVerses.filter(verse => verse.topic === topicId)
-      return pag === -1 ? filtered : filtered.slice(pagSize * pag, pagSize * (pag + 1))
-    } else {
-      return pag === -1 ? allVerses : allVerses.slice(pagSize * pag, pagSize * (pag + 1))
-    }
-  }
+  // async filterVersesByTopic(topicId = null, pag = -1) {
+  //   let allVerses = await this.getData(MY_VERSES_KEY)
+  //   if (topicId !== null) {
+  //     let filtered = allVerses.filter(verse => verse.topic === topicId)
+  //     return pag === -1 ? filtered : filtered.slice(pagSize * pag, pagSize * (pag + 1))
+  //   } else {
+  //     return pag === -1 ? allVerses : allVerses.slice(pagSize * pag, pagSize * (pag + 1))
+  //   }
+  // }
 
   async addVerse(verse: Verse, topicName: string) {
-    await this.addData(MY_VERSES_KEY, verse)
-    await this.sortData(MY_VERSES_KEY, (a, b) => {
-      var ma = moment(a.date)
-      var mb = moment(b.date)
-      return mb.diff(ma)
-    })
+    let _verse = await this.verseRep.createVerse(verse)
     this.verses[topicName].unshift(verse)
     this.verses['all'].unshift(verse)
   }
 
   async deleteVerse(verse: Verse) {
-    //console.log('on delete note')
-    //console.log(note)
-    await this.removeItemByID(MY_VERSES_KEY, verse)
+    await this.verseRep.deleteVerseById(verse.id)
     let topicName = this.topics.find(top => top.id === verse.topic)['name']
     this.verses[topicName] = this.verses[topicName].filter(arrVerse => arrVerse !== verse)
-    //console.log('with array: ',this.notes['all'].filter(arrNote => arrNote === note),
-    //'without array: ',this.notes['all'].filter(arrNote => arrNote !== note))
     this.verses['all'] = this.verses['all'].filter(arrVerse => arrVerse !== verse)
-    //console.log(this.notes['all'])
   }
 
   async editVerse(verse: Verse, prevTopicName) {
-    await this.editItemByID(MY_VERSES_KEY, verse)
+    //await this.editItemByID(MY_VERSES_KEY, verse)
+    await this.verseRep.updateVerse(verse)
     let newTopicName = this.topics.find(top => top.id === verse.topic)['name']
-    //let noteCatIndex = this.notes[prevCategoryName].findIndex(arrNote => arrNote.id === note.id)
     let verseAllIndex = this.verses['all'].findIndex(arrVerse => arrVerse.id === verse.id)
     this.verses['all'][verseAllIndex] = verse
     if (prevTopicName !== newTopicName) {
@@ -244,15 +240,16 @@ export class StorageService {
 
   /***************** Topics *******************/
   async addTopic(topic: Topic) {
-    let topicArray = await this.addData(TOPIC_KEY, topic)
-    this.topics.push(topic)
+    let _topic = await this.topicRep.createTopic(topic)
+    this.topics.push(_topic)
     Object.assign(this.verses, { [topic.name]: [] })
     Object.assign(this.versePages, { [topic.name]: 0 })
-    return topicArray
+    return await this.topicRep.getTopics()
   }
 
   async editTopic(topic: Topic, prevTopicName: string) {
-    await this.editItemByID(TOPIC_KEY, topic)
+    //await this.editItemByID(TOPIC_KEY, topic)
+    await this.topicRep.updateTopic(topic)
     let index = this.topics.findIndex(top => top.id === topic.id)
     this.topics[index] = topic
     if (topic.name !== prevTopicName) {
@@ -265,13 +262,15 @@ export class StorageService {
   }
 
   async deleteTopic(topic: Topic) {
-    await this.removeItemByID(TOPIC_KEY, topic)
+    //await this.removeItemByID(TOPIC_KEY, topic)
+    await this.topicRep.deleteTopicById(topic.id)
     this.topics = this.topics.filter(arrTopic => arrTopic !== topic)
   }
 
   async getTopics() {
-    let topics = await this.getData(TOPIC_KEY)
-    return topics
+    //let topics = await this.getData(TOPIC_KEY)
+
+    return await this.topicRep.getTopics()
   }
 
   /***************** Data *******************/
@@ -334,51 +333,4 @@ export class StorageService {
     return this.storage.set(key, storedData)
   }
 
-  /*async getNotes(category = null,pag = -1,full = false){
-    await this.fillCheck()
-    if(category === null){
-      if(pag === -1){
-        return {...this.notes}
-      } else {
-        let newObj = {}
-        let all = await this.filterNotesByCategory(null,pag)
-        Object.assign(newObj,{'all':all})
-        for(let category of this.categories){
-          let cat = await this.filterNotesByCategory(category.id,pag)
-          Object.assign(newObj,{[category.category]:cat})
-        }
-        return newObj
-      }
-    } else {
-      if(pag == -1){
-        return this.notes[category].slice()
-      } else {
-        if(full){
-          return this.notes[category].slice(0,pagSize*(pag+1))
-        } else {
-          return this.notes[category].slice(pagSize*pag,pagSize*(pag+1))
-        }
-      }
-    }
-
-  }*/
-
-  /*async fillCheck(){
-    return new Promise((resolve,reject)=> {
-      let myInterval = setInterval(()=>{
-        if(this.started){
-          clearInterval(myInterval)
-          resolve('it has started')
-        }
-      },20)
-    })
-  }*/
-
-  /*async editNote(){
-    const notes = await this.storage.get(NOTES_KEY) || []
-    const category = await this.storage.get(CATEGORY_KEY) || []
-    notes.forEach(str => str.category = category.find(cat => cat.category == str.category).id)
-    return this.storage.set(NOTES_KEY,notes)
-    //console.log(notes)
-  }*/
 }
