@@ -172,15 +172,17 @@ export class StorageService {
 
   async addVerse(verse: Verse, topicName: string) {
     let _verse = await this.verseRep.createVerse(verse)
-    this.verses[topicName].unshift(verse)
-    this.verses['all'].unshift(verse)
+    this.verses[topicName].unshift(_verse)
+    this.verses['all'].unshift(_verse)
   }
 
   async deleteVerse(verse: Verse) {
     await this.verseRep.deleteVerseById(verse.id)
     let topicName = this.topics.find(top => top.id === verse.topic)['name']
-    this.verses[topicName] = this.verses[topicName].filter(arrVerse => arrVerse !== verse)
-    this.verses['all'] = this.verses['all'].filter(arrVerse => arrVerse !== verse)
+    this.verses[topicName] = this.verses[topicName].filter(arrVerse => arrVerse.id !== verse.id)
+    this.verses['all'] = this.verses['all'].filter(arrVerse => arrVerse.id !== verse.id)
+    //console.log(this.verses);
+
   }
 
   async editVerse(verse: Verse, prevTopicName) {

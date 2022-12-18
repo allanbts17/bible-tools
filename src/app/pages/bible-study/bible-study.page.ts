@@ -60,6 +60,8 @@ export class BibleStudyPage implements OnInit {
       bookId: data.bookId
     }
     this.sharedInfo.defaultChapter = this.selectedChapter
+    console.log('selected chatp',this.selectedChapter);
+
   }
 /**
  * if(index === 1){
@@ -403,6 +405,8 @@ export class BibleStudyPage implements OnInit {
   chapterChange(chapter){
     this.selectedChapter = chapter
     this.sharedInfo.defaultChapter = this.selectedChapter
+    console.log('chapter change',this.selectedChapter);
+
     this.noteSelectionSheet.closeSheet()
     this.closeSpace()
     this.setChapter(chapter.bibleId,chapter.id)
