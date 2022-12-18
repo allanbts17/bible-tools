@@ -30,8 +30,6 @@ export class VerseRepository {
     }
 
     verseConversion(verse,returnArr = true): Verse | Verse[]{
-        console.log('I am here', verse, verse?.length);
-
         const convert = (vrs) => {
             vrs.bible = <Bible>JSON.parse(vrs.bible)
             vrs.passage = <Passage>JSON.parse(vrs.passage)

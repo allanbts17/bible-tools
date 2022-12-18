@@ -16,6 +16,7 @@ const CATEGORY_KEY = 'categories'
 const TOPIC_KEY = "topics"
 const MY_VERSES_KEY = "my-verses"
 const SETTINGS_KEY = 'settings'
+const LAST_CHAPTER_KEY = 'last-chapter'
 const MARKED_KEY = 'marked'
 const ID = 'id'
 const pagSize = 10
@@ -68,8 +69,8 @@ export class StorageService {
       Object.assign(this.notePages, { [item]: this.getLastId(this.notes[item]) })
     }
 
-    console.log('fromS', this.notes);
-    console.log('fromS vers', this.verses);
+    // console.log('fromS', this.notes);
+    // console.log('fromS vers', this.verses);
 
     //await this.noteRep.fillIfEmpty(allNotes)
 
@@ -160,16 +161,6 @@ export class StorageService {
   }
 
   /***************** Verses *******************/
-  // async filterVersesByTopic(topicId = null, pag = -1) {
-  //   let allVerses = await this.getData(MY_VERSES_KEY)
-  //   if (topicId !== null) {
-  //     let filtered = allVerses.filter(verse => verse.topic === topicId)
-  //     return pag === -1 ? filtered : filtered.slice(pagSize * pag, pagSize * (pag + 1))
-  //   } else {
-  //     return pag === -1 ? allVerses : allVerses.slice(pagSize * pag, pagSize * (pag + 1))
-  //   }
-  // }
-
   async addVerse(verse: Verse, topicName: string) {
     let _verse = await this.verseRep.createVerse(verse)
     this.verses[topicName].unshift(_verse)
@@ -275,6 +266,15 @@ export class StorageService {
     return await this.topicRep.getTopics()
   }
 
+  /***************** Last Chapter ***********/
+  async setLastChapter(chapter){
+    return await this.storage.set(LAST_CHAPTER_KEY, chapter)
+  }
+
+ async getLastChapter(){
+    return await this.storage.get(LAST_CHAPTER_KEY)
+  }
+
   /***************** Data *******************/
   public async getID() {
     const extractedID = await this.storage.get(ID) || 1
@@ -285,6 +285,8 @@ export class StorageService {
   setSettings(settings) {
     return this.storage.set(SETTINGS_KEY, settings)
   }
+
+
 
   async getSettings() {
     var default_settings = {
