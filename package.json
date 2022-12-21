@@ -38,6 +38,7 @@
     "cordova-sqlite-storage": "^6.0.0",
     "jeep-sqlite": "^1.6.7",
     "localforage-cordovasqlitedriver": "^1.8.0",
+    "lodash.clonedeep": "^4.5.0",
     "moment": "^2.29.4",
     "ngx-infinite-scroll": "^14.0.0",
     "rxjs": "~6.6.0",

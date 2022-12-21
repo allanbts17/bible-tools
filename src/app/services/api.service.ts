@@ -110,7 +110,6 @@ export class ApiService {
   }
 
   getBibleContent(){
-
     const path = `${this.bible_com_endpoint}`+"/content/rvr60.html.js?passage=Jn&key="+this.bible_com_key;
     return this.http.get(path,{headers:this.RV_reqHeader});
   }
@@ -121,7 +120,6 @@ export class ApiService {
   }
 
   getRVBibleBookList(){
-
     const path = this.spanish_api_endpoint + "/books"
     return this.http.get(path,{headers:this.RV_reqHeader});
   }
@@ -149,7 +147,6 @@ export class ApiService {
         reject(error)
       })
     });
-
   }
 
   getBiblesByLanguageId(id){
@@ -166,11 +163,9 @@ export class ApiService {
         reject(error)
       })
     });
-
   }
 
   getAllCountries(){
-
     this.getAllBibles().subscribe((bibles)=>{
       this.auxBibles = bibles
       var countries = []
@@ -179,7 +174,6 @@ export class ApiService {
         countries.push()
         bible.countries.forEach(countrie => {
           countries.push(countrie)
-
         })
       });
       countries.forEach(countrie => {
@@ -188,7 +182,6 @@ export class ApiService {
     },(error)=>{
       console.log(error)
     })
-
   }
 
 }

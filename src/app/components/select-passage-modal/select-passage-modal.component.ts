@@ -22,7 +22,7 @@ export class SelectPassageModalComponent implements OnInit {
 
   myOptions: SwiperOptions = {
     //allowTouchMove: false
-};
+  };
 
   constructor(public apiService: ApiService) { }
 
@@ -30,24 +30,28 @@ export class SelectPassageModalComponent implements OnInit {
     //console.log(this.bible)
   }
 
-  ngOnChanges(e){
+  ngOnChanges(e) {
     this.bible = e?.bible?.currentValue
-    //console.log('ch: ',this.bible)
-    this.getBookList(this.bible?.id)
+    // console.log('ch: ', this.bible, e)
+    // console.log({title:'testObj',data: this.bible, type: typeof this.bible});
+
+    if (this.bible !== undefined)
+      this.getBookList(this.bible?.id || this.bible)
+
   }
 
-  modalPresented(){
+  modalPresented() {
     this.slides.lockSwipes(true)
-   /* this.myOptions.allowTouchMove = false
-    console.log(this.myOptions)
-    this.slides.options = this.myOptions
-    this.slides.update()*/
+    /* this.myOptions.allowTouchMove = false
+     console.log(this.myOptions)
+     this.slides.options = this.myOptions
+     this.slides.update()*/
   }
 
-  async transitionFinished(){
+  async transitionFinished() {
     let index = await this.slides.getActiveIndex()
     console.log(index)
-    if(index == 0){
+    if (index == 0) {
       this.slides.lockSwipes(true)
     } else {
       this.slides.lockSwipes(false)
@@ -58,27 +62,27 @@ export class SelectPassageModalComponent implements OnInit {
 
   }
 
-  setBook(book){
+  setBook(book) {
     this.slides.lockSwipeToNext(false)
     this.slides.slideNext()
     this.selectedBook = book
-    this.getChapterList(this.bible?.id,book.id)
+    this.getChapterList(this.bible, book.id)
   }
 
-  setChapter(chapter){
+  setChapter(chapter) {
     this.selectedChapter = chapter
     this.resetValues()
     this.passageSelectedEvent.emit(chapter)
     this.modal.dismiss()
   }
 
-  getChapterList(bibleId,chapterId){
+  getChapterList(bibleId, chapterId) {
     let aux, data
-    this.apiService.getChapterList(bibleId,chapterId).subscribe((chapters)=>{
+    this.apiService.getChapterList(bibleId, chapterId).subscribe((chapters) => {
       aux = chapters
       data = aux.data
 
-      this.chapterList = data[0].number === 'intro'? data.slice(1):data
+      this.chapterList = data[0].number === 'intro' ? data.slice(1) : data
       //console.log(this.chapterList)
       this.title = this.selectedBook.name
 
@@ -86,11 +90,11 @@ export class SelectPassageModalComponent implements OnInit {
     })
   }
 
-  getBookList(bibleId){
+  getBookList(bibleId) {
 
     let data
-    if(bibleId != undefined){
-      this.apiService.getBibleBookList(bibleId).subscribe((books)=>{
+    if (bibleId != undefined) {
+      this.apiService.getBibleBookList(bibleId).subscribe((books) => {
         data = books
         this.bookList = data.data
         //console.log(this.bookList)
@@ -99,7 +103,7 @@ export class SelectPassageModalComponent implements OnInit {
     }
   }
 
-  resetValues(){
+  resetValues() {
     this.title = this.defaultTitle
     this.slides.slideTo(0)
   }

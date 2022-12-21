@@ -7,6 +7,7 @@ import { StorageService } from 'src/app/services/storage.service';
 import { SharedInfoService } from 'src/app/services/shared-info.service';
 import { SelectPassageModalComponent } from 'src/app/components/select-passage-modal/select-passage-modal.component';
 import _ from 'underscore'
+import { copy } from 'src/app/classes/utils';
 
 @Component({
   selector: 'app-bible-study',
@@ -20,10 +21,10 @@ export class BibleStudyPage implements OnInit {
   @ViewChild(SelectPassageModalComponent) selectPassage: SelectPassageModalComponent;
   availableBibleLanguages = [{ id: "spa", name: "Español" }, { id: "eng", name: "English" }]
   bibles = []
-  selectedBible
+  //selectedBible
   bibleText
   passageText = "Génesis 1"
-  selectedChapter
+  //selectedChapter
   showedChapters = [
     { content: "", bibleId: "", id: "" },
     { content: "", bibleId: "", id: "" },
@@ -50,16 +51,19 @@ export class BibleStudyPage implements OnInit {
 
   ngOnInit() {
     this.start = true
+    setTimeout(()=>
+    this.setDefaultData())
+
   }
 
   setSelectedChapterInfo(data) {
-    this.selectedChapter = {
-      id: data.id,
-      number: data.number,
-      reference: data.reference,
-      bookId: data.bookId
-    }
-    this.sharedInfo.defaultChapter = this.selectedChapter
+    // this.selectedChapter = {
+    //   id: data.id,
+    //   number: data.number,
+    //   reference: data.reference,
+    //   bookId: data.bookId
+    // }
+    // this.sharedInfo.defaultChapter = this.selectedChapter
   }
   /**
    * if(index === 1){
@@ -73,9 +77,7 @@ export class BibleStudyPage implements OnInit {
       aux = chapterContent
       chapter = aux.data
       //console.log(chapter)
-
       this.chapterToSlideDistribution(this.slideIndex, chapter, 'actual')
-
 
       if (chapter?.next != undefined) {
         this.apiService.getChapter(chapter.bibleId, chapter.next.id).subscribe((chapterContent) => {
@@ -114,9 +116,10 @@ export class BibleStudyPage implements OnInit {
       aux = chapterContent
 
       //this.apiService.getChapterInVerses(bibleId,chapterId)
+      //console.log('changet',aux.data);
 
       this.bibleText = aux.data
-
+      this.sharedInfo.chapter = aux.data
       this.setSelectedChapterInfo(this.bibleText)
       this.chapterToSlideDistribution(this.slideIndex, this.bibleText, 'actual')
       this.apiService.getChapter(this.bibleText.bibleId, this.bibleText.next.id).subscribe((chapterContent) => {
@@ -134,8 +137,12 @@ export class BibleStudyPage implements OnInit {
     })
   }
 
-  /** When index changes have 1,2 difference is 1
-   * when changes have 1,3 diference is 2
+
+ /**
+  * When index changes have 1,2 difference is 1
+  * when changes have 1,3 diference is 2
+  * @param index
+  * @returns {'right' | 'left' | 'stay'} Direction
   */
   swipeDirection(index): 'right' | 'left' | 'stay' {
     var diff = index - this.slideIndex
@@ -180,10 +187,14 @@ export class BibleStudyPage implements OnInit {
       let index = await this.getActiveIndex()
       let direction = this.swipeDirection(index)
       //console.log('preTran', this.showedChapters[index - 1]);
-      let toStore = _.pick(this.showedChapters[index - 1], 'bibleId', 'id')
+      let actualShowChapter = this.showedChapters[index - 1]
+      let toStore = _.pick(actualShowChapter, 'bibleId', 'id')
       if (toStore?.id !== '' && toStore?.id !== undefined)
         this.storeLastChapter({ bibleId: toStore.bibleId, chapterId: toStore.id })
-      this.setSelectedChapterInfo(this.showedChapters[index - 1])
+      this.setSelectedChapterInfo(actualShowChapter)
+
+      if (actualShowChapter.id !== '')
+        this.sharedInfo.chapter = actualShowChapter
       console.log('ind: ', index)//'prev: ',this.slideIndex)
       this.slideIndex = index
 
@@ -245,19 +256,22 @@ export class BibleStudyPage implements OnInit {
   }
 
   setSlideContent(index, data) {
+    //console.log('dataa',data);
+
     setTimeout(() => {
       var slideNodeList = document.querySelectorAll('ion-slides#bible-slides ion-text')
       var slideArray = Array.from(slideNodeList);
       var slideElements = <HTMLIonTextElement[]>slideArray
       this.removeAllChild(slideElements[index])
 
+      // Filling chapter content
       let spaceDIV = '<div class="w-full chapter-space"></div>' //h-36 or h-0
       slideElements[index].insertAdjacentHTML('beforeend', data.content + spaceDIV)
 
+      // Color markers
       var spanArray = Array.from(document.querySelectorAll('span.verse-span'))
       var spanElementArray = <HTMLParagraphElement[]>spanArray
       spanElementArray.forEach((span => {
-
         let dataVerseId = span.getAttribute('data-verse-id')
         let markedVerse = this.markersData.find(marked => marked.verse == dataVerseId)
         /** Setting mark if have mark */
@@ -284,7 +298,7 @@ export class BibleStudyPage implements OnInit {
             })
             this.selectedVerseArray.push({
               verseId: verseId,
-              bibleId: this.selectedBible.id
+              bibleId: this.sharedInfo.bible.id
             })
 
             this.noteSelectionSheet.openSheet(this.selectedVerseArray)
@@ -374,7 +388,7 @@ export class BibleStudyPage implements OnInit {
         }
         break
     }
-    console.log('showed: ', this.showedChapters)
+    //console.log('showed: ', this.showedChapters)
   }
 
   loopIn3Next(index) {
@@ -399,19 +413,19 @@ export class BibleStudyPage implements OnInit {
   * Allan Bennett. July 10, 2022
   */
   bibleChange(bible) {
-    this.selectedBible = bible
+    //this.selectedBible = bible
     this.noteSelectionSheet.closeSheet()
     this.closeSpace()
-    console.log('on bible change',bible.id, this.selectedChapter?.id);
-    this.storeLastChapter({bibleId: bible.id,chapterId:this.selectedChapter?.id || 'GEN.1'})
-    this.setChapter(bible.id, this.selectedChapter?.id || 'GEN.1')
+    console.log('on bible change', bible.id, this.sharedInfo.chapter?.id);
+    this.storeLastChapter({ bibleId: bible.id, chapterId: this.sharedInfo.chapter?.id || 'GEN.1' })
+    this.setChapter(bible.id, this.sharedInfo.chapter?.id || 'GEN.1')
   }
 
   chapterChange(chapter) {
-    this.selectedChapter = chapter
-    this.sharedInfo.defaultChapter = this.selectedChapter
-    console.log('chapter change', this.selectedChapter);
-    let toStore = _.pick(this.selectedChapter, 'bibleId', 'id')
+    //this.selectedChapter = chapter
+    this.sharedInfo.chapter = chapter
+    //console.log('chapter change',chapter);
+    let toStore = _.pick(chapter, 'bibleId', 'id')
     this.storeLastChapter({ bibleId: toStore.bibleId, chapterId: toStore.id })
 
     this.noteSelectionSheet.closeSheet()
@@ -420,59 +434,35 @@ export class BibleStudyPage implements OnInit {
   }
 
   storeLastChapter(chapter: { bibleId: string, chapterId: string }) {
-    console.log('toStore',chapter);
-
+    console.log('toStore', chapter);
     this.storage.setLastChapter(chapter)
   }
 
-  /*getAllBibles(){
-    this.apiService.getAllBibles().subscribe((bibles)=>{
-      //console.log(bibles)
-    },(error)=>{
-      console.log(error)
-    })
-  }*/
-
-  /*async getAvailablaBibles(){
-    for(let i=0;i<this.availableBibleLanguages.length;i++){
-      let aux
-      var lang = this.availableBibleLanguages[i]
-      await this.apiService.getBiblesByLanguageId(lang.id).then((bibles)=>{
-        aux = {
-          lang:lang,
-          bibles:bibles
-      }
-      this.bibles.push(aux)
-    })
-    }
-    this.selectedBible = this.bibles[0].bibles[0]
-    this.sharedInfo.bibles = this.bibles
-    this.sharedInfo.defaultBible = this.selectedBible
-    this.getBibleFirstChapter()
-
-  }*/
-
   getBibleFirstChapter() {
     var auxCh
-    this.apiService.getBibleFirstChapter(this.selectedBible.id).then(async (chapter) => {
+    this.apiService.getBibleFirstChapter(this.sharedInfo.bible.id).then(async (chapter) => {
       auxCh = chapter
-      this.selectedChapter = chapter
-      this.sharedInfo.defaultChapter = chapter
+      //console.log('change',chapter);
+
+      //this.selectedChapter = chapter
+      this.sharedInfo.chapter = chapter
       this.start = true
       //var ind = await this.slides.getActiveIndex()
       //console.log('first ind: ',ind)
       await this.slides.lockSwipeToPrev(true)
       this.swipeLeftLock = true
-      this.setChapterFirstTime(this.selectedBible.id, auxCh.id)
+      this.setChapterFirstTime(this.sharedInfo.bible.id, auxCh.id)
     }, err => console.log(err))
   }
 
-  async setDefaultData(data) {
-    this.selectedBible = data.bibleId //_.pick(data.defaultBible,'id')
-    this.selectedChapter = data.chapterId// _.pick(data.defaultChapter,'id')
+  async setDefaultData() {
+    //this.selectedBible = data.bibleId//data.defaultBible//data.bibleId //_.pick(data.defaultBible,'id')
+    //this.selectedChapter = data.chapterId//data.defaultChapter// data.chapterId// _.pick(data.defaultChapter,'id')
     await this.slides.lockSwipeToPrev(true)
     this.swipeLeftLock = true
-    this.setChapterFirstTime(this.selectedBible, this.selectedChapter)
+    this.setChapter(this.sharedInfo.bible.id, this.sharedInfo.chapter.id)
+    //this.setChapterFirstTime(this.sharedInfo.bible.id, this.sharedInfo.chapter.id)
+    //this.setChapterFirstTime(this.selectedBible.id, this.selectedChapter.id)
   }
 
   getAllLang() {
@@ -489,7 +479,7 @@ export class BibleStudyPage implements OnInit {
   }
 
   removeAllChild(myNode) {
-    while (myNode.firstChild) {
+    while (myNode?.firstChild) {
       myNode.removeChild(myNode.lastChild);
     }
   }
