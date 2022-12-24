@@ -92,11 +92,11 @@
           <ion-card *ngFor="let verse of getPaginatedVerses(tab)">
             <ion-item class="">
               <ion-label>{{verse.passage.reference}}</ion-label>
-              <ion-button (click)="openBibleModal(verse)" fill="" shape="round" >{{verse.bible.reference}}</ion-button>
-              <ion-button fill="" shape="round" (click)="changeVerseTopic(verse)">
+              <ion-button (click)="openBibleModal(verse)" fill="outline" color="dark" shape="round" >{{verse.bible.reference}}</ion-button>
+              <ion-button fill="outline" color="dark" shape="round" (click)="changeVerseTopic(verse)">
                 <ion-icon name="repeat-outline"></ion-icon>
               </ion-button>
-              <ion-button fill="" shape="round" (click)="deleteVerse(verse)">
+              <ion-button fill="outline" color="dark" shape="round" (click)="deleteVerse(verse)">
                 <ion-icon name="trash-outline"></ion-icon>
               </ion-button>
             </ion-item>
@@ -127,9 +127,9 @@
     </ion-fab>
 
     <app-topic-modal [topicList]="topicList" (addTopicEvent)="loadTopics()"></app-topic-modal>
-    <app-select-passage-modal [bible]="selectedBible || sharedInfo.defaultBible" (passageSelectedEvent)="chapterChange($event)"></app-select-passage-modal>
-    <app-select-bible-modal [changeShared]="false" [(isOpen)]="isOpenBibleModal" (bibleSelectedEvent)="bibleChange($event)"></app-select-bible-modal>
-    <app-add-verse-modal (selectChapterEvent)="openChapterModal()" (selectBibleEvent)="openBibleModal()" [selectedBible]="selectedBible || sharedInfo.defaultBible" [selectedChapter]="selectedChapter || sharedInfo.defaultChapter" [topicList]="topicList" (addTopicEvent)="loadTopics()" (addVerseEvent)="loadVerses()"></app-add-verse-modal>
+    <app-select-passage-modal [bible]="sharedInfo.viBible" (passageSelectedEvent)="chapterChange($event)"></app-select-passage-modal>
+    <app-select-bible-modal [onlyViBible]="true" [(isOpen)]="isOpenBibleModal" (bibleSelectedEvent)="bibleChange($event)"></app-select-bible-modal>
+    <app-add-verse-modal (selectChapterEvent)="openChapterModal()" (selectBibleEvent)="openBibleModal()" [selectedBible]="sharedInfo.viBible" [selectedChapter]="sharedInfo.viChapter" [topicList]="topicList" (addTopicEvent)="loadTopics()" (addVerseEvent)="loadVerses()"></app-add-verse-modal>
     <app-custom-alert (versesChangedEvent)="loadVerses()" (topicAddedEvent)="loadTopics()" (topicErasedEvent)="loadTopics()" [topics]="topicList" [verses]="verses"></app-custom-alert>
   </section>
 </ion-content>

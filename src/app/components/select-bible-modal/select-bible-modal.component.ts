@@ -14,7 +14,7 @@ import { copy } from 'src/app/classes/utils';
 export class SelectBibleModalComponent {
   @ViewChild('modal') modal: IonModal;
   @Input() triggerId
-  @Input() changeViBible = true
+  @Input() onlyViBible = false
   @Input() isOpen: boolean
   @Output() isOpenChange = new EventEmitter<boolean>()
   @Output() bibleSelectedEvent = new EventEmitter<any>()
@@ -30,8 +30,8 @@ export class SelectBibleModalComponent {
   }*/
 
   select(bible) {
-    if (this.changeViBible) this.sharedInfo.viBible = copy(bible)
-    this.sharedInfo.bible = copy(bible)
+    this.sharedInfo.viBible = copy(bible)
+    if (!this.onlyViBible) this.sharedInfo.bible = copy(bible)
     this.bibleSelectedEvent.emit(bible)
     this.modal.dismiss()
   }

@@ -13,10 +13,6 @@ export class SharedInfoService {
   viBible
   viChapter
   bibleList = []
-
-  defaultChapter
-  defaultBible
-  bibles
   private allBibles = []
   constructor(private config: ConfigService,
     private apiService: ApiService,

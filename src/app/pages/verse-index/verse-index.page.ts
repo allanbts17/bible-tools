@@ -30,8 +30,6 @@ export class VerseIndexPage implements OnInit {
   @ViewChild('slide') slides: IonSlides;
   @ViewChild('dailyTabs') myTabs: TabsComponent;
 
-  selectedBible
-  selectedChapter
   changeShared = true
   bibles = []
   tabs = []
@@ -115,7 +113,7 @@ export class VerseIndexPage implements OnInit {
       }
     //console.log(this.selectedVerse)
     } else {
-      this.selectedBible = bible
+      //this.selectedBible = bible
     }
   }
 
@@ -167,8 +165,8 @@ export class VerseIndexPage implements OnInit {
   }
 
   chapterChange(chapter){
-    this.selectedChapter = chapter
-    //this.sharedInfo.defaultChapter = this.selectedChapter
+   // this.selectedChapter = chapter
+    this.sharedInfo.viChapter = chapter
   }
 
   async presentPopover(e: Event) {

@@ -134,8 +134,8 @@ export class StorageService {
   async deleteNote(note: Note) {
     await this.noteRep.deleteNoteById(note.id)
     let categoryName = this.categories.find(cat => cat.id === note.category)['category']
-    this.notes[categoryName] = this.notes[categoryName].filter(arrNote => arrNote !== note)
-    this.notes['all'] = this.notes['all'].filter(arrNote => arrNote !== note)
+    this.notes[categoryName] = this.notes[categoryName].filter(arrNote => arrNote.id !== note.id)
+    this.notes['all'] = this.notes['all'].filter(arrNote => arrNote.id !== note.id)
   }
 
   async editNote(note: Note, prevCategoryName) {

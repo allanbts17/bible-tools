@@ -66,7 +66,9 @@ export class SelectPassageModalComponent implements OnInit {
     this.slides.lockSwipeToNext(false)
     this.slides.slideNext()
     this.selectedBook = book
-    this.getChapterList(this.bible, book.id)
+    //console.log({bible: this.bible, book: book});
+
+    this.getChapterList(this.bible.id, book.id)
   }
 
   setChapter(chapter) {
@@ -76,11 +78,14 @@ export class SelectPassageModalComponent implements OnInit {
     this.modal.dismiss()
   }
 
-  getChapterList(bibleId, chapterId) {
+  getChapterList(bibleId, bookId) {
+    //console.log(bibleId,bookId);
+
     let aux, data
-    this.apiService.getChapterList(bibleId, chapterId).subscribe((chapters) => {
+    this.apiService.getChapterList(bibleId, bookId).subscribe((chapters) => {
       aux = chapters
       data = aux.data
+      console.log('data',aux);
 
       this.chapterList = data[0].number === 'intro' ? data.slice(1) : data
       //console.log(this.chapterList)

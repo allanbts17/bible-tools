@@ -10,16 +10,21 @@ import iro from '@jaames/iro'
 export class ColorPickerComponent implements OnInit {
   @Output() selectColorEvent = new EventEmitter<string>()
   colorCode:string=""
-  showColorPicker = false
+  colorPicker
+
   constructor() { }
 
   ngOnInit() {
     let ref = this
-    var colorPicker = iro.ColorPicker("#picker",{width:window.innerWidth*0.6,color:"#fff"})
-    colorPicker.on('color:change',function(color){
+    this.colorPicker = iro.ColorPicker("#picker",{width:window.innerWidth*0.6,color:"#fff"})
+    this.colorPicker.on('color:change',function(color){
       ref.colorCode = color.hexString
       ref.selectColorEvent.emit(ref.colorCode)
     })
+  }
+
+  ngOnDestroy(){
+    this.colorPicker.off('color:change',()=>{})
   }
 
 }
