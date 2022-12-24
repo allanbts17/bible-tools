@@ -1,7 +1,8 @@
 <ion-modal #modal [trigger]="triggerId" [isOpen]="isOpen || false" (ionModalDidDismiss)="dismiss()">
   <ng-template>
-    <ion-content>
-      <ion-toolbar>
+    <ion-content scroll-y="false">
+      <section class="flex flex-col h-full w-full">
+      <ion-toolbar class="flex-none">
         <ion-title>Seleccione la biblia</ion-title>
         <ion-buttons slot="end">
           <ion-button color="light" (click)="modal.dismiss()">Cerrar</ion-button>
@@ -9,7 +10,7 @@
       </ion-toolbar>
 
       <!-- List of Text Items -->
-      <ion-list>
+      <ion-list  class="flex-1 w-full overflow-y-scroll">
         <ion-item-group *ngFor="let langCat of sharedInfo.bibleList">
           <ion-item-divider>
             <ion-label>{{langCat.lang.name}}</ion-label>
@@ -19,8 +20,7 @@
           </ion-item>
         </ion-item-group>
       </ion-list>
-
-
+    </section>
     </ion-content>
   </ng-template>
 </ion-modal>
