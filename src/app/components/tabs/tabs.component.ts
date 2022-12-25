@@ -20,7 +20,10 @@ export class TabsComponent implements OnInit {
 
   constructor(public config: ConfigService) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log('tabs app',this.tabs);
+
+  }
   //test
   scrollTabs(index){
     setTimeout(()=>{

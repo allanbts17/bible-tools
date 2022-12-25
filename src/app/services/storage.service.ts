@@ -27,7 +27,7 @@ const pagSize = 10
 })
 export class StorageService {
   notes = {}
-  categories = []
+  categories: Category[] = []
   verses = {}
   topics = []
   notePages = {}
@@ -93,21 +93,47 @@ export class StorageService {
   /***************** Notes *******************/
   /**
    *
-   * @param {category} category Category of the notes
+   * @param {{name: string, id: number}} tab Category of the notes
    * @returns {boolean} If new notes are empty
    */
-  async loadMoreNotes(category: string){
-    let lastId = this.notePages[category]
+  async loadMoreNotes(tab: {name: string, id: number}){
+    let lastId = this.notePages[tab.name]
     let newNotes
-    if(category== 'all') {
+    if(tab.id == -1) { // all have -1
       newNotes = await this.noteRep.getPaginatedNotes(lastId);
     } else {
-      newNotes = await this.noteRep.getNotesByCategory(category,lastId);
+      newNotes = await this.noteRep.getNotesByCategory(tab.id,lastId);
     }
+
+    this.notes[tab.name].push(...newNotes)
+    this.notePages[tab.name] = this.getLastId(newNotes)
+    return newNotes.length === 0
+  }
+
+  async filterNotesByParam(param: string, value: string, category?: string){
+    let lastId = this.notePages[category]
+    let newNotes
+    newNotes = await this.noteRep.filterNotesByParam(param,value,lastId,category)
+    // if(category== 'all') {
+    //   newNotes = await this.noteRep.getPaginatedNotes(lastId);
+    // } else {
+    //   newNotes = await this.noteRep.getNotesByCategory(category,lastId);
+    // }
 
     this.notes[category].push(...newNotes)
     this.notePages[category] = this.getLastId(newNotes)
     return newNotes.length === 0
+  }
+
+  refillNotes(){
+
+  }
+
+  resetNotes() {
+    this.notePages = {}
+    this.notes = {}
+    this.categories.forEach(cat => this.notes[cat.category] = [])
+    this.notes['all'] = []
   }
 
   async loadMoreVerses(topic: string){

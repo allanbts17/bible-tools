@@ -105,10 +105,10 @@
     <!-- Notes-->
     <ion-slides #slide class="flex-1 w-full" (ionSlideTransitionStart)="transitionStarted()">
       <ion-slide class="h-full w-full" *ngFor="let tab of tabs">
-        <div id="slide-{{tab}}" class="scrolled-slide h-full w-full overflow-y-scroll ion-content-scroll-host">
-          <app-general-note (noteDeleteEvent)="deleteNote($event)" (noteEditEvent)="presentNoteModal($event)" [categories]="categoryList"  *ngFor="let note of getPaginatedNotes(tab); let i = index" [index]="'popover-'+tab+'-'+i" [note]="note"></app-general-note>
-          <p class="text-slate-500 w-full text-center mt-2" *ngIf="notes[tab]?.length == 0 && filterOn">No existen notas para este filtro</p>
-          <p class="text-slate-500 w-full text-center mt-2" *ngIf="notes[tab]?.length == 0 && !filterOn">No existen notas para esta categoría</p>
+        <div id="slide-{{tab.name}}" class="scrolled-slide h-full w-full overflow-y-scroll ion-content-scroll-host">
+          <app-general-note (noteDeleteEvent)="deleteNote($event)" (noteEditEvent)="presentNoteModal($event)" [categories]="categoryList"  *ngFor="let note of getPaginatedNotes(tab); let i = index" [index]="'popover-'+tab.name+'-'+i" [note]="note"></app-general-note>
+          <p class="text-slate-500 w-full text-center mt-2" *ngIf="notes[tab.name]?.length == 0 && filterOn">No existen notas para este filtro</p>
+          <p class="text-slate-500 w-full text-center mt-2" *ngIf="notes[tab.name]?.length == 0 && !filterOn">No existen notas para esta categoría</p>
 
           <ion-infinite-scroll threshold="100px" id="infinite-scroll" class="" (ionInfinite)="onScroll($event)">
             <ion-infinite-scroll-content

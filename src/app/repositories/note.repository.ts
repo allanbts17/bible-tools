@@ -103,9 +103,11 @@ export class NoteRepository {
         });
     }
 
-    async getNotesByCategory(category: string, lastId?: number): Promise<Note[]> {
+    async getNotesByCategory(category: number, lastId?: number): Promise<Note[]> {
         return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
             let sqlcmd: string;
+
+
             if (lastId) {
                 sqlcmd = `
                 select * from notes
@@ -121,16 +123,34 @@ export class NoteRepository {
             }
             let values: Array<any> = [category];
             let ret: any = await db.query(sqlcmd, values);
-            //console.log('ret', ret);
+            console.log('cat',category);
+            console.log(ret.values);
+
             return ret.values as Note[];
-            // if (ret.values.length > 0) {
-            //     return ret.values as Note[];
-            // } else {
-            //     return ret.values as Note[];
-            // }
-            //throw Error('get notes by category failed');
         });
     }
+
+    async filterNotesByParam(param: string, value: string, lastId?: number, category?: string): Promise<Note[]> {
+      return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
+          let sqlcmd: string;
+          if (lastId) {
+              sqlcmd = `
+              select * from notes
+              WHERE ${param} LIKE %?% ${category? 'AND '+category :''} AND id < ${lastId}
+              ORDER BY id DESC
+              LIMIT ${this.pagSize}`;
+          } else {
+              sqlcmd = `
+              select * from notes
+              WHERE ${param} LIKE %?% ${category? 'AND '+category :''}
+              ORDER BY id DESC
+              LIMIT ${this.pagSize}`;
+          }
+          let values: Array<any> = [value];
+          let ret: any = await db.query(sqlcmd, values);
+          return ret.values as Note[];
+      });
+  }
 
     setPageSize(size: number) {
         this.pagSize = size;

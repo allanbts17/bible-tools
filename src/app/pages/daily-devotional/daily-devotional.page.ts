@@ -26,8 +26,8 @@ export class DailyDevotionalPage implements OnInit {
   @ViewChild('slide') slides: IonSlides;
   @ViewChild('dailyTabs') myTabs: TabsComponent;
   tabs = []
-  categoryList = []
-  selectedTab = ""
+  categoryList: Category[] = []
+  selectedTab: {name: string, id: number}
   filterType: 'all' | 'date' | 'title' | 'text' = 'all'
   searchTerm = ""
   filterOn = false
@@ -123,7 +123,7 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   scrollToTop(){
-    let scrollSlide = document.getElementById(`slide-${this.selectedTab}`)
+    let scrollSlide = document.getElementById(`slide-${this.selectedTab.name}`)
     scrollSlide.scrollTo(0,0)
     this.showFab = false
     this.isAutoScrollingUp = true
@@ -243,9 +243,9 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   fillTabs(){
-    this.tabs = ['all']
+    this.tabs.push({name: 'all', id: -1})
     if(this.categoryList !== null)
-      this.categoryList.forEach(tab => this.tabs.push(tab.category))
+      this.categoryList.forEach(cat => this.tabs.push({name: cat.category, id: cat.id}))
     this.selectedTab = this.tabs[0]
   }
 
@@ -256,9 +256,9 @@ export class DailyDevotionalPage implements OnInit {
 
   getFilteredNotes(tab){
     if(this.filterOn)
-      return this.filterByCustomType(this.notes[tab])
+      return this.filterByCustomType(this.notes[tab.name])
     else
-      return this.notes[tab]
+      return this.notes[tab.name]
   }
 
   getPaginatedNotes(tab){
