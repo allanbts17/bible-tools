@@ -10,7 +10,7 @@ import { NoteRepository } from '../repositories/note.repository';
 import { CategoryRepository } from '../repositories/category.repository';
 import { VerseRepository } from '../repositories/verse.repository';
 import { TopicRepository } from '../repositories/topic.repository';
-
+import * as _ from 'underscore'
 const NOTES_KEY = 'notes'
 const CATEGORY_KEY = 'categories'
 const TOPIC_KEY = "topics"
@@ -85,7 +85,7 @@ export class StorageService {
     }
   }
 
-  getLastId(arr: Array<any>){
+  getLastId(arr: Array<any>) {
     //console.log('id err',arr);
     return arr.slice(-1)[0]?.id
   }
@@ -96,13 +96,13 @@ export class StorageService {
    * @param {{name: string, id: number}} tab Category of the notes
    * @returns {boolean} If new notes are empty
    */
-  async loadMoreNotes(tab: {name: string, id: number}){
+  async loadMoreNotes(tab: { name: string, id: number }) {
     let lastId = this.notePages[tab.name]
     let newNotes
-    if(tab.id == -1) { // all have -1
+    if (tab.id == -1) { // all have -1
       newNotes = await this.noteRep.getPaginatedNotes(lastId);
     } else {
-      newNotes = await this.noteRep.getNotesByCategory(tab.id,lastId);
+      newNotes = await this.noteRep.getNotesByCategory(tab.id, lastId);
     }
 
     this.notes[tab.name].push(...newNotes)
@@ -110,39 +110,58 @@ export class StorageService {
     return newNotes.length === 0
   }
 
-  async filterNotesByParam(param: string, value: string, category?: string){
-    let lastId = this.notePages[category]
+  async filterNotesByParam(param: string, value: string, category?: { name: string, id: number }) {
+    let lastId = this.notePages[category.name]
     let newNotes
-    newNotes = await this.noteRep.filterNotesByParam(param,value,lastId,category)
-    // if(category== 'all') {
-    //   newNotes = await this.noteRep.getPaginatedNotes(lastId);
-    // } else {
-    //   newNotes = await this.noteRep.getNotesByCategory(category,lastId);
-    // }
-
-    this.notes[category].push(...newNotes)
-    this.notePages[category] = this.getLastId(newNotes)
+    if (param == 'all')
+      //_.defer(async () => newNotes = await this.noteRep.filterNotesByAll(value, lastId, category.id))
+      newNotes = await this.noteRep.filterNotesByAll(value, lastId, category.id)
+    else
+      //_.defer(async () => newNotes = await this.noteRep.filterNotesByParam(param, value, lastId, category.id))
+      newNotes = await this.noteRep.filterNotesByParam(param, value, lastId, category.id)
+    this.notes[category.name].push(...newNotes)
+    this.notePages[category.name] = this.getLastId(newNotes)
     return newNotes.length === 0
   }
 
-  refillNotes(){
+  async refillNotes() {
+    //this.resetNotes()
+    let allNotes = await this.noteRep.getPaginatedNotes()
 
+    /** Notes **/
+    Object.assign(this.notes, { 'all': allNotes })
+    for (let category of this.categories) {
+      let nt = await this.noteRep.getNotesByCategory(category.id)
+      Object.assign(this.notes, { [category.category]: nt })
+    }
+
+    for (const item in this.notes) {
+      Object.assign(this.notePages, { [item]: this.getLastId(this.notes[item]) })
+    }
   }
 
   resetNotes() {
-    this.notePages = {}
-    this.notes = {}
+    const cleanObj = (obj: any) => {
+      for (const key in obj) {
+        delete obj[key];
+      }
+    }
+    cleanObj(this.notePages)
+    cleanObj(this.notes)
+    // console.log(this.notes);
+
     this.categories.forEach(cat => this.notes[cat.category] = [])
     this.notes['all'] = []
+    console.log(this.notes);
   }
 
-  async loadMoreVerses(topic: string){
+  async loadMoreVerses(topic: string) {
     let lastId = this.versePages[topic]
     let newVerses
-    if(topic== 'all') {
+    if (topic == 'all') {
       newVerses = await this.verseRep.getPaginatedVerses(lastId);
     } else {
-      newVerses = await this.verseRep.getVersesByTopic(topic,lastId);
+      newVerses = await this.verseRep.getVersesByTopic(topic, lastId);
     }
 
     this.verses[topic].push(...newVerses)
@@ -165,11 +184,11 @@ export class StorageService {
   }
 
   async editNote(note: Note, prevCategoryName) {
-    console.log('is editing note',note);
+    console.log('is editing note', note);
 
     //await this.editItemByID(NOTES_KEY, note)
     await this.noteRep.updateNote(note)
-    console.log('category of note',this.categories.find(cat => cat.id === note.category),this.categories);
+    console.log('category of note', this.categories.find(cat => cat.id === note.category), this.categories);
 
     let newCategoryName = this.categories.find(cat => cat.id === note.category)['category']
     //let noteCatIndex = this.notes[prevCategoryName].findIndex(arrNote => arrNote.id === note.id)
@@ -224,7 +243,7 @@ export class StorageService {
     //let categoryArray = await this.addData(CATEGORY_KEY, category)
     let _category = await this.categoryrRep.createCategory(category)
     this.categories.push(_category)
-    console.log('new category and list',category,this.categories);
+    console.log('new category and list', category, this.categories);
 
     Object.assign(this.notes, { [category.category]: [] })
     Object.assign(this.notePages, { [category.category]: undefined })
@@ -293,11 +312,11 @@ export class StorageService {
   }
 
   /***************** Last Chapter ***********/
-  async setLastChapter(chapter){
+  async setLastChapter(chapter) {
     return await this.storage.set(LAST_CHAPTER_KEY, chapter)
   }
 
- async getLastChapter(){
+  async getLastChapter() {
     return await this.storage.get(LAST_CHAPTER_KEY)
   }
 

@@ -5,6 +5,7 @@ import { DatabaseService } from '../services/database.service';
 import { Note } from '../interfaces/note';
 import { StorageService } from '../services/storage.service';
 import { environment } from 'src/environments/environment';
+import { formatDate } from '../classes/utils';
 
 @Injectable({
     providedIn: 'root'
@@ -130,24 +131,61 @@ export class NoteRepository {
         });
     }
 
-    async filterNotesByParam(param: string, value: string, lastId?: number, category?: string): Promise<Note[]> {
+    async filterNotesByAll(value: string, lastId?: number, category?: number): Promise<Note[]> {
+      const where = (value)=>{
+        let date = "Invalid date"//formatDate(value)
+        let validDate = date != "Invalid date"
+        return `title LIKE '%${value}%' OR text LIKE '%${value}%' ${validDate? "OR date LIKE '%"+date+"%'":''}`
+      }
       return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
           let sqlcmd: string;
           if (lastId) {
               sqlcmd = `
               select * from notes
-              WHERE ${param} LIKE %?% ${category? 'AND '+category :''} AND id < ${lastId}
+              WHERE (${where(value)}) ${category != -1? 'AND category = ?':''} AND id < ${lastId}
               ORDER BY id DESC
               LIMIT ${this.pagSize}`;
           } else {
               sqlcmd = `
               select * from notes
-              WHERE ${param} LIKE %?% ${category? 'AND '+category :''}
+              WHERE (${where(value)}) ${category != -1? 'AND category = ?':''}
               ORDER BY id DESC
               LIMIT ${this.pagSize}`;
           }
-          let values: Array<any> = [value];
+          console.log('query',sqlcmd);
+
+          let values: Array<any> = [];
+          if(category != -1) values.push(category)
           let ret: any = await db.query(sqlcmd, values);
+          console.log(ret.values);
+
+          return ret.values as Note[];
+      });
+  }
+
+    async filterNotesByParam(param: string, value: string, lastId?: number, category?: number): Promise<Note[]> {
+      return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
+          let sqlcmd: string;
+          if (lastId) {
+              sqlcmd = `
+              select * from notes
+              WHERE ${param} LIKE '%${value}%' ${category != -1? 'AND category = ?':''} AND id < ${lastId}
+              ORDER BY id DESC
+              LIMIT ${this.pagSize}`;
+          } else {
+              sqlcmd = `
+              select * from notes
+              WHERE ${param} LIKE '%${value}%' ${category != -1? 'AND category = ?':''}
+              ORDER BY id DESC
+              LIMIT ${this.pagSize}`;
+          }
+          console.log('query',sqlcmd);
+
+          let values: Array<any> = [];// = [value];
+          if(category != -1) values.push(category)
+          let ret: any = await db.query(sqlcmd, values);
+          console.log(ret.values);
+
           return ret.values as Note[];
       });
   }

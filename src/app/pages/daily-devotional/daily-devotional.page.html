@@ -9,7 +9,7 @@
     </ion-buttons>
     <ion-title *ngIf="!filterOn" slot="">Diario devocional</ion-title>
 
-    <ion-searchbar *ngIf="filterOn" (ionFocus)="searchbarFocus()" (ionCancel)="clearSearchTerm()" [(ngModel)]="searchTerm" (ionChange)="searchbarChange($event)" animated placeholder=""></ion-searchbar>
+    <ion-searchbar *ngIf="filterOn && filterType != 'date'" (ionFocus)="searchbarFocus()" (ionCancel)="clearSearchTerm()" [(ngModel)]="searchTerm" (ionChange)="searchbarChange($event)" animated placeholder=""></ion-searchbar>
     <ion-buttons slot="primary">
       <ion-button id="daily-dev-menu" (click)="presentPopover($event)">
         <ion-icon slot="icon-only" name="chevron-down-outline"></ion-icon>
@@ -89,6 +89,9 @@
           <ion-select-option value="text">Texto</ion-select-option>
           <ion-select-option value="date">Fecha</ion-select-option>
         </ion-select>
+        <button (click)="showDate = !showDate" *ngIf="filterType == 'date'" class="absolute top-1 left-2 w-10">
+          <ion-icon class="text-3xl" name="calendar-outline"></ion-icon>
+        </button>
         <button (click)="cancelFilter()" class="absolute top-1 right-2 w-10">
           <ion-icon class="text-3xl" name="close-outline"></ion-icon>
         </button>
@@ -97,7 +100,7 @@
         </button>-->
       </div>
 
-      <ion-datetime *ngIf="showDate" (ionCancel)="showDate=false" (ionChange)="dateSelectionChange($event)" presentation="date" locale="es-ES" [showDefaultButtons]="false"
+      <ion-datetime *ngIf="showDate && filterType == 'date'" (ionCancel)="showDate=false" (ionChange)="dateSelectionChange($event)" presentation="date" locale="es-ES" [showDefaultButtons]="false"
       doneText="Ok"
       cancelText="Ocultar"></ion-datetime>
     </div>
