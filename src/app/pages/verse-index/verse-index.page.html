@@ -88,7 +88,7 @@
     <!-- Verses -->
     <ion-slides #slide class="flex-1 w-full" (ionSlideTransitionStart)="transitionStarted()">
       <ion-slide class="h-full w-full" *ngFor="let tab of tabs">
-        <div id="slide-{{tab}}-verses" class="scrolled-slide-verses h-full w-full overflow-y-scroll ion-content-scroll-host">
+        <div id="slide-{{tab.name}}-verses" class="scrolled-slide-verses h-full w-full overflow-y-scroll ion-content-scroll-host">
           <ion-card *ngFor="let verse of getPaginatedVerses(tab)">
             <ion-item class="">
               <ion-label>{{verse.passage.reference}}</ion-label>
@@ -104,8 +104,8 @@
               {{verse.text}}
             </ion-card-content>
           </ion-card>
-          <p class="text-slate-500 w-full text-center mt-2" *ngIf="verses[tab]?.length == 0 && filterOn">No existen versículos para este filtro</p>
-          <p class="text-slate-500 w-full text-center mt-2" *ngIf="verses[tab]?.length == 0 && !filterOn">No existen versículos con este tema</p>
+          <p class="text-slate-500 w-full text-center mt-2" *ngIf="verses[tab.name]?.length == 0 && filterOn">No existen versículos para este filtro</p>
+          <p class="text-slate-500 w-full text-center mt-2" *ngIf="verses[tab.name]?.length == 0 && !filterOn">No existen versículos con este tema</p>
 
           <ion-infinite-scroll threshold="100px" id="infinite-scroll" class="" (ionInfinite)="onScroll($event)">
             <ion-infinite-scroll-content

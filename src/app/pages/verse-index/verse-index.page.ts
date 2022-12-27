@@ -288,13 +288,13 @@ export class VerseIndexPage implements OnInit {
     if(this.filterOn)
       return this.filterByCustomType(this.verses[tab])
     else
-      return this.verses[tab]
+      return this.verses[tab.name]
   }
 
   fillTabs(){
-    this.tabs = ['all']//[this.config.getData().daly_devotional.tab]
+    this.tabs.push({ name: 'all', id: -1 })//[this.config.getData().daly_devotional.tab]
     if(this.topicList !== null)
-      this.topicList.forEach(tab => this.tabs.push(tab.name))
+      this.topicList.forEach(tab => this.tabs.push(tab))
     this.selectedTab = this.tabs[0]
     //console.log(this.tabs)
     //console.log('tabs: ',this.tabs)
