@@ -2,6 +2,7 @@ import { Component, Input, OnInit, Output, ViewChild,EventEmitter } from '@angul
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { IonModal } from '@ionic/angular';
 import { Colors } from 'src/app/classes/utils';
+import { ConfigService } from 'src/app/services/config.service';
 
 @Component({
   selector: 'app-modal-template',
@@ -12,20 +13,30 @@ export class ModalTemplateComponent implements OnInit {
   @ViewChild('modal') modal: IonModal;
   @Input() title
   @Output() modalDidPresent = new EventEmitter<any>()
-  constructor() { }
+  constructor(private config: ConfigService) { }
 
   ngOnInit() {}
 
   willDismiss(){
-    StatusBar.setBackgroundColor({color: Colors.statusBarLightMode})
-    StatusBar.setStyle({style: Style.Light})
-    console.log('destroyed');
+    if(this.config.settings.darkMode){
+      StatusBar.setBackgroundColor({color: Colors.statusBarDarkMode})
+      StatusBar.setStyle({style: Style.Dark})
+    } else {
+      StatusBar.setBackgroundColor({color: Colors.statusBarLightMode})
+      StatusBar.setStyle({style: Style.Light})
+    }
+    //console.log('destroyed');
   }
 
   willPresent(){
-    StatusBar.setBackgroundColor({color: Colors.statusBarModalDarkMode})
-    StatusBar.setStyle({style: Style.Dark})
-    console.log('init');
+    if(this.config.settings.darkMode){
+      StatusBar.setBackgroundColor({color: Colors.statusBarModalDarkMode})
+      StatusBar.setStyle({style: Style.Dark})
+    } else {
+      StatusBar.setBackgroundColor({color: Colors.statusBarModalLightMode})
+      StatusBar.setStyle({style: Style.Dark})
+    }
+    //console.log('init');
   }
 
   didPresent(){
@@ -33,8 +44,6 @@ export class ModalTemplateComponent implements OnInit {
   }
 
   present(){
-    console.log('title',this.title);
-
     this.modal.present()
   }
 

@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
+import { Settings } from '../interfaces/settings';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConfigService {
   lang = "es"
-  settings
+  settings: Settings
   availableBibleLanguages = [{id:"spa",name:"Español"},{id:"eng",name:"English"}]
 
   text_data = {

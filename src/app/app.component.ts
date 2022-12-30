@@ -3,6 +3,7 @@ import { SplashScreen } from '@capacitor/splash-screen';
 import { StatusBar } from '@capacitor/status-bar';
 import { Platform } from '@ionic/angular';
 import { Product } from './interfaces/Product';
+import { Settings } from './interfaces/settings';
 import { ConfigService } from './services/config.service';
 import { SQLiteService } from './services/sqlite.service';
 import { StorageService } from './services/storage.service';
@@ -22,7 +23,7 @@ export class AppComponent {
   header_title = ""
   header_subtitle = ""
   darkMode = false
-  settings
+  settings: Settings
   private initPlugin: boolean;
   products: Product[] = [];
   public isWeb: boolean = false;
