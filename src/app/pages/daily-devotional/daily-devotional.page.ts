@@ -260,6 +260,7 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   fillTabs() {
+    this.tabs.length = 0
     this.tabs.push({ name: 'all', id: -1 })
     if (this.categoryList !== null)
       this.categoryList.forEach(cat => this.tabs.push({ name: cat.category, id: cat.id }))

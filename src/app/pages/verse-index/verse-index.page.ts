@@ -60,8 +60,6 @@ export class VerseIndexPage implements OnInit {
 
   ngOnInit() {
     this.loadData()
-
-
     //this.loadTopics()
     //this.loadVerses()
   }
@@ -73,10 +71,10 @@ export class VerseIndexPage implements OnInit {
     console.log(this.verses)
     this.loadTopics()
     this.addScrollListener()
-    for(let i of [1,2,3,4,5,6,7,8,9,10]){
-      console.log('in');
-      //await this.storageService.addVerse(this.verses.Pasto[0],'Pasto')
-    }
+    // for(let i of [1,2,3,4,5,6,7,8,9,10]){
+    //   console.log('in');
+    //   //await this.storageService.addVerse(this.verses.Pasto[0],'Pasto')
+    // }
   }
 
   async presentToast(msg) {
@@ -292,6 +290,7 @@ export class VerseIndexPage implements OnInit {
   }
 
   fillTabs(){
+    this.tabs.length = 0
     this.tabs.push({ name: 'all', id: -1 })//[this.config.getData().daly_devotional.tab]
     if(this.topicList !== null)
       this.topicList.forEach(tab => this.tabs.push(tab))
