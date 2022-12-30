@@ -17,11 +17,12 @@ import { DailyDevotionalMainMenuComponent } from './daily-devotional-main-menu/d
 import { AddVerseModalComponent } from './add-verse-modal/add-verse-modal.component';
 import { TopicModalComponent } from './topic-modal/topic-modal.component';
 import { TabsComponent } from './tabs/tabs.component';
+import { ModalTemplateComponent } from './modal-template/modal-template.component';
 
 const components = [ColorPickerComponent,AddNoteModalComponent,GeneralNoteComponent,
 AddCategoryComponent,CustomAlertComponent,SelectBibleModalComponent,SelectPassageModalComponent,
 NoteSelectionSheetComponent,DailyDevotionalMainMenuComponent,AddVerseModalComponent,
-TopicModalComponent,TabsComponent]
+TopicModalComponent,TabsComponent,ModalTemplateComponent]
 
 SwiperCore.use([Autoplay, Keyboard, Pagination, Scrollbar, Zoom, IonicSlides]);
 

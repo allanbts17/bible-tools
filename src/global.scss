@@ -50,6 +50,10 @@ ion-modal ion-toolbar {
   --color: white;
 }
 
+.dark ion-modal ion-toolbar {
+  --background: #0d0d0d;
+}
+
 // .dark ion-modal ion-toolbar ion-button {
 //   color: white !important
 // }

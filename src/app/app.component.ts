@@ -3,8 +3,6 @@ import { SplashScreen } from '@capacitor/splash-screen';
 import { StatusBar } from '@capacitor/status-bar';
 import { Platform } from '@ionic/angular';
 import { Product } from './interfaces/Product';
-import { ProductDefaultQueryRepository } from './repositories/product.default.query.repository';
-import { ProductRepository } from './repositories/product.repository';
 import { ConfigService } from './services/config.service';
 import { SQLiteService } from './services/sqlite.service';
 import { StorageService } from './services/storage.service';
@@ -30,10 +28,7 @@ export class AppComponent {
   public isWeb: boolean = false;
   constructor(public config: ConfigService,
     public storage: StorageService,
-    public theme: ThemeService,
-    private platform: Platform,
-    private sqlite: SQLiteService,
-    private productRepository: ProductRepository, private productDefaultQueryRepository: ProductDefaultQueryRepository
+    public theme: ThemeService
    /* private _detail: DetailService,*/) {
     this.init()
   }

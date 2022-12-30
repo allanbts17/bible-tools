@@ -1,4 +1,21 @@
-<ion-modal #catModal>
+<app-modal-template #catModal [title]="actualTitle">
+  <ion-item>
+    <ion-label position="floating">{{actualLabel}}</ion-label>
+    <ion-input [(ngModel)]="category.category"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label>Color de la categoría</ion-label>
+    <button (click)="showColorPicker=!showColorPicker"style="background: {{category.color}}" class="color-button w-8 h-8 ring-1 mr-1 ring-black rounded-full"></button>
+  </ion-item>
+  <app-color-picker *ngIf="showColorPicker" (selectColorEvent)="selectColor($event)"></app-color-picker>
+
+  <p *ngIf="showEmptyMsg" class="w-full text-center text-red-600">Faltan espacios por llenar</p>
+  <p *ngIf="showUsedMsg || showUsedOnEdit" class="w-full text-center text-red-600">Esa categoría ya existe</p>
+  <div class="mt-5 flex justify-center w-full">
+    <ion-button color="dark" (click)="saveCategory()">Guardar</ion-button>
+  </div>
+</app-modal-template>
+<!--<ion-modal #catModal>
   <ng-template>
     <ion-content>
       <ion-toolbar>
@@ -24,4 +41,4 @@
       </div>
     </ion-content>
   </ng-template>
-</ion-modal>
+</ion-modal>-->

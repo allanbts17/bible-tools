@@ -13,3 +13,10 @@ export const formatDate = (_date: string | Date, format = 'll', locale = 'en') =
   localMoment.locale(locale);
   return localMoment.format(format)
 }
+
+export enum Colors {
+  statusBarDarkMode = '#1F1F1F',
+  statusBarLightMode = '#FFFFFF',
+  statusBarModalDarkMode = '#0d0d0d',
+  statusBarModalLightMode = '#222428',
+}

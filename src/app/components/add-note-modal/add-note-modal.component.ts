@@ -5,6 +5,8 @@ import { StorageService } from 'src/app/services/storage.service';
 import  * as moment  from 'moment'
 import { Category } from 'src/app/interfaces/category';
 import { Note } from 'src/app/interfaces/note';
+import { StatusBar, Style } from '@capacitor/status-bar';
+import { Colors } from 'src/app/classes/utils';
 
 
 @Component({
@@ -41,25 +43,22 @@ export class AddNoteModalComponent implements OnInit {
   actualTitle
   prevCategory: string;
 
-  constructor(public config: ConfigService, public storageService: StorageService) {
-    //this.loadCategories()
-    /*var today = moment().format('ll')
-    var alsoToday  = moment().format('lll')
-    console.log('today: ',today)
-    console.log('today another hour: ',alsoToday)
-
-    var ma = moment(today)
-    var mb = moment(alsoToday)
-    console.log('difference: ',ma.diff(mb))
-
-    var localMoment = moment(today)
-    localMoment.locale('es');
-    console.log('Hoy: ',localMoment.format('LL'))*/
-  }
+  constructor(public config: ConfigService, public storageService: StorageService) {}
 
   ngOnInit() {
     this.setTitle()
   }
+
+  /*onDismiss(){
+    StatusBar.setBackgroundColor({color: Colors.statusBarLightMode})
+    StatusBar.setStyle({style: Style.Light})
+    console.log('destroyed');
+  }
+  onPresent(){
+    StatusBar.setBackgroundColor({color: Colors.statusBarModalDarkMode})
+    StatusBar.setStyle({style: Style.Dark})
+    console.log('init');
+  }*/
 
   setTitle(){
     if(this.newNote){

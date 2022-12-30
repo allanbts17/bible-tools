@@ -1,0 +1,21 @@
+<ion-modal
+  #modal
+  (willDismiss)="willDismiss()"
+  (willPresent)="willPresent()"
+  (didPresent)="didPresent()"
+
+>
+  <ng-template>
+    <ion-content scroll-y="false">
+      <section class="flex flex-col h-full w-full">
+        <ion-toolbar class="flex-none">
+          <ion-title>{{ title }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button color="modalight" (click)="modal.dismiss()">Cerrar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+        <ng-content></ng-content>
+      </section>
+    </ion-content>
+  </ng-template>
+</ion-modal>

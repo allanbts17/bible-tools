@@ -1,4 +1,16 @@
-<ion-modal #modal [trigger]="triggerId" [isOpen]="isOpen || false" (ionModalDidDismiss)="dismiss()">
+<app-modal-template #modal title="Seleccione la biblia">
+  <ion-list  class="flex-1 w-full overflow-y-scroll">
+    <ion-item-group *ngFor="let langCat of sharedInfo.bibleList">
+      <ion-item-divider>
+        <ion-label>{{langCat.lang.name}}</ion-label>
+      </ion-item-divider>
+      <ion-item *ngFor="let bible of langCat?.bibles" button (click)="select(bible)">
+        <ion-label>{{bible.nameLocal}}</ion-label>
+      </ion-item>
+    </ion-item-group>
+  </ion-list>
+</app-modal-template>
+<!--<ion-modal #modal [trigger]="triggerId" [isOpen]="isOpen || false" (ionModalDidDismiss)="dismiss()">
   <ng-template>
     <ion-content scroll-y="false">
       <section class="flex flex-col h-full w-full">
@@ -9,7 +21,7 @@
         </ion-buttons>
       </ion-toolbar>
 
-      <!-- List of Text Items -->
+      !-- List of Text Items --
       <ion-list  class="flex-1 w-full overflow-y-scroll">
         <ion-item-group *ngFor="let langCat of sharedInfo.bibleList">
           <ion-item-divider>
@@ -23,4 +35,4 @@
     </section>
     </ion-content>
   </ng-template>
-</ion-modal>
+</ion-modal>-->

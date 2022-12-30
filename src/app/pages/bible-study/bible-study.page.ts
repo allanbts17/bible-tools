@@ -8,6 +8,7 @@ import { SharedInfoService } from 'src/app/services/shared-info.service';
 import { SelectPassageModalComponent } from 'src/app/components/select-passage-modal/select-passage-modal.component';
 import _ from 'underscore'
 import { copy } from 'src/app/classes/utils';
+import { SelectBibleModalComponent } from 'src/app/components/select-bible-modal/select-bible-modal.component';
 
 @Component({
   selector: 'app-bible-study',
@@ -19,6 +20,7 @@ export class BibleStudyPage implements OnInit {
   @ViewChild('slide') slides: IonSlides;
   @ViewChild('sheet') noteSelectionSheet: NoteSelectionSheetComponent;
   @ViewChild(SelectPassageModalComponent) selectPassage: SelectPassageModalComponent;
+  @ViewChild(SelectBibleModalComponent) selectBible: SelectBibleModalComponent;
   availableBibleLanguages = [{ id: "spa", name: "Español" }, { id: "eng", name: "English" }]
   bibles = []
   //selectedBible

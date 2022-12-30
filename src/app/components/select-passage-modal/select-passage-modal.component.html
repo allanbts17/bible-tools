@@ -1,5 +1,22 @@
-<!--<ion-modal #modal trigger="open-select-passage-modal" (ionModalDidPresent)="modalPresented()">-->
-<ion-modal #modal (ionModalDidPresent)="modalPresented()">
+<app-modal-template #modal [title]="title" (modalDidPresent)="modalPresented()">
+  <ion-slides #slide [options]="myOptions" class="flex-1 w-full" (ionSlideTransitionEnd)="transitionFinished()">
+    <ion-slide class="h-full">
+      <div class="flex flex-wrap justify-around overflow-y-scroll h-full">
+        <ion-button class="w-5/12" shape="round" color="medium" fill="" *ngFor="let book of bookList" (click)="setBook(book)">
+          {{book.name}}
+        </ion-button>
+      </div>
+    </ion-slide>
+    <ion-slide class="h-full">
+      <div class="flex flex-wrap justify-around h-full overflow-y-scroll">
+        <ion-button class="w-3/12" shape="round" color="medium" fill="" *ngFor="let chapter of chapterList" (click)="setChapter(chapter)">
+          {{chapter.number}}
+        </ion-button>
+      </div>
+    </ion-slide>
+  </ion-slides>
+</app-modal-template>
+<!--<ion-modal #modal (ionModalDidPresent)="modalPresented()">
   <ng-template>
     <ion-content scroll-y="false">
       <section class="flex flex-col h-full w-full">
@@ -29,4 +46,4 @@
       </section>
     </ion-content>
   </ng-template>
-</ion-modal>
+</ion-modal>-->
