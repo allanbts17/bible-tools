@@ -64,7 +64,7 @@ export class NoteSelectionSheetComponent implements OnInit {
   }
 
   async loadTopics(){
-    this.topicList = await this.storage.getData("topics")
+    this.topicList = await this.storage.getTopics()
   }
 
   newVerseAdded(){
