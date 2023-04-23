@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angu
 import { IonModal, IonSlides } from '@ionic/angular';
 import { ApiService } from 'src/app/services/api.service';
 import { SwiperOptions } from 'swiper';
-
+import { NgxSpinnerService } from "ngx-spinner";
 @Component({
   selector: 'app-select-passage-modal',
   templateUrl: './select-passage-modal.component.html',
@@ -19,7 +19,8 @@ export class SelectPassageModalComponent implements OnInit {
   selectedChapter
   title = "Seleccione el libro"
   defaultTitle = "Seleccione el libro"
-
+  showSpinner = false
+  showSlides = true
   myOptions: SwiperOptions = {
     //allowTouchMove: false
   };
@@ -41,7 +42,11 @@ export class SelectPassageModalComponent implements OnInit {
   }
 
   modalPresented() {
+    console.log("presented");
+    this.showSlides = true
     this.slides.lockSwipes(true)
+    this.showSpinner = true
+    this.chapterList = []
     /* this.myOptions.allowTouchMove = false
      console.log(this.myOptions)
      this.slides.options = this.myOptions
@@ -54,7 +59,8 @@ export class SelectPassageModalComponent implements OnInit {
     if (index == 0) {
       this.slides.lockSwipes(true)
     } else {
-      this.slides.lockSwipes(false)
+      //this.slides.lockSwipes(false)
+      this.slides.lockSwipeToPrev(false)
       this.slides.lockSwipeToNext(true)
       /*this.slides.lockSwipeToPrev(false)
       this.slides.lockSwipeToNext(true)*/
@@ -63,6 +69,7 @@ export class SelectPassageModalComponent implements OnInit {
   }
 
   setBook(book) {
+    //this.slides.lockSwipeToPrev(false)
     this.slides.lockSwipeToNext(false)
     this.slides.slideNext()
     this.selectedBook = book
@@ -75,6 +82,10 @@ export class SelectPassageModalComponent implements OnInit {
     this.selectedChapter = chapter
     this.resetValues()
     this.passageSelectedEvent.emit(chapter)
+    this.showSlides = false
+    setTimeout(()=>{
+      this.showSlides = true
+    })
     this.modal.dismiss()
   }
 
@@ -88,9 +99,10 @@ export class SelectPassageModalComponent implements OnInit {
       console.log('data',aux);
 
       this.chapterList = data[0].number === 'intro' ? data.slice(1) : data
-      //console.log(this.chapterList)
+      console.log(this.chapterList)
       this.title = this.selectedBook.name
-
+      this.showSpinner = false
+      //this.spinner.hide();
 
     })
   }
@@ -102,6 +114,8 @@ export class SelectPassageModalComponent implements OnInit {
       this.apiService.getBibleBookList(bibleId).subscribe((books) => {
         data = books
         this.bookList = data.data
+        console.log(data);
+
         //console.log(this.bookList)
 
       })
@@ -111,6 +125,7 @@ export class SelectPassageModalComponent implements OnInit {
   resetValues() {
     this.title = this.defaultTitle
     this.slides.slideTo(0)
+   // this.slides.lockSwipes(true)
   }
 
 }

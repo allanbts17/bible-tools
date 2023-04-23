@@ -18,7 +18,8 @@ import { InitializeAppService } from './services/initialize.app.service';
 import { DetailService } from './services/detail.service';
 import { DatabaseService } from './services/database.service';
 import { MigrationService } from './services/migrations.service';
-import { ProductRepository } from './repositories/product.repository';
+//import { NgxSpinnerModule } from "ngx-spinner";
+
 
 export function initializeFactory(init: InitializeAppService) {
   return () => init.initializeApp();
@@ -30,6 +31,7 @@ export function initializeFactory(init: InitializeAppService) {
   imports: [BrowserModule,
     IonicModule.forRoot(),
     FormsModule,
+
     IonicStorageModule.forRoot({
       name: "new-database",
       driverOrder: [CordovaSQLiteDriver._driver, Drivers.IndexedDB]

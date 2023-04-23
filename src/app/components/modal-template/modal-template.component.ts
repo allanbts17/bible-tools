@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, ViewChild,EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, ViewChild, EventEmitter } from '@angular/core';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { IonModal } from '@ionic/angular';
 import { Colors } from 'src/app/classes/utils';
@@ -13,41 +13,51 @@ export class ModalTemplateComponent implements OnInit {
   @ViewChild('modal') modal: IonModal;
   @Input() title
   @Output() modalDidPresent = new EventEmitter<any>()
+  @Output() closedEvent = new EventEmitter<any>()
   constructor(private config: ConfigService) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
-  willDismiss(){
-    if(this.config.settings.darkMode){
-      StatusBar.setBackgroundColor({color: Colors.statusBarDarkMode})
-      StatusBar.setStyle({style: Style.Dark})
-    } else {
-      StatusBar.setBackgroundColor({color: Colors.statusBarLightMode})
-      StatusBar.setStyle({style: Style.Light})
+  willDismiss() {
+    try {
+      if (this.config.settings.darkMode) {
+        StatusBar.setBackgroundColor({ color: Colors.statusBarDarkMode })
+        StatusBar.setStyle({ style: Style.Dark })
+      } else {
+        StatusBar.setBackgroundColor({ color: Colors.statusBarLightMode })
+        StatusBar.setStyle({ style: Style.Light })
+      }
+      //console.log('destroyed');
+    } catch (err) {
+      console.log(err?.code);
     }
-    //console.log('destroyed');
   }
 
-  willPresent(){
-    if(this.config.settings.darkMode){
-      StatusBar.setBackgroundColor({color: Colors.statusBarModalDarkMode})
-      StatusBar.setStyle({style: Style.Dark})
-    } else {
-      StatusBar.setBackgroundColor({color: Colors.statusBarModalLightMode})
-      StatusBar.setStyle({style: Style.Dark})
+  willPresent() {
+    try {
+      if (this.config.settings.darkMode) {
+        StatusBar.setBackgroundColor({ color: Colors.statusBarModalDarkMode })
+        StatusBar.setStyle({ style: Style.Dark })
+      } else {
+        StatusBar.setBackgroundColor({ color: Colors.statusBarModalLightMode })
+        StatusBar.setStyle({ style: Style.Dark })
+      }
+      //console.log('init');
+    } catch (err) {
+      console.log(err?.code);
     }
-    //console.log('init');
   }
 
-  didPresent(){
+  didPresent() {
     this.modalDidPresent.emit()
   }
 
-  present(){
+  present() {
     this.modal.present()
   }
 
-  dismiss(){
+  dismiss() {
+    this.closedEvent.emit()
     this.modal.dismiss()
   }
 

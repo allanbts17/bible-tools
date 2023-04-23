@@ -18,7 +18,8 @@ import { AddVerseModalComponent } from './add-verse-modal/add-verse-modal.compon
 import { TopicModalComponent } from './topic-modal/topic-modal.component';
 import { TabsComponent } from './tabs/tabs.component';
 import { ModalTemplateComponent } from './modal-template/modal-template.component';
-
+import { NgxSpinnerModule } from "ngx-spinner";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 const components = [ColorPickerComponent,AddNoteModalComponent,GeneralNoteComponent,
 AddCategoryComponent,CustomAlertComponent,SelectBibleModalComponent,SelectPassageModalComponent,
 NoteSelectionSheetComponent,DailyDevotionalMainMenuComponent,AddVerseModalComponent,
@@ -32,6 +33,8 @@ SwiperCore.use([Autoplay, Keyboard, Pagination, Scrollbar, Zoom, IonicSlides]);
   imports: [
     CommonModule,
     FormsModule,
+    //BrowserAnimationsModule,
+    NgxSpinnerModule,
     SwiperModule,
     IonicModule
   ]

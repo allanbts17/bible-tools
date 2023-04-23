@@ -17,6 +17,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/animations": "^13.3.12",
     "@angular/common": "~13.2.2",
     "@angular/core": "~13.2.2",
     "@angular/forms": "~13.2.2",
@@ -42,6 +43,7 @@
     "lodash.clonedeep": "^4.5.0",
     "moment": "^2.29.4",
     "ngx-infinite-scroll": "^14.0.0",
+    "ngx-spinner": "^13.1.1",
     "rxjs": "~6.6.0",
     "swiper": "^8.3.0",
     "tslib": "^2.2.0",
