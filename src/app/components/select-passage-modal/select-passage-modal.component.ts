@@ -22,8 +22,9 @@ export class SelectPassageModalComponent implements OnInit {
   showSpinner = false
   showSlides = true
   myOptions: SwiperOptions = {
-    //allowTouchMove: false
+    allowTouchMove: false
   };
+  arrowDisable = [true,true]
 
   constructor(public apiService: ApiService) { }
 
@@ -44,7 +45,7 @@ export class SelectPassageModalComponent implements OnInit {
   modalPresented() {
     console.log("presented");
     this.showSlides = true
-    this.slides.lockSwipes(true)
+    //this.slides.lockSwipes(true)
     this.showSpinner = true
     this.chapterList = []
     /* this.myOptions.allowTouchMove = false
@@ -57,21 +58,27 @@ export class SelectPassageModalComponent implements OnInit {
     let index = await this.slides.getActiveIndex()
     console.log(index)
     if (index == 0) {
-      this.slides.lockSwipes(true)
+      //this.slides.lockSwipes(true)
     } else {
       //this.slides.lockSwipes(false)
-      this.slides.lockSwipeToPrev(false)
-      this.slides.lockSwipeToNext(true)
+      // this.slides.lockSwipeToPrev(false)
+      // this.slides.lockSwipeToNext(true)
       /*this.slides.lockSwipeToPrev(false)
       this.slides.lockSwipeToNext(true)*/
     }
 
   }
 
+  returnToPrev(){
+    this.chapterList = []
+    this.slides.slidePrev()
+  }
+
   setBook(book) {
     //this.slides.lockSwipeToPrev(false)
-    this.slides.lockSwipeToNext(false)
+    // this.slides.lockSwipeToNext(false)
     this.slides.slideNext()
+    this.arrowDisable = [false,true]
     this.selectedBook = book
     //console.log({bible: this.bible, book: book});
 
@@ -125,6 +132,7 @@ export class SelectPassageModalComponent implements OnInit {
   resetValues() {
     this.title = this.defaultTitle
     this.slides.slideTo(0)
+    this.arrowDisable = [true,true]
    // this.slides.lockSwipes(true)
   }
 

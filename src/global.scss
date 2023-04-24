@@ -34,6 +34,10 @@
 @import '~swiper/scss/zoom';
 @import '~@ionic/angular/css/ionic-swiper';
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 ion-modal {
  // --height: 95%;
  // --border-radius: 16px;

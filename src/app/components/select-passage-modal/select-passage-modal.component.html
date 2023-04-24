@@ -7,7 +7,7 @@
     (ionSlideTransitionEnd)="transitionFinished()"
   >
     <ion-slide class="h-full">
-      <div class="flex flex-wrap justify-around overflow-y-scroll h-full">
+      <!-- <div class="flex flex-wrap justify-around overflow-y-scroll h-full">
         <ion-button
           class="w-5/12"
           shape="round"
@@ -18,24 +18,22 @@
         >
           {{ book.name }}
         </ion-button>
+      </div> -->
+      <div class="overflow-y-scroll h-full w-full">
+        <ion-list class="">
+          <ion-item *ngFor="let book of bookList"  (click)="setBook(book)" button>
+            <ion-label>{{ book.name }}</ion-label>
+          </ion-item>
+        </ion-list>
       </div>
     </ion-slide>
-    <ion-slide class="h-full">
+    <ion-slide class="h-full w-full">
       <div
-        class="flex flex-wrap justify-around h-full overflow-y-scroll"
+        class="grid grid-cols-4 h-full w-full overflow-y-scroll"
         *ngIf="chapterList?.length > 0; else spinner"
       >
-        <!-- <ngx-spinner
-          bdColor="rgba(51,51,51,0.8)"
-          size="small"
-          color="#fff"
-          type="ball-scale-multiple"
-          ></ngx-spinner> -->
-        <!-- <ion-item *ngIf="showSpinner" class="mt-9">
-          <ion-spinner name="circles"></ion-spinner>
-        </ion-item> -->
         <ion-button
-          class="w-3/12"
+          class=""
           shape="round"
           color="medium"
           fill=""
@@ -44,9 +42,18 @@
         >
           {{ chapter.number }}
         </ion-button>
+        <div class=" h-20 col-span-4"></div>
       </div>
+
+      <ion-fab vertical="bottom" horizontal="start" slot="fixed" (click)="returnToPrev()">
+        <ion-fab-button color="medium">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>
     </ion-slide>
   </ion-slides>
+
+
 </app-modal-template>
 
 <ng-template #spinner>
@@ -56,34 +63,6 @@
     </ion-item>
   </div>
 </ng-template>
-<!--<ion-modal #modal (ionModalDidPresent)="modalPresented()">
-  <ng-template>
-    <ion-content scroll-y="false">
-      <section class="flex flex-col h-full w-full">
-        <ion-toolbar class="flex-none">
-          <ion-title>{{title}}</ion-title>
-          <ion-buttons slot="end">
-            <ion-button color="modalight" (click)="modal.dismiss()">Cerrar</ion-button>
-          </ion-buttons>
-        </ion-toolbar>
 
-        <ion-slides #slide [options]="myOptions" class="flex-1 w-full" (ionSlideTransitionEnd)="transitionFinished()">
-          <ion-slide class="h-full">
-            <div class="flex flex-wrap justify-around overflow-y-scroll h-full">
-              <ion-button class="w-5/12" shape="round" color="medium" fill="" *ngFor="let book of bookList" (click)="setBook(book)">
-                {{book.name}}
-              </ion-button>
-            </div>
-          </ion-slide>
-          <ion-slide class="h-full">
-            <div class="flex flex-wrap justify-around h-full overflow-y-scroll">
-              <ion-button class="w-3/12" shape="round" color="medium" fill="" *ngFor="let chapter of chapterList" (click)="setChapter(chapter)">
-                {{chapter.number}}
-              </ion-button>
-            </div>
-          </ion-slide>
-        </ion-slides>
-      </section>
-    </ion-content>
-  </ng-template>
-</ion-modal>-->
+
+
