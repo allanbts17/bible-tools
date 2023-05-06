@@ -9,6 +9,7 @@ import { SelectPassageModalComponent } from 'src/app/components/select-passage-m
 import _ from 'underscore'
 import { copy } from 'src/app/classes/utils';
 import { SelectBibleModalComponent } from 'src/app/components/select-bible-modal/select-bible-modal.component';
+import { NetworkService } from 'src/app/services/network.service';
 
 @Component({
   selector: 'app-bible-study',
@@ -46,15 +47,26 @@ export class BibleStudyPage implements OnInit {
 
   constructor(public apiService: ApiService,
     public storage: StorageService,
-    public sharedInfo: SharedInfoService) {
+    public sharedInfo: SharedInfoService,
+    protected network: NetworkService) {
     //this.getAvailablaBibles()
     this.loadMarkedVerses()
   }
 
   ngOnInit() {
     this.start = true
-    setTimeout(()=>
-    this.setDefaultData())
+    setTimeout(()=>{
+      if(this.network.status.connected){
+        this.setDefaultData()
+      } else {
+        let obs$ = this.network.status$.subscribe(async status => {
+          if (status.connected){
+            this.setDefaultData()
+           // obs$.unsubscribe()
+          }
+        })
+      }
+    })
 
   }
 

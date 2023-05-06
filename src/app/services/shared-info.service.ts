@@ -14,13 +14,19 @@ export class SharedInfoService {
   viChapter
   bibleList = []
   private allBibles = []
+  once = false
   constructor(private config: ConfigService,
     private apiService: ApiService,
     private storage: StorageService) { }
 
   async init() {
-    await this.getAvailableBibles();
-    await this.setChapterAndBible();
+    if(!this.once){
+      this.once = true
+      await this.getAvailableBibles();
+      await this.setChapterAndBible();
+      console.log('on sharedInfo');
+    }
+
 
     //  console.log('sBible',this.bible);
     //  console.log('sChapter',this.chapter);
