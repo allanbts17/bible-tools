@@ -44,6 +44,9 @@ export class BibleStudyPage implements OnInit {
   lastAuxIndex: number
   slideIndex: number
 
+  initialChapter: ChapterData
+  lastChapter: ChapterData
+
   myOptions: SwiperOptions
   //showSpace = false
 
@@ -142,8 +145,13 @@ export class BibleStudyPage implements OnInit {
     this.apiService.getChapter(bibleId, chapterId).subscribe(async (chapterContent: Chapter) => {
       let chapter = chapterContent.data
       this.chapterToSlideDistribution(this.slideIndex, chapter, 'actual')
-      this.setNextChapter(this.slideIndex, chapter).then(slide => console.log(slide)).catch(err => console.log(err))
-      this.setPrevChapter(this.slideIndex, chapter).then(slide => console.log(slide)).catch(err => console.log(err))
+      let promiseNext = this.setNextChapter(this.slideIndex, chapter) //.then(slide => console.log(slide)).catch(err => console.log(err))
+      let promisePrev = this.setPrevChapter(this.slideIndex, chapter) //.then(slide => console.log(slide)).catch(err => console.log(err))
+      await Promise.all([promisePrev,promiseNext])
+      this.initialChapter = this.showedChapters[0]
+      this.lastChapter = this.showedChapters[this.showedChapters.length - 1]
+      console.log('initial and last chapters',this.initialChapter,this.lastChapter);
+
       setTimeout(() => { console.log('showed chapters: ', this.showedChapters) }, 3000)
     }, error => {
       if (error.error.statusCode === 404) {
@@ -228,9 +236,9 @@ export class BibleStudyPage implements OnInit {
    */
   swipeDirection(index): 'right' | 'left' | 'stay' {
     var diff = index - this.slideIndex
-    if (diff === 1 || diff === -2) {
+    if (diff === 1 || diff < -1) {
       return 'right'
-    } else if (diff === -1 || diff === 2) {
+    } else if (diff === -1 || diff > 1) {
       return 'left'
     } else {
       return 'stay'
@@ -284,15 +292,17 @@ export class BibleStudyPage implements OnInit {
 
       //var dup = document.getElementsByClassName('swiper-slide-duplicate')
       //console.log(dup)
+      //console.log('sdirection: ',direction,index);
+
       if (direction !== 'stay') {
         this.noteSelectionSheet.closeSheet()
         this.closeSpace()
         this.unlockSwipe(direction)
         this.updateText(this.showedChapters[index - 1], direction, index)
-        console.log('trnas daqta',this.showedChapters[index - 1], direction, index);
+        //console.log('trnas daqta',this.showedChapters[index - 1], direction, index);
 
       }
-      setTimeout(()=>{ console.log('showed cahpterrrrs',this.showedChapters);
+      setTimeout(()=>{ console.log('showed cahpterrrrs', this.slideIndex,this.showedChapters,actualShowChapter);
       },2000)
 
     }
@@ -302,40 +312,71 @@ export class BibleStudyPage implements OnInit {
     //console.log(index)
     // let lastIndex = await this.slides.getPreviousIndex()
     // this.chapterToSlideDistribution(index,textData,'actual')
-    var data
+    console.log('direction: ',direction);
 
+    this.activeChapter = textData
+    //var data
+    let changeSlideDiff = (this.lastIndex + 1)/2
     if (direction === 'right') {
-      if (index === this.firstIndex) {
-        //document.getElementsByClassName('swiper-slide-next')[0].children[0].innerHTML = this.showedChapters[2].content
-        this.setSlideContent(this.firstAuxIndex, this.showedChapters[this.lastIndex])
-      }
-      if (textData?.next != undefined) {
-        this.apiService.getChapter(textData.bibleId, textData.next.id).subscribe((chapterContent) => {
-          data = chapterContent
-          this.chapterToSlideDistribution(index, data.data, 'next')
-          if (this.swipeRightLock) this.slides.lockSwipeToNext(false)
-        })
-      } else {
-        this.slides.lockSwipeToNext(true)
-        this.swipeRightLock = true
-      }
-    } else {
-      if (index === this.lastIndex) {
-        //console.log('entered',document.getElementsByClassName('swiper-slide-duplicate'))
-        //document.getElementsByClassName('swiper-slide-prev')[0].children[0].innerHTML = this.showedChapters[0].content
-        this.setSlideContent(this.lastAuxIndex, this.showedChapters[this.firstIndex])
-      }
-      if (textData?.previous != undefined && textData?.previous.number != 'intro') {
-        this.apiService.getChapter(textData.bibleId, textData.previous.id).subscribe((chapterContent) => {
-          data = chapterContent
-          this.chapterToSlideDistribution(index, data.data, 'previous')
-          if (this.swipeLeftLock) this.slides.lockSwipeToPrev(false)
-        })
-      } else {
-        await this.slides.lockSwipeToPrev(true)
-        this.swipeLeftLock = true
-      }
+      this.apiService.getChapter(this.lastChapter.bibleId,this.lastChapter.next.id).subscribe((chapterContent: Chapter) => {
+        console.log('loopPrev: ',this.loopPrev(index,changeSlideDiff));
+
+        this.showedChapters[this.loopPrev(index,changeSlideDiff)-1] = chapterContent.data
+        this.setSlideContent(this.loopPrev(index,changeSlideDiff), chapterContent.data)
+        if(this.loopPrev(index,changeSlideDiff) == this.firstIndex){
+          console.log(this.loopPrev(index,changeSlideDiff),this.firstIndex,index,changeSlideDiff,chapterContent,this.firstAuxIndex)
+          this.setSlideContent(this.firstAuxIndex, chapterContent.data)
+        }
+
+        this.lastChapter = chapterContent.data
+       // this.chapterToSlideDistribution(index, data.data, 'next')
+        if (this.swipeRightLock) this.slides.lockSwipeToNext(false)
+      })
+    } else if (direction === 'left') {
+      this.apiService.getChapter(this.initialChapter.bibleId, this.initialChapter.previous.id).subscribe((chapterContent: Chapter) => {
+
+        this.showedChapters[this.loopNext(index,changeSlideDiff)-1] = chapterContent.data
+        this.setSlideContent(this.loopNext(index,changeSlideDiff), chapterContent.data)
+
+        this.initialChapter = chapterContent.data
+       // this.chapterToSlideDistribution(index, data.data, 'next')
+        if (this.swipeLeftLock) this.slides.lockSwipeToPrev(false)
+      })
     }
+
+
+    // if (direction === 'right') {
+    //   if (index === this.firstIndex) {
+    //     //document.getElementsByClassName('swiper-slide-next')[0].children[0].innerHTML = this.showedChapters[2].content
+    //     this.setSlideContent(this.firstAuxIndex, this.showedChapters[this.lastIndex])
+    //   }
+    //   if (textData?.next != undefined) {
+    //     this.apiService.getChapter(textData.bibleId, textData.next.id).subscribe((chapterContent) => {
+    //       data = chapterContent
+    //       this.chapterToSlideDistribution(index, data.data, 'next')
+    //       if (this.swipeRightLock) this.slides.lockSwipeToNext(false)
+    //     })
+    //   } else {
+    //     this.slides.lockSwipeToNext(true)
+    //     this.swipeRightLock = true
+    //   }
+    // } else {
+    //   if (index === this.lastIndex) {
+    //     //console.log('entered',document.getElementsByClassName('swiper-slide-duplicate'))
+    //     //document.getElementsByClassName('swiper-slide-prev')[0].children[0].innerHTML = this.showedChapters[0].content
+    //     this.setSlideContent(this.lastAuxIndex, this.showedChapters[this.firstIndex])
+    //   }
+    //   if (textData?.previous != undefined && textData?.previous.number != 'intro') {
+    //     this.apiService.getChapter(textData.bibleId, textData.previous.id).subscribe((chapterContent) => {
+    //       data = chapterContent
+    //       this.chapterToSlideDistribution(index, data.data, 'previous')
+    //       if (this.swipeLeftLock) this.slides.lockSwipeToPrev(false)
+    //     })
+    //   } else {
+    //     await this.slides.lockSwipeToPrev(true)
+    //     this.swipeLeftLock = true
+    //   }
+    // }
   }
 
   async loadMarkedVerses() {
@@ -484,18 +525,31 @@ export class BibleStudyPage implements OnInit {
     //console.log('showed: ', this.showedChapters)
   }
 
-  loopNext(index) {
-    var result
-    if (index < this.lastIndex) result = index + 1
-    else result = this.firstIndex
-    return result
+  loopNext(index: number, sum: number = 1) {
+    let result: number
+    let total: number = index + sum
+    if(total <= this.lastIndex){
+      return total
+    } else {
+      return total - this.lastIndex
+    }
+    // if (index < this.lastIndex) result = index + 1
+    // else result = this.firstIndex
+    // return result
   }
 
-  loopPrev(index) {
-    var result
-    if (index > this.firstIndex) result = index - 1
-    else result = this.lastIndex
-    return result
+  loopPrev(index: number, sum: number = 1) {
+    let result
+    let total: number = index - sum
+    if(total >= this.firstIndex){
+      return total
+    } else {
+      return total + this.lastIndex
+    }
+
+    // if (index > this.firstIndex) result = index - 1
+    // else result = this.lastIndex
+    // return result
   }
 
 

@@ -19,7 +19,7 @@
 </ion-header>
 
 <ion-content scroll-y="false" *ngIf="network.status?.connected">
-  <ion-slides id="bible-slides" #slide [options]="myOptions" class="h-full w-full" (ionSlideTransitionEnd)="transitionFinished()">
+  <ion-slides id="bible-slides" #slide [options]="myOptions" class="h-full w-full" (ionSlideTransitionEnd)="transitionFinished()" >
     <ion-slide class="h-full " *ngFor="let slide of showedChapters">
       <ion-text class="h-full overflow-y-scroll px-4 py-4 text-left">
       </ion-text>
