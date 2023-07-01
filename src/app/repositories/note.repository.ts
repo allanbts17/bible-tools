@@ -21,7 +21,7 @@ export class NoteRepository {
 
     async fillIfEmpty(data: any) {
         let notes = await this.getNotes()
-        console.log('noteRep', notes);
+        //console.log('noteRep', notes);
         //console.log();
         // for(let note of data){
         //    // console.log('noteRep',note);
@@ -124,8 +124,8 @@ export class NoteRepository {
             }
             let values: Array<any> = [category];
             let ret: any = await db.query(sqlcmd, values);
-            console.log('cat',category);
-            console.log(ret.values);
+
+
 
             return ret.values as Note[];
         });
@@ -152,12 +152,12 @@ export class NoteRepository {
               ORDER BY id DESC
               LIMIT ${this.pagSize}`;
           }
-          console.log('query',sqlcmd);
+          //console.log('query',sqlcmd);
 
           let values: Array<any> = [];
           if(category != -1) values.push(category)
           let ret: any = await db.query(sqlcmd, values);
-          console.log(ret.values);
+
 
           return ret.values as Note[];
       });
@@ -179,12 +179,12 @@ export class NoteRepository {
               ORDER BY id DESC
               LIMIT ${this.pagSize}`;
           }
-          console.log('query',sqlcmd);
+          //console.log('query',sqlcmd);
 
           let values: Array<any> = [];// = [value];
           if(category != -1) values.push(category)
           let ret: any = await db.query(sqlcmd, values);
-          console.log(ret.values);
+
 
           return ret.values as Note[];
       });
