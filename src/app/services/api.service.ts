@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BibleSummary } from '../interfaces/bible-summary';
 import { Bible } from '../interfaces/bible';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { map }  from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -26,21 +27,37 @@ export class ApiService {
     'Content-Type': 'application/html',
     'Access-Control-Allow-Origin':'*'
   })
+  cache = {}
 
   constructor(private http: HttpClient) { }
 
+  request<T>(path: string,headers?,saveCache = true){
+    let index = path + JSON.stringify(headers)
+    if(this.cache[index]){
+      //console.log('from cache');
+      return of(this.cache[index])
+    }
+    return this.http.get<T>(path,headers).pipe(map(data => {
+      if(saveCache){
+        this.cache[index] = data
+        //console.log('cache',this.cache);
+      }
+      return data
+    }))
+  }
+
   getAllBibles(){
     const path = `${this.base_api_endpoint}`+"/v1/bibles";
-    return this.http.get(path,{headers: this.reqHeader});
+    return this.request(path,{headers: this.reqHeader});
   }
  /* getAllBibles(){
     const path = `${this.bible_com_endpoint}`+"/find?key="+this.bible_com_key;
-    return this.http.get(path);
+    return this.request(path);
   }*/
 
   getBibleBookList(id){
     const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${id}`+"/books";
-    return this.http.get(path,{headers: this.reqHeader});
+    return this.request(path,{headers: this.reqHeader});
   }
 
   getBibleFirstChapter(bibleId){
@@ -66,7 +83,7 @@ export class ApiService {
 
   getChapterList(bibleId,bookId){
     const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/books/"+`${bookId}`+"/chapters";
-    return this.http.get(path,{headers: this.reqHeader});
+    return this.request(path,{headers: this.reqHeader});
   }
 
   /*TODO: Configure to add notes
@@ -80,24 +97,24 @@ export class ApiService {
     /*this.getVerses(bibleId,chapterId).subscribe(ver => {
       console.log(ver)
     })*/
-    return this.http.get(path,{headers: this.chapterHeader});
+    return this.request(path,{headers: this.chapterHeader});
   }
 
   /**passageId example: REV.10.3-REV.10.6 */
   getPassage(bibleId,passageId){
     const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/passages/"+`${passageId}`+'?content-type=html&include-verse-spans=true&';
-    return this.http.get(path,{headers: this.reqHeader});
+    return this.request(path,{headers: this.reqHeader});
   }
 
   getVerses(bibleId,chapterId){
     const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/chapters/"+`${chapterId}`+"/verses";
-    return this.http.get(path,{headers: this.reqHeader});
+    return this.request(path,{headers: this.reqHeader});
   }
 
   getVerse(bibleId,verseId){
     const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/verses/"+`${verseId}`;
     return new Promise((resolve, reject) => {
-      this.http.get(path,{headers: this.reqHeader}).subscribe(verse =>{
+      this.request(path,{headers: this.reqHeader}).subscribe(verse =>{
         resolve(verse)
       },err=>reject(err))
     })
@@ -106,32 +123,32 @@ export class ApiService {
 
   getBookSectionList(bibleId,bookId){
     const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/books/"+`${bookId}`+"/sections";
-    return this.http.get(path,{headers: this.reqHeader});
+    return this.request(path,{headers: this.reqHeader});
   }
 
   getBibleContent(){
     const path = `${this.bible_com_endpoint}`+"/content/rvr60.html.js?passage=Jn&key="+this.bible_com_key;
-    return this.http.get(path,{headers:this.RV_reqHeader});
+    return this.request(path,{headers:this.RV_reqHeader});
   }
 
   getBible(id){
     const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${id}`;
-    return this.http.get<Bible>(path,{headers: this.reqHeader});
+    return this.request<Bible>(path,{headers: this.reqHeader});
   }
 
   getRVBibleBookList(){
     const path = this.spanish_api_endpoint + "/books"
-    return this.http.get(path,{headers:this.RV_reqHeader});
+    return this.request(path,{headers:this.RV_reqHeader});
   }
 
   getRVBibleBook(bookId){
     const path = this.spanish_api_endpoint + "/books/" + `${bookId}`
-    return this.http.get(path);
+    return this.request(path);
   }
 
   getRVBibleVerses(bookId,verses){
     const path = this.spanish_api_endpoint + "/books/" + `${bookId}` + "/verses/" + `${verses}`
-    return this.http.get(path);
+    return this.request(path);
   }
 
   getAllLanguages(){
