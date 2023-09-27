@@ -1,25 +1,53 @@
 <ion-app>
+  <div class="absolutes cover"></div>
   <ion-split-pane contentId="main-content">
-    <ion-menu contentId="main-content" type="overlay">
-      <ion-content>
-        <ion-list id="inbox-list">
-          <ion-list-header>{{header_title}}</ion-list-header>
-          <ion-note>{{header_subtitle}}</ion-note>
 
-          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
-            <ion-item button lines="none" detail="false" [routerLink]="p.url" routerLinkActive="selected">
-              <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
+    <ion-menu contentId="main-content" type="overlay" class="{{darkMode? 'dark':''}}">
+      <ion-content>
+        <div id="menu-header" class="flex justify-start">
+          <div class="flex-none pl-2 h-full flex items-center">
+            <img src="../assets/only_logo_1.png" />
+          </div>
+          <div class="flex-1 h-full flex items-center">
+            <p>{{ header_title }}</p>
+          </div>
+        </div>
+        <ion-list id="inbox-list">
+          <ion-menu-toggle
+            auto-hide="false"
+            *ngFor="let p of appPages; let i = index"
+          >
+            <ion-item
+              button
+              lines="none"
+              detail="false"
+              [routerLink]="p.url"
+              routerLinkActive="selected"
+            >
+              <ion-icon class="text-black"
+                slot="start"
+                [ios]="p.icon + '-outline'"
+                [md]="p.icon + '-sharp'"
+              ></ion-icon>
               <ion-label>{{ p.title }}</ion-label>
             </ion-item>
           </ion-menu-toggle>
         </ion-list>
         <ion-item>
-          <ion-label>{{darkMode? config.getData().menu.theme[1]:config.getData().menu.theme[0]}}</ion-label>
-          <ion-toggle [ngModel]="darkMode" (ngModelChange)="changeTheme()"></ion-toggle>
+          <ion-label>{{
+            darkMode
+              ? config.getData().menu.theme[1]
+              : config.getData().menu.theme[0]
+          }}</ion-label>
+          <ion-toggle
+            [ngModel]="darkMode"
+            (ngModelChange)="changeTheme()"
+          ></ion-toggle>
         </ion-item>
       </ion-content>
     </ion-menu>
     <ion-router-outlet id="main-content"></ion-router-outlet>
+
     <jeep-sqlite *ngIf="isWeb"></jeep-sqlite>
   </ion-split-pane>
 </ion-app>

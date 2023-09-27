@@ -21,7 +21,7 @@ export class AppComponent {
     { title: 'Daily devotional', url: '/daily-devotional', icon: 'document-text' },
     { title: 'Verse index', url: '/verse-index', icon: 'list' }
   ];
-  header_title = ""
+  header_title = "Herramientas Bíblicas"
   header_subtitle = ""
   darkMode = false
   settings: Settings
@@ -37,6 +37,12 @@ export class AppComponent {
   }
 
   async init() {
+
+    // let div = document.createElement('div')
+    // div.classList.add('cover')
+    // //let con =
+    // document.appendChild(div)
+
     this.platform.ready().then(async () => {
       //SplashScreen.hide();
       await this.getSettings()
@@ -65,9 +71,14 @@ export class AppComponent {
 
   setText() {
     this.header_title = this.config.getData().menu.header
+    console.log('title',this.header_title);
+
     this.header_subtitle = this.config.getData().menu.note
     for (let i = 0; i < this.appPages.length; i++) {
       this.appPages[i].title = this.config.getData().menu.items[i]
     }
   }
 }
+
+// #1D71B8
+// #00ACE9

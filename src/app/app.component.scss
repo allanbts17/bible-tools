@@ -1,12 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Mukta:wght@600&display=swap');
+
+ion-menu {
+  --menu-color: #4a6479;
+  --menu-sel-color: #8496a6;
+  --select-background: rgba(72, 137, 190, 0.434);
+}
+
 ion-menu ion-content {
   --background: var(--ion-item-background, var(--ion-background-color, #fff));
 }
 
 ion-menu.md ion-content {
-  --padding-start: 8px;
-  --padding-end: 8px;
-  --padding-top: 20px;
-  --padding-bottom: 20px;
+  // --padding-start: 8px;
+  // --padding-end: 8px;
+  // --padding-top: 20px;
+  // --padding-bottom: 20px;
 }
 
 ion-menu.md ion-list {
@@ -50,20 +58,39 @@ ion-menu.md ion-item {
 }
 
 ion-menu.md ion-item.selected {
-  --background: rgba(var(--ion-color-primary-rgb), 0.14);
+  //--background: rgba(var(--ion-color-primary-rgb), 0.14);
+  --background: var(var(--select-background))
 }
 
 ion-menu.md ion-item.selected ion-icon {
-  color: var(--ion-color-primary);
+  color: var(--menu-color);
 }
 
 ion-menu.md ion-item ion-icon {
-  color: #616e7e;
+  color: var(--menu-color);
 }
 
 ion-menu.md ion-item ion-label {
-  font-weight: 500;
+  font-weight: 600;
+  // font-family: 'Mukta', sans-serif;
+  color: var(--menu-color);
 }
+
+//Dark
+ion-menu.md.dark {
+  ion-item.selected ion-icon {
+    color: #fff;
+  }
+
+  ion-item ion-icon {
+    color: #fff;
+  }
+
+  ion-item ion-label {
+    color: #fff;
+  }
+}
+
 
 ion-menu.ios ion-content {
   --padding-bottom: 20px;
@@ -117,3 +144,44 @@ ion-note {
 ion-item.selected {
  // --color: var(--ion-color-primary);
 }
+
+#menu-header {
+  height: 100px;
+  width: 100%;
+  background: rgb(29,113,184);
+  background: linear-gradient(180deg, rgba(29,113,184,1) 0%, rgba(0,172,233,1) 100%);
+  div {
+    img {
+      height: 50%;
+    }
+    p {
+      // height: 35px;
+      font-family: 'Mukta', sans-serif;
+      line-height: 30px;
+      margin-left: 10px;
+      font-size: 25px;
+      color: #fff;
+    }
+  }
+
+}
+
+.cover {
+  z-index: 99999999;
+  height: 100%;
+  width: 0%;
+  background-color: #4a6479;
+  //move()
+}
+
+.show-animate {
+  animation-name: show;
+  animation-duration: 4s;
+}
+
+
+@keyframes show {
+  from {width: 0%;}
+  to {width: 100%;}
+}
+

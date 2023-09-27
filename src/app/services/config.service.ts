@@ -24,7 +24,7 @@ export class ConfigService {
     },
     es:{
       menu:{
-        header:"Herramientas bíblicas",
+        header:"Herramientas Bíblicas",
         note:"Escoje una sección",
         items:["Biblia","Diario devocional","Mis versículos"],
         theme:["Modo claro","Modo oscuro"]
