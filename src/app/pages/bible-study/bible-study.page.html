@@ -30,6 +30,17 @@
   <app-note-selection-sheet #sheet [bible]="sharedInfo.bible" [chapter]="sharedInfo.chapter" (closeSheetEvent)="closeSelectionSheet($event)"></app-note-selection-sheet>
   <app-select-bible-modal [triggerId]="'open-select-bible-modal'" (bibleSelectedEvent)="bibleChange($event)"></app-select-bible-modal>
   <app-select-passage-modal [bible]="sharedInfo.bible" (passageSelectedEvent)="chapterChange($event)"></app-select-passage-modal>
+  <ion-fab class="study-fab" vertical="bottom" horizontal="end" slot="fixed" (click)="fabClicked(true)">
+    <ion-fab-button color="medium">
+      <ion-icon name="chevron-forward-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <ion-fab class="study-fab" vertical="bottom" horizontal="start" slot="fixed" (click)="fabClicked(false)">
+    <ion-fab-button color="medium">
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
 
 <ion-content scroll-y="false" *ngIf="!network.status?.connected">

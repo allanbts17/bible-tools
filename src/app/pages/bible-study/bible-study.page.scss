@@ -157,3 +157,38 @@
 
 }
 
+
+ion-fab-button {
+  width: 40px;
+  height: 40px;
+  ion-icon {
+    height: 30px;
+  }
+}
+
+
+ion-fab.lift {
+  animation-name: liftAn;
+  animation-duration: 0.2s;
+  margin-bottom: 120px;
+}
+
+ion-fab.down {
+  animation-name: downAn;
+  animation-duration: 0.2s;
+}
+
+div.fab-space {
+  height: 40px;
+  width: 100%;
+}
+
+@keyframes liftAn {
+  from {margin-bottom: 0px;}
+  to {margin-bottom: 120px;}
+}
+
+@keyframes downAn {
+  from {margin-bottom: 120px;}
+  to {margin-bottom: 0px;}
+}

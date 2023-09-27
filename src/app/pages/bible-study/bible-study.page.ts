@@ -268,6 +268,13 @@ export class BibleStudyPage implements OnInit {
     return index
   }
 
+  async fabClicked(next: boolean){
+    if(next)
+     this.slides.slideNext()
+    else
+    this.slides.slidePrev()
+  }
+
   /*TODO: Bug if swipe is too fast
    * If I swipe many times too fast, it returns to the loop's start
    * too soon, before data updates
@@ -285,7 +292,7 @@ export class BibleStudyPage implements OnInit {
       // Storing actual chapter
       if (toStore?.id !== '' && toStore?.id !== undefined)
         this.storeLastChapter({ bibleId: toStore.bibleId, chapterId: toStore.id })
-     // this.setSelectedChapterInfo(actualShowChapter)
+      // this.setSelectedChapterInfo(actualShowChapter)
 
       if (actualShowChapter.id !== '')
         this.sharedInfo.chapter = actualShowChapter
@@ -299,8 +306,8 @@ export class BibleStudyPage implements OnInit {
       if (direction !== 'stay') {
         this.noteSelectionSheet.closeSheet()
         this.closeSpace()
-        this.slideMoves = this.slideMoves + (direction=='right'? 1:-1)
-        setTimeout(async ()=>{
+        this.slideMoves = this.slideMoves + (direction == 'right' ? 1 : -1)
+        setTimeout(async () => {
           //await this.unlockSwipe(direction)
           this.updateText(this.showedChapters[index - 1], direction, index)
         })
@@ -308,11 +315,11 @@ export class BibleStudyPage implements OnInit {
         //console.log('trnas daqta',this.showedChapters[index - 1], direction, index);
       }
 
-     // console.log('there is prev?',actualShowChapter?.previous,direction);
+      // console.log('there is prev?',actualShowChapter?.previous,direction);
 
-      if(!actualShowChapter?.next){
+      if (!actualShowChapter?.next) {
         await this.slides.lockSwipeToNext(true)
-      } else if(!actualShowChapter?.previous){
+      } else if (!actualShowChapter?.previous) {
         console.log('hii locck');
         await this.slides.lockSwipeToPrev(true)
       }
@@ -329,7 +336,7 @@ export class BibleStudyPage implements OnInit {
 
     if (direction === 'right') {
       await this.slides.lockSwipeToNext(true)
-      if(!this.lastChapter?.next){
+      if (!this.lastChapter?.next) {
         this.showedChapters[this.loopPrev(index, changeSlideDiff) - 1].id = ''
         return
       }
@@ -341,17 +348,17 @@ export class BibleStudyPage implements OnInit {
         let chapterContent = chapters[0]
         this.showedChapters[this.loopPrev(index, changeSlideDiff) - 1] = chapterContent.data
         this.setSlideContent(this.loopPrev(index, changeSlideDiff), chapterContent.data)
-        if(index == this.lastIndex){
-          this.setSlideContent(this.lastAuxIndex,  this.showedChapters[0])
-          this.setSlideContent(this.firstAuxIndex,  this.showedChapters[this.showedChapters.length-1])
+        if (index == this.lastIndex) {
+          this.setSlideContent(this.lastAuxIndex, this.showedChapters[0])
+          this.setSlideContent(this.firstAuxIndex, this.showedChapters[this.showedChapters.length - 1])
         }
         this.lastChapter = chapterContent.data
         this.initialChapter = chapters[1].data
-       // if (this.swipeRightLock) this.slides.lockSwipeToNext(false)
+        // if (this.swipeRightLock) this.slides.lockSwipeToNext(false)
       })
     } else if (direction === 'left') {
       await this.slides.lockSwipeToPrev(true)
-      if(!this.initialChapter?.previous){
+      if (!this.initialChapter?.previous) {
         this.showedChapters[this.loopNext(index, changeSlideDiff) - 1].id = ''
         return
       }
@@ -363,13 +370,13 @@ export class BibleStudyPage implements OnInit {
         let chapterContent = chapters[1]
         this.showedChapters[this.loopNext(index, changeSlideDiff) - 1] = chapterContent.data
         this.setSlideContent(this.loopNext(index, changeSlideDiff), chapterContent.data)
-        if(index == this.firstIndex){
-          this.setSlideContent(this.lastAuxIndex,  this.showedChapters[0])
-          this.setSlideContent(this.firstAuxIndex,  this.showedChapters[this.showedChapters.length-1])
+        if (index == this.firstIndex) {
+          this.setSlideContent(this.lastAuxIndex, this.showedChapters[0])
+          this.setSlideContent(this.firstAuxIndex, this.showedChapters[this.showedChapters.length - 1])
         }
         this.initialChapter = chapterContent.data
         this.lastChapter = chapters[0].data
-       // if (this.swipeLeftLock) this.slides.lockSwipeToPrev(false)
+        // if (this.swipeLeftLock) this.slides.lockSwipeToPrev(false)
       })
     }
   }
@@ -390,7 +397,8 @@ export class BibleStudyPage implements OnInit {
 
       // Filling chapter content
       let spaceDIV = '<div class="w-full chapter-space"></div>' //h-36 or h-0
-      slideElements[index].insertAdjacentHTML('beforeend', data.content + spaceDIV)
+      let spaceFab = '<div class="fab-space"></div>'
+      slideElements[index].insertAdjacentHTML('beforeend', data.content + spaceFab + spaceDIV)
 
       // Color markers
       var spanArray = Array.from(document.querySelectorAll('span.verse-span'))
@@ -447,18 +455,41 @@ export class BibleStudyPage implements OnInit {
   }
 
   openSpace() {
+    console.log('enter here');
+
     let space = document.getElementsByClassName('chapter-space')
+    let fab = document.getElementsByClassName('study-fab')
     for (let i = 0; i < space.length; i++) {
       if (!space[i].classList.contains('h-36'))
         space[i].classList.add('h-36')
+
+
     }
+
+
+   fab[0].classList.remove('down')
+   fab[1].classList.remove('down')
+
+    fab[0].classList.add('lift')
+    fab[1].classList.add('lift')
+
+
+    console.log(fab[0].classList);
+
   }
 
   closeSpace() {
     let space = document.getElementsByClassName('chapter-space')
+    let fab = document.getElementsByClassName('study-fab')
     for (let i = 0; i < space.length; i++) {
       if (space[i].classList.contains('h-36'))
         space[i].classList.remove('h-36')
+
+      fab[0].classList.remove('lift')
+      fab[1].classList.remove('lift')
+
+      fab[0].classList.add('down')
+      fab[1].classList.add('down')
     }
   }
 
@@ -562,7 +593,7 @@ export class BibleStudyPage implements OnInit {
     this.storeLastChapter({ bibleId: bible.id, chapterId: this.sharedInfo.chapter?.id || 'GEN.1' })
     //this.setChapter(bible.id, this.sharedInfo.chapter?.id || 'GEN.1')
 
-    this.setAllSlides(bible.id,this.sharedInfo.chapter?.id || 'GEN.1')
+    this.setAllSlides(bible.id, this.sharedInfo.chapter?.id || 'GEN.1')
   }
 
   chapterChange(chapter) {
