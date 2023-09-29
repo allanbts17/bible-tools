@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { IonModal } from '@ionic/angular';
-import { ConfigService } from 'src/app/services/config.service';
 import { StorageService } from 'src/app/services/storage.service';
 import  * as moment  from 'moment'
 import { Category } from 'src/app/interfaces/category';
 import { Note } from 'src/app/interfaces/note';
-import { StatusBar, Style } from '@capacitor/status-bar';
+//import { StatusBar, Style } from '@capacitor/status-bar';
 import { Colors } from 'src/app/classes/utils';
+import { ConfigService } from 'src/app/services/config.service';
 
 
 @Component({

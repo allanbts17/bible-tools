@@ -4,7 +4,7 @@ import { StorageService } from 'src/app/services/storage.service';
 import  * as moment  from 'moment'
 import { AddCategoryComponent } from 'src/app/components/add-category/add-category.component';
 import { CustomAlertComponent } from 'src/app/components/custom-alert/custom-alert.component';
-import { IonPopover, IonSlides, PopoverController, ToastController } from '@ionic/angular';
+import { IonPopover, IonicSlides, PopoverController, ToastController } from '@ionic/angular';
 import { Verse } from 'src/app/interfaces/verse';
 import { Topic } from 'src/app/interfaces/topic';
 import { AddVerseModalComponent } from 'src/app/components/add-verse-modal/add-verse-modal.component';
@@ -27,7 +27,7 @@ export class VerseIndexPage implements OnInit {
   @ViewChild(CustomAlertComponent) alert: CustomAlertComponent;
   @ViewChild(SelectPassageModalComponent) selectPassage: SelectPassageModalComponent;
   @ViewChild('popover') popover: IonPopover;
-  @ViewChild('slide') slides: IonSlides;
+  @ViewChild('slide') slides: any;
   @ViewChild('dailyTabs') myTabs: TabsComponent;
 
   changeShared = true

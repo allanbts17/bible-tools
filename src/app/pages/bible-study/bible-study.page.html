@@ -19,9 +19,17 @@
 </ion-header>
 
 <ion-content scroll-y="false" *ngIf="network.status?.connected">
+  <!-- <swiper-container (slidechange)="onSlideChange()">
+    <swiper-slide>Slide 1</swiper-slide>
+    <swiper-slide>Slide 2</swiper-slide>
+    <swiper-slide>Slide 3</swiper-slide>
+  </swiper-container> -->
+
   <ion-slides id="bible-slides" #slide [options]="myOptions" class="h-full w-full" (ionSlideTransitionEnd)="transitionFinished()" >
-    <ion-slide class="h-full " *ngFor="let slide of showedChapters">
+    <ion-slide class="h-full " *ngFor="let slide of showedChapters; index as i">
+      {{i}}
       <ion-text class="h-full overflow-y-scroll px-4 py-4 text-left">
+       <div [innerHTML]="slide.content"></div>
       </ion-text>
     </ion-slide>
   </ion-slides>

@@ -11,15 +11,17 @@ import { IonicStorageModule } from '@ionic/storage-angular';
 import { FormsModule } from '@angular/forms';
 import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
 import { Drivers } from '@ionic/storage';
-import { StatusBar } from '@capacitor/status-bar';
-import { SplashScreen } from '@capacitor/splash-screen';
+// import { StatusBar } from '@capacitor/status-bar';
+// import { SplashScreen } from '@capacitor/splash-screen';
 import { SQLiteService } from './services/sqlite.service';
 import { InitializeAppService } from './services/initialize.app.service';
 import { DetailService } from './services/detail.service';
 import { DatabaseService } from './services/database.service';
 import { MigrationService } from './services/migrations.service';
 //import { NgxSpinnerModule } from "ngx-spinner";
+import { register } from 'swiper/element/bundle';
 
+register();
 
 export function initializeFactory(init: InitializeAppService) {
   return () => init.initializeApp();
@@ -27,7 +29,7 @@ export function initializeFactory(init: InitializeAppService) {
 
 @NgModule({
   declarations: [AppComponent],
-  entryComponents: [],
+  //entryComponents: [],
   imports: [BrowserModule,
     IonicModule.forRoot(),
     FormsModule,

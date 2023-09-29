@@ -3,11 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
-
-import { BibleStudyPageRoutingModule } from './bible-study-routing.module';
-
 import { BibleStudyPage } from './bible-study.page';
 import { ComponentsModule } from 'src/app/components/components.module';
+import { BibleStudyPageRoutingModule } from './bible-study-routing.module';
 
 @NgModule({
   imports: [

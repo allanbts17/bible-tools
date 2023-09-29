@@ -9,8 +9,8 @@ import { AddCategoryComponent } from './add-category/add-category.component';
 import { CustomAlertComponent } from './custom-alert/custom-alert.component';
 import { SelectBibleModalComponent } from './select-bible-modal/select-bible-modal.component';
 import { SelectPassageModalComponent } from './select-passage-modal/select-passage-modal.component';
-import { SwiperModule } from 'swiper/angular';
-import SwiperCore, { Autoplay, Keyboard, Pagination, Scrollbar, Zoom } from 'swiper';
+// import { SwiperModule } from 'swiper/angular';
+// import SwiperCore, { Autoplay, Keyboard, Pagination, Scrollbar, Zoom } from 'swiper';
 import { IonicSlides } from '@ionic/angular';
 import { NoteSelectionSheetComponent } from './note-selection-sheet/note-selection-sheet.component';
 import { DailyDevotionalMainMenuComponent } from './daily-devotional-main-menu/daily-devotional-main-menu.component';
@@ -20,12 +20,13 @@ import { TabsComponent } from './tabs/tabs.component';
 import { ModalTemplateComponent } from './modal-template/modal-template.component';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+
 const components = [ColorPickerComponent,AddNoteModalComponent,GeneralNoteComponent,
 AddCategoryComponent,CustomAlertComponent,SelectBibleModalComponent,SelectPassageModalComponent,
 NoteSelectionSheetComponent,DailyDevotionalMainMenuComponent,AddVerseModalComponent,
 TopicModalComponent,TabsComponent,ModalTemplateComponent]
 
-SwiperCore.use([Autoplay, Keyboard, Pagination, Scrollbar, Zoom, IonicSlides]);
+//SwiperCore.use([Autoplay, Keyboard, Pagination, Scrollbar, Zoom, IonicSlides]);
 
 @NgModule({
   declarations: [components],
@@ -35,7 +36,7 @@ SwiperCore.use([Autoplay, Keyboard, Pagination, Scrollbar, Zoom, IonicSlides]);
     FormsModule,
     //BrowserAnimationsModule,
     NgxSpinnerModule,
-    SwiperModule,
+   // SwiperModule,
     IonicModule
   ]
 })

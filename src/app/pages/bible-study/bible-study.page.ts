@@ -63,7 +63,7 @@ export class BibleStudyPage implements OnInit {
     this.lastAuxIndex = this.lastIndex + 1
     this.slideIndex = this.lastAuxIndex / 2
     this.myOptions = {
-      loop: true,
+      loop: false,
       initialSlide: this.slideIndex - 1,
     }
     console.log('opt', this.myOptions);
@@ -74,7 +74,7 @@ export class BibleStudyPage implements OnInit {
     this.start = true
 
     for (let i = 0; i < this.lastIndex; i++)
-      this.showedChapters.push({ content: "", bibleId: "", id: "" } as ChapterData)
+      this.showedChapters.push({ content: "holaaaa mundo", bibleId: "", id: "" } as ChapterData)
 
     setTimeout(() => {
       //this.slides.slideTo(this.initialIndex)
@@ -90,6 +90,11 @@ export class BibleStudyPage implements OnInit {
         })
       }
     })
+setTimeout(async ()=>{
+  console.log('actual index',await this.slides.getActiveIndex());
+})
+
+
 
   }
 
@@ -309,7 +314,7 @@ export class BibleStudyPage implements OnInit {
         this.slideMoves = this.slideMoves + (direction == 'right' ? 1 : -1)
         setTimeout(async () => {
           //await this.unlockSwipe(direction)
-          this.updateText(this.showedChapters[index - 1], direction, index)
+        //  this.updateText(this.showedChapters[index - 1], direction, index)
         })
 
         //console.log('trnas daqta',this.showedChapters[index - 1], direction, index);
@@ -327,7 +332,14 @@ export class BibleStudyPage implements OnInit {
         console.log('showed cahpterrrrs', this.slideIndex, this.showedChapters, actualShowChapter);
       }, 2000)
 
+
+
+
     }
+
+    this.showedChapters.pop()
+    this.showedChapters.unshift({ content: "holaaaa mundo", bibleId: "", id: "" } as ChapterData)
+    this.slides.pager.valueOf
   }
 
   async updateText(textData, direction, index) {
