@@ -7,44 +7,103 @@
         </ion-button>
       </ion-menu-toggle>
     </ion-buttons>
-    <ion-buttons *ngIf="network.status?.connected && sharedInfo.chapter && sharedInfo.bible">
-        <ion-button color="light" fill="solid" strong="true" shape="round" id="open-select-passage-modal" (click)="selectPassage.modal.present()">
-          {{sharedInfo.chapter.reference}}
-        </ion-button>
-        <ion-button slot="end" color="light" fill="solid" strong="true" shape="round" id="open-select-bible-modal" (click)="selectBible.modal.present()">
-          {{sharedInfo.bible.abbreviationLocal}}
-        </ion-button>
+    <ion-buttons
+      *ngIf="network.status?.connected && sharedInfo.chapter && sharedInfo.bible"
+    >
+      <ion-button
+        color="light"
+        fill="solid"
+        strong="true"
+        shape="round"
+        id="open-select-passage-modal"
+        (click)="selectPassage.modal.present()"
+      >
+        {{sharedInfo.chapter.reference}}
+      </ion-button>
+      <ion-button
+        slot="end"
+        color="light"
+        fill="solid"
+        strong="true"
+        shape="round"
+        id="open-select-bible-modal"
+        (click)="selectBible.modal.present()"
+      >
+        {{sharedInfo.bible.abbreviationLocal}}
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content scroll-y="false" *ngIf="network.status?.connected">
-  <!-- <swiper-container (slidechange)="onSlideChange()">
-    <swiper-slide>Slide 1</swiper-slide>
-    <swiper-slide>Slide 2</swiper-slide>
-    <swiper-slide>Slide 3</swiper-slide>
-  </swiper-container> -->
+  <swiper-container
+    id="bible-slides"
+    class="h-full w-full"
+    #swiperRef
+    (activeindexchange)="onActiveIndexChange()"
+    (slidenexttransitionend)="onTransitionToNext()"
+    (slideprevtransitionend)="onTransitionToPrev()"
+    [initial-slide]="slideIndex"
 
-  <ion-slides id="bible-slides" #slide [options]="myOptions" class="h-full w-full" (ionSlideTransitionEnd)="transitionFinished()" >
-    <ion-slide class="h-full " *ngFor="let slide of showedChapters; index as i">
+  >
+    <swiper-slide
+      class="h-full"
+      *ngFor="let slide of showedChapters; index as i"
+    >
       {{i}}
       <ion-text class="h-full overflow-y-scroll px-4 py-4 text-left">
-       <div [innerHTML]="slide.content"></div>
+      </ion-text>
+    </swiper-slide>
+  </swiper-container>
+
+  <!-- <ion-slides
+    id="bible-slides"
+    #slide
+    [options]="myOptions"
+    class="h-full w-full"
+    (ionSlideTransitionEnd)="transitionFinished()"
+  >
+    <ion-slide class="h-full" *ngFor="let slide of showedChapters; index as i">
+      {{i}}
+      <ion-text class="h-full overflow-y-scroll px-4 py-4 text-left">
+        <div [innerHTML]="slide.content"></div>
       </ion-text>
     </ion-slide>
-  </ion-slides>
+  </ion-slides> -->
 
-
-  <app-note-selection-sheet #sheet [bible]="sharedInfo.bible" [chapter]="sharedInfo.chapter" (closeSheetEvent)="closeSelectionSheet($event)"></app-note-selection-sheet>
-  <app-select-bible-modal [triggerId]="'open-select-bible-modal'" (bibleSelectedEvent)="bibleChange($event)"></app-select-bible-modal>
-  <app-select-passage-modal [bible]="sharedInfo.bible" (passageSelectedEvent)="chapterChange($event)"></app-select-passage-modal>
-  <ion-fab class="study-fab" vertical="bottom" horizontal="end" slot="fixed" (click)="fabClicked(true)">
+  <app-note-selection-sheet
+    #sheet
+    [bible]="sharedInfo.bible"
+    [chapter]="sharedInfo.chapter"
+    (closeSheetEvent)="closeSelectionSheet()"
+  ></app-note-selection-sheet>
+  <app-select-bible-modal
+    [triggerId]="'open-select-bible-modal'"
+    (bibleSelectedEvent)="bibleChange($event)"
+  ></app-select-bible-modal>
+  <app-select-passage-modal
+    [bible]="sharedInfo.bible"
+    (passageSelectedEvent)="chapterChange($event)"
+  ></app-select-passage-modal>
+  <ion-fab
+    class="study-fab"
+    vertical="bottom"
+    horizontal="end"
+    slot="fixed"
+    (click)="fabClicked(true)"
+  >
     <ion-fab-button color="medium">
       <ion-icon name="chevron-forward-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 
-  <ion-fab class="study-fab" vertical="bottom" horizontal="start" slot="fixed" (click)="fabClicked(false)">
+  <ion-fab
+    class="study-fab"
+    vertical="bottom"
+    horizontal="start"
+    slot="fixed"
+    (click)="fabClicked(false)"
+  >
     <ion-fab-button color="medium">
       <ion-icon name="chevron-back-outline"></ion-icon>
     </ion-fab-button>

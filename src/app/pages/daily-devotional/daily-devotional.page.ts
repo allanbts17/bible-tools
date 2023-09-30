@@ -7,7 +7,7 @@ import { AddCategoryComponent } from 'src/app/components/add-category/add-catego
 import { Category } from 'src/app/interfaces/category';
 import { CustomAlertComponent } from 'src/app/components/custom-alert/custom-alert.component';
 import { Note } from 'src/app/interfaces/note';
-import { IonPopover, IonSlides, PopoverController } from '@ionic/angular';
+import { IonPopover, PopoverController } from '@ionic/angular';
 import { TabsComponent } from 'src/app/components/tabs/tabs.component';
 import { environment } from 'src/environments/environment';
 import { formatDate } from 'src/app/classes/utils';
@@ -24,7 +24,7 @@ export class DailyDevotionalPage implements OnInit {
   @ViewChild(AddCategoryComponent) addCategoryModal: AddCategoryComponent;
   @ViewChild(CustomAlertComponent) alert: CustomAlertComponent;
   @ViewChild('popover') popover: IonPopover;
-  @ViewChild('slide') slides: IonSlides;
+  @ViewChild('slide') slides: any;
   @ViewChild('dailyTabs') myTabs: TabsComponent;
   tabs = []
   categoryList: Category[] = []

@@ -85,8 +85,31 @@
       </ion-button>
     </div>
 
+    <swiper-container #swiperRef (activeindexchange)="onActiveIndexChange()"
+    slides-per-view="1"
+    initial-slide="0"
+    pagination="true"
+    [modules]="swiperModules"
+    >
+      <swiper-slide>
+        <h1 class="h-40 bg-slate-100">Slide 1</h1>
+      </swiper-slide>
+      <swiper-slide>
+        <h1 class="h-40 bg-slate-100">Slide 2</h1>
+      </swiper-slide>
+      <swiper-slide>
+        <h1 class="h-40 bg-slate-100">Slide 3</h1>
+      </swiper-slide>
+    </swiper-container>
+
+    <div>
+      <ion-button (click)="prepend()">Prepend</ion-button>
+      <ion-button  (click)="apend()">Append</ion-button>
+    </div>
+
+
     <!-- Verses -->
-    <ion-slides #slide class="flex-1 w-full" (ionSlideTransitionStart)="transitionStarted()">
+    <!-- <ion-slides #slide class="flex-1 w-full" (ionSlideTransitionStart)="transitionStarted()">
       <ion-slide class="h-full w-full" *ngFor="let tab of tabs">
         <div id="slide-{{tab.name}}-verses" class="scrolled-slide-verses h-full w-full overflow-y-scroll ion-content-scroll-host">
           <ion-card *ngFor="let verse of getPaginatedVerses(tab)">
@@ -115,7 +138,7 @@
           </ion-infinite-scroll>
         </div>
       </ion-slide>
-    </ion-slides>
+    </ion-slides> -->
 
     <!-- fab placed to the bottom end -->
     <ion-fab vertical="bottom" horizontal="end" slot="fixed"

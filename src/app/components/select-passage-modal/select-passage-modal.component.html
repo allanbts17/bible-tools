@@ -1,5 +1,5 @@
 <app-modal-template #modal [title]="title" (modalDidPresent)="modalPresented()" (closedEvent)="resetValues()">
-  <ion-slides
+  <!-- <ion-slides
     *ngIf="showSlides"
     #slide
     [options]="myOptions"
@@ -7,18 +7,6 @@
     (ionSlideTransitionEnd)="transitionFinished()"
   >
     <ion-slide class="h-full">
-      <!-- <div class="flex flex-wrap justify-around overflow-y-scroll h-full">
-        <ion-button
-          class="w-5/12"
-          shape="round"
-          color="medium"
-          fill=""
-          *ngFor="let book of bookList"
-          (click)="setBook(book)"
-        >
-          {{ book.name }}
-        </ion-button>
-      </div> -->
       <div class="overflow-y-scroll h-full w-full">
         <ion-list class="">
           <ion-item *ngFor="let book of bookList"  (click)="setBook(book)" button>
@@ -51,7 +39,7 @@
         </ion-fab-button>
       </ion-fab>
     </ion-slide>
-  </ion-slides>
+  </ion-slides> -->
 
 
 </app-modal-template>

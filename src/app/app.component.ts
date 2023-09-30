@@ -8,7 +8,9 @@ import { ConfigService } from './services/config.service';
 import { SQLiteService } from './services/sqlite.service';
 import { StorageService } from './services/storage.service';
 import { ThemeService } from './services/theme.service';
+import { register } from 'swiper/element/bundle';
 
+register();
 
 @Component({
   selector: 'app-root',

@@ -19,9 +19,7 @@ import { DetailService } from './services/detail.service';
 import { DatabaseService } from './services/database.service';
 import { MigrationService } from './services/migrations.service';
 //import { NgxSpinnerModule } from "ngx-spinner";
-import { register } from 'swiper/element/bundle';
 
-register();
 
 export function initializeFactory(init: InitializeAppService) {
   return () => init.initializeApp();

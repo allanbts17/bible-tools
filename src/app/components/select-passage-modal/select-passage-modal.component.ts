@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { IonModal, IonSlides } from '@ionic/angular';
+import { IonModal } from '@ionic/angular';
 import { ApiService } from 'src/app/services/api.service';
-import { SwiperOptions } from 'swiper';
+//import { SwiperOptions } from 'swiper';
 import { NgxSpinnerService } from "ngx-spinner";
 @Component({
   selector: 'app-select-passage-modal',
@@ -10,7 +10,7 @@ import { NgxSpinnerService } from "ngx-spinner";
 })
 export class SelectPassageModalComponent implements OnInit {
   @ViewChild('modal') modal: IonModal;
-  @ViewChild('slide') slides: IonSlides;
+  @ViewChild('slide') slides: any;
   @Input() bible
   @Output() passageSelectedEvent = new EventEmitter<any>()
   chapterList
@@ -21,7 +21,7 @@ export class SelectPassageModalComponent implements OnInit {
   defaultTitle = "Seleccione el libro"
   showSpinner = false
   showSlides = true
-  myOptions: SwiperOptions = {
+  myOptions: any = {
     allowTouchMove: false
   };
   arrowDisable = [true,true]

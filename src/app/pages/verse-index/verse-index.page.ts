@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ViewEncapsulation, AfterViewInit } from '@angular/core';
 import { ConfigService } from 'src/app/services/config.service';
 import { StorageService } from 'src/app/services/storage.service';
 import  * as moment  from 'moment'
 import { AddCategoryComponent } from 'src/app/components/add-category/add-category.component';
 import { CustomAlertComponent } from 'src/app/components/custom-alert/custom-alert.component';
-import { IonPopover, IonicSlides, PopoverController, ToastController } from '@ionic/angular';
+import { IonPopover, PopoverController, ToastController } from '@ionic/angular';
 import { Verse } from 'src/app/interfaces/verse';
 import { Topic } from 'src/app/interfaces/topic';
 import { AddVerseModalComponent } from 'src/app/components/add-verse-modal/add-verse-modal.component';
@@ -13,15 +13,18 @@ import { ApiService } from 'src/app/services/api.service';
 import { SelectPassageModalComponent } from 'src/app/components/select-passage-modal/select-passage-modal.component';
 import { TopicModalComponent } from 'src/app/components/topic-modal/topic-modal.component';
 import { TabsComponent } from 'src/app/components/tabs/tabs.component';
-import { TestObject } from 'protractor/built/driverProviders';
+import {Swiper} from 'swiper/types';
 import _ from 'underscore'
+import { IonicSlides } from '@ionic/angular';
+
 const pagSize = 10
 @Component({
   selector: 'app-verse-index',
   templateUrl: './verse-index.page.html',
+  encapsulation: ViewEncapsulation.None,
   styleUrls: ['./verse-index.page.scss'],
 })
-export class VerseIndexPage implements OnInit {
+export class VerseIndexPage implements OnInit, AfterViewInit {
   @ViewChild(AddVerseModalComponent) addVerseModal: AddVerseModalComponent;
   @ViewChild(TopicModalComponent) addTopicModal: TopicModalComponent;
   @ViewChild(CustomAlertComponent) alert: CustomAlertComponent;
@@ -29,6 +32,11 @@ export class VerseIndexPage implements OnInit {
   @ViewChild('popover') popover: IonPopover;
   @ViewChild('slide') slides: any;
   @ViewChild('dailyTabs') myTabs: TabsComponent;
+
+
+  @ViewChild('swiperRef') swiperRef: ElementRef | undefined;
+  swiper?: Swiper;
+  swiperModules = [IonicSlides];
 
   changeShared = true
   bibles = []
@@ -51,6 +59,34 @@ export class VerseIndexPage implements OnInit {
   isAutoScrollingUp = false
   testArr = []
 
+  sliders: string[] = [
+    'Test 1',
+    'Test 2',
+    'Test 3',
+    'Test 4',
+    'Test 5',
+    'Test 6',
+    'Test 7',
+    'Test 8',
+    'Test 9',
+  ]
+
+  // public _config: SwiperOptions = {
+  //   modules: [Navigation, Pagination, A11y, Mousewheel],
+  //   autoHeight: true,
+  //   spaceBetween: 20,
+  //   navigation: false,
+  //   pagination: {clickable: true, dynamicBullets: true},
+  //   slidesPerView: 1,
+  //   centeredSlides: true,
+  //   breakpoints: {
+  //     400: {
+  //       slidesPerView: "auto",
+  //       centeredSlides: false
+  //     },
+  //   }
+  // }
+
   constructor(public config: ConfigService,
     public storageService: StorageService,
     public popoverController: PopoverController,
@@ -59,9 +95,39 @@ export class VerseIndexPage implements OnInit {
     public toastController: ToastController) {}
 
   ngOnInit() {
+   // this.swiper = this.swiperRef?.nativeElement.swiper;
     this.loadData()
+    
     //this.loadTopics()
     //this.loadVerses()
+  }
+  
+  ngAfterViewInit(): void {
+    setTimeout(()=>{
+      this.swiper = this.swiperRef?.nativeElement.swiper;
+    })
+  }
+
+
+  onActiveIndexChange() {
+    console.log(this.swiper);
+    console.log(this.swiper?.activeIndex);
+  }
+
+  prepend(){
+    var precount = 0
+    this.swiper.prependSlide(`<swiper-slide>
+    <h1 class="h-40 bg-slate-100">Slide ${precount}</h1>
+  </swiper-slide>`)
+  precount = precount-1
+  }
+
+  apend(){
+    var acount = 4
+    this.swiper.appendSlide(`<swiper-slide>
+    <h1 class="h-40 bg-slate-100">Slide ${acount}</h1>
+  </swiper-slide>`)
+  acount = acount+1
   }
 
   async loadData(){
