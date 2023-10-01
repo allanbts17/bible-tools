@@ -1,16 +1,17 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { IonModal } from '@ionic/angular';
 import { ApiService } from 'src/app/services/api.service';
 //import { SwiperOptions } from 'swiper';
 import { NgxSpinnerService } from "ngx-spinner";
+import { Swiper }  from 'swiper/types';
 @Component({
   selector: 'app-select-passage-modal',
   templateUrl: './select-passage-modal.component.html',
   styleUrls: ['./select-passage-modal.component.scss'],
 })
-export class SelectPassageModalComponent implements OnInit {
+export class SelectPassageModalComponent {
+  @ViewChild('swiperRef') swiperRef: ElementRef | undefined;
   @ViewChild('modal') modal: IonModal;
-  @ViewChild('slide') slides: any;
   @Input() bible
   @Output() passageSelectedEvent = new EventEmitter<any>()
   chapterList
@@ -21,16 +22,11 @@ export class SelectPassageModalComponent implements OnInit {
   defaultTitle = "Seleccione el libro"
   showSpinner = false
   showSlides = true
-  myOptions: any = {
-    allowTouchMove: false
-  };
+
   arrowDisable = [true,true]
+  slides: Swiper;
 
   constructor(public apiService: ApiService) { }
-
-  ngOnInit() {
-    //console.log(this.bible)
-  }
 
   ngOnChanges(e) {
     this.bible = e?.bible?.currentValue
@@ -42,31 +38,19 @@ export class SelectPassageModalComponent implements OnInit {
 
   }
 
+  swiperInit(){
+    setTimeout(() => {
+      this.slides = this.swiperRef?.nativeElement.swiper;
+      console.log('swiperRef',this.slides);
+    });
+  }
+
   modalPresented() {
     console.log("presented");
     this.showSlides = true
     //this.slides.lockSwipes(true)
     this.showSpinner = true
     this.chapterList = []
-    /* this.myOptions.allowTouchMove = false
-     console.log(this.myOptions)
-     this.slides.options = this.myOptions
-     this.slides.update()*/
-  }
-
-  async transitionFinished() {
-    let index = await this.slides.getActiveIndex()
-    console.log(index)
-    if (index == 0) {
-      //this.slides.lockSwipes(true)
-    } else {
-      //this.slides.lockSwipes(false)
-      // this.slides.lockSwipeToPrev(false)
-      // this.slides.lockSwipeToNext(true)
-      /*this.slides.lockSwipeToPrev(false)
-      this.slides.lockSwipeToNext(true)*/
-    }
-
   }
 
   returnToPrev(){
@@ -75,13 +59,9 @@ export class SelectPassageModalComponent implements OnInit {
   }
 
   setBook(book) {
-    //this.slides.lockSwipeToPrev(false)
-    // this.slides.lockSwipeToNext(false)
     this.slides.slideNext()
     this.arrowDisable = [false,true]
     this.selectedBook = book
-    //console.log({bible: this.bible, book: book});
-
     this.getChapterList(this.bible.id, book.id)
   }
 
@@ -97,8 +77,6 @@ export class SelectPassageModalComponent implements OnInit {
   }
 
   getChapterList(bibleId, bookId) {
-    //console.log(bibleId,bookId);
-
     let aux, data
     this.apiService.getChapterList(bibleId, bookId).subscribe((chapters) => {
       aux = chapters
@@ -109,22 +87,16 @@ export class SelectPassageModalComponent implements OnInit {
       console.log(this.chapterList)
       this.title = this.selectedBook.name
       this.showSpinner = false
-      //this.spinner.hide();
-
     })
   }
 
   getBookList(bibleId) {
-
     let data
     if (bibleId != undefined) {
       this.apiService.getBibleBookList(bibleId).subscribe((books) => {
         data = books
         this.bookList = data.data
         console.log(data);
-
-        //console.log(this.bookList)
-
       })
     }
   }
@@ -133,7 +105,6 @@ export class SelectPassageModalComponent implements OnInit {
     this.title = this.defaultTitle
     this.slides.slideTo(0)
     this.arrowDisable = [true,true]
-   // this.slides.lockSwipes(true)
   }
 
 }
