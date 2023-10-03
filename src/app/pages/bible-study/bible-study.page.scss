@@ -193,3 +193,8 @@ div.fab-space {
   from {margin-bottom: 120px;}
   to {margin-bottom: 0px;}
 }
+
+.scroll {
+  overflow-y: scroll;
+  touch-action: pan-y;
+}

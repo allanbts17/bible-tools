@@ -62,6 +62,7 @@ export class BibleStudyPage implements OnInit {
   slides: Swiper;
   swiperModules = [IonicSlides];
   //showSpace = false
+  setScroll = true
 
   constructor(
     public apiService: ApiService,
@@ -84,23 +85,23 @@ export class BibleStudyPage implements OnInit {
   }
 
   async onTransitionToPrev() {
-    this.transitionEnd();
+   // this.transitionEnd();
     //await this.unlockSwipe('left')
-    this.updateText(
-      this.showedChapters[this.slideIndex],
-      'left',
-      this.slideIndex
-    );
+    // this.updateText(
+    //   this.showedChapters[this.slideIndex],
+    //   'left',
+    //   this.slideIndex
+    // );
   }
 
   async onTransitionToNext() {
-    this.transitionEnd();
+   // this.transitionEnd();
     //await this.unlockSwipe('left')
-    this.updateText(
-      this.showedChapters[this.slideIndex],
-      'left',
-      this.slideIndex
-    );
+    // this.updateText(
+    //   this.showedChapters[this.slideIndex],
+    //   'left',
+    //   this.slideIndex
+    // );
   }
 
   private transitionEnd() {
@@ -235,8 +236,8 @@ export class BibleStudyPage implements OnInit {
         );
 
         setTimeout(() => {
-          console.log('showed chapters: ', this.showedChapters);
-        }, 3000);
+          console.log('showed chapters: ', this.showedChapters, this.slideIndex);
+        }, 1000);
       },
       (error) => {
         if (error.error.statusCode === 404) {
@@ -730,7 +731,7 @@ export class BibleStudyPage implements OnInit {
   }
 
   async setDefaultData() {
-    this.swipeLeftLock = true;
+    //this.swipeLeftLock = true;
     this.setAllSlides(this.sharedInfo.bible.id, this.sharedInfo.chapter.id);
 
   }

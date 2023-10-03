@@ -43,15 +43,17 @@
     (activeindexchange)="onActiveIndexChange()"
     (slidenexttransitionend)="onTransitionToNext()"
     (slideprevtransitionend)="onTransitionToPrev()"
-    [initial-slide]="slideIndex"
-
+    initial-slide="2"
   >
     <swiper-slide
       class="h-full"
       *ngFor="let slide of showedChapters; index as i"
     >
-      <ion-text class="h-full overflow-y-scroll px-4 py-4 text-left">
-      </ion-text>
+    {{slide.id}}
+    <ion-text class="block h-full scroll px-4 py-4 text-left"></ion-text>
+    
+      <!-- <ion-text class="block h-full overflow-y-scroll px-4 py-4 text-left">
+      </ion-text> -->
     </swiper-slide>
   </swiper-container>
 
