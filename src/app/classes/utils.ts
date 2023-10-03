@@ -8,7 +8,7 @@ export const copy = (source: any) => {
 export const formatDate = (_date: string | Date, format = 'll', locale = 'en') => {
   let date = _date//new Date(_date)
   var localMoment = moment(date)
-  console.log('mom',localMoment);
+  console.log('mom', localMoment);
 
   localMoment.locale(locale);
   return localMoment.format(format)
@@ -20,3 +20,26 @@ export enum Colors {
   statusBarModalDarkMode = '#0d0d0d',
   statusBarModalLightMode = '#222428',
 }
+
+export class Utils {
+  private stack: Array<any> = []
+  private runFor = true
+
+  addToStack(callback: any) {
+    this.stack.push(callback)
+    this.functionStack()
+  }
+
+  private async functionStack() {
+    if (!this.runFor)
+      return
+    this.runFor = false
+    for (let callback of this.stack) {
+      await callback()
+    }
+    this.runFor = true
+    this.stack = []
+  }
+}
+
+
