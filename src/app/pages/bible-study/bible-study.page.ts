@@ -67,6 +67,8 @@ export class BibleStudyPage implements OnInit {
   transitionIndex = this.slideIndex
   maxSlides = 21
   transitionStatus = false
+  emptySlide = `<swiper-slide><ion-text class="block h-full scroll px-4 py-4 text-left"></ion-text>
+  </swiper-slide>`
 
   constructor(
     public apiService: ApiService,
@@ -88,6 +90,13 @@ export class BibleStudyPage implements OnInit {
   onActiveIndexChange() {
     if (this.start) {
       this.slideIndex = this.slides.activeIndex;
+      // try {
+      //   this.sharedInfo.chapter = copy(this.showedChapters[this.slideIndex])
+      // } catch(err){
+      //   console.log('set shared chapter error',err);
+
+      // }
+
       // console.log('moves indexs',this.slideIndex);
     }
 
@@ -100,7 +109,7 @@ export class BibleStudyPage implements OnInit {
     let index = this.slideIndex
     setTimeout(() => {
       //console.log(index,this.slides.slides.length - 1,!this.transitionStatus);
-      if (this.transitionStatus && (index == 0 || index == this.slides.slides.length - 1)) {  
+      if (this.transitionStatus && (index == 0 || index == this.slides.slides.length - 1)) {
         let direction = index == 0 ? 'left' : 'right'
         //console.log('transition - Error, next slide not loaded',direction,index,this.showedChapters);
 
@@ -136,14 +145,14 @@ export class BibleStudyPage implements OnInit {
 
     if (actualShowChapter.id !== '')
       this.sharedInfo.chapter = actualShowChapter;
-    
+
 
     // Locking swipes
-    if (!actualShowChapter?.next) {
-      this.slides.allowSlideNext = false;
-    } else if (!actualShowChapter?.previous) {
-      this.slides.allowSlideNext = false;
-    }
+    // if (!actualShowChapter?.next) {
+    //   this.slides.allowSlideNext = false;
+    // } else if (!actualShowChapter?.previous) {
+    //   this.slides.allowSlideNext = false;
+    // }
 
     this.noteSelectionSheet.closeSheet();
     this.closeSpace();
@@ -394,6 +403,8 @@ export class BibleStudyPage implements OnInit {
     //const delay = ms => new Promise(res => setTimeout(res, ms));
     //await delay(3000)
     if (direction === 'right') {
+      if (!this.lastChapter?.next)
+        return
       let obs$ = this.apiService.getChapter(
         this.lastChapter.bibleId,
         this.lastChapter.next.id
@@ -401,8 +412,7 @@ export class BibleStudyPage implements OnInit {
       let chapter: Chapter = await lastValueFrom(obs$)
       if (this.showedChapters.find(chap => chap.id == chapter.data.id))
         return
-      this.slides.appendSlide(`<swiper-slide><ion-text class="block h-full scroll px-4 py-4 text-left"></ion-text>
-        </swiper-slide>`)
+      this.slides.appendSlide(this.emptySlide)
       if (this.slides.slides.length == this.maxSlides) {
         this.slides.removeSlide(0)
         this.showedChapters.shift()
@@ -414,6 +424,8 @@ export class BibleStudyPage implements OnInit {
       this.lastChapter = chapter.data;
 
     } else if (direction === 'left') {
+      if (!this.initialChapter?.previous)
+        return
       let obs$ = this.apiService.getChapter(
         this.initialChapter.bibleId,
         this.initialChapter.previous.id
@@ -427,8 +439,7 @@ export class BibleStudyPage implements OnInit {
       }
 
       console.log('slide length: ', this.slides.slides.length - 1);
-      this.slides.prependSlide(`<swiper-slide><ion-text class="block h-full scroll px-4 py-4 text-left"></ion-text>
-        </swiper-slide>`)
+      this.slides.prependSlide(this.emptySlide)
       this.showedChapters.unshift(chapter.data)
       this.setSlideContent(0, chapter.data)
       this.initialChapter = chapter.data;
