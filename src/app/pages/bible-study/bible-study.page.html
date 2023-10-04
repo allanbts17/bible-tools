@@ -43,6 +43,7 @@
     (activeindexchange)="onActiveIndexChange()"
     (slidenexttransitionend)="start? onTransitionToNext():''"
     (slideprevtransitionend)="start? onTransitionToPrev():''"
+    (transitionstart)="start?  onTransitionStart($event):''"
     initial-slide="2"
     pagination="true"
   >

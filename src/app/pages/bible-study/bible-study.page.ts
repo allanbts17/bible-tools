@@ -65,6 +65,8 @@ export class BibleStudyPage implements OnInit {
   setScroll = true
   private utils: Utils = new Utils()
   transitionIndex = this.slideIndex
+  maxSlides = 21
+  transitionStatus = false
 
   constructor(
     public apiService: ApiService,
@@ -92,51 +94,49 @@ export class BibleStudyPage implements OnInit {
 
   }
 
-  async onTransitionToPrev() {
-    this.transitionIndex -= 1
-    console.log('index compare:', this.slideIndex, this.transitionIndex);
+  onTransitionStart(ev) {
+    console.log('transition - Start', ev);
+    this.transitionStatus = true
+    let index = this.slideIndex
+    setTimeout(() => {
+      //console.log(index,this.slides.slides.length - 1,!this.transitionStatus);
+      if (this.transitionStatus && (index == 0 || index == this.slides.slides.length - 1)) {  
+        let direction = index == 0 ? 'left' : 'right'
+        //console.log('transition - Error, next slide not loaded',direction,index,this.showedChapters);
 
-    this.transitionEnd();
-    this.utils.addToStack(async () => { await this.updateText('left') });
-    try {
-      for (let x of new Array(this.transitionIndex - this.slideIndex)) {
-        this.utils.addToStack(async () => { await this.updateText('left') });
+        this.sharedInfo.chapter = this.showedChapters[this.slideIndex];
+        this.utils.addToStack(async () => { this.updateText(direction) });
       }
-    } catch (err) {
-      console.log('Array length:',this.transitionIndex - this.slideIndex,this.slideIndex,this.transitionIndex,'left',err);
-    }
+    }, 300)
+  }
 
-    this.transitionIndex = this.slideIndex
+  async onTransitionToPrev() {
+    this.transitionEnd();
+    if (this.slideIndex <= 1)
+      this.utils.addToStack(async () => { await this.updateText('left') });
   }
 
   async onTransitionToNext() {
-    this.transitionIndex += 1
     this.transitionEnd();
-    this.utils.addToStack(async () => { this.updateText('right') });
-    try {
-      for (let x of new Array(this.slideIndex - this.transitionIndex)) {
-        this.utils.addToStack(async () => { await this.updateText('right') });
-      }
-    } catch (err) {
-      console.log('Array length:',this.slideIndex - this.transitionIndex,this.slideIndex,this.transitionIndex,'right',err);
-      
-    }
-
-    this.transitionIndex = this.slideIndex
+    if (this.slideIndex >= this.slides.slides.length - 2)
+      this.utils.addToStack(async () => { this.updateText('right') });
   }
 
   private transitionEnd() {
+    console.log('transition - end', this.transitionStatus);
+    this.transitionStatus = false
     let actualShowChapter = this.showedChapters[this.slideIndex];
     let toStore = _.pick(actualShowChapter, 'bibleId', 'id');
     // Storing actual chapter
-    // if (toStore?.id !== '' && toStore?.id !== undefined)
-    //   this.storeLastChapter({
-    //     bibleId: toStore.bibleId,
-    //     chapterId: toStore.id,
-    //   });
+    if (toStore?.id !== '' && toStore?.id !== undefined)
+      this.storeLastChapter({
+        bibleId: toStore.bibleId,
+        chapterId: toStore.id
+      });
 
     if (actualShowChapter.id !== '')
       this.sharedInfo.chapter = actualShowChapter;
+    
 
     // Locking swipes
     if (!actualShowChapter?.next) {
@@ -277,13 +277,10 @@ export class BibleStudyPage implements OnInit {
       let chapterContent: Chapter = (await this.apiService
         .getChapter(chapter.bibleId, chapter.next.id)
         .toPromise()) as Chapter;
-      //console.log('next chaptCont',chapterContent.data);
-
       this.chapterToSlideDistribution(slide, chapterContent.data, false);
       //if (this.swipeRightLock) await this.slides.lockSwipeToNext(false);
 
       await this.setNextChapter(slide, chapterContent.data);
-
     } else {
       // console.log('lock next');
       // await this.slides.lockSwipeToNext(true)
@@ -402,14 +399,17 @@ export class BibleStudyPage implements OnInit {
         this.lastChapter.next.id
       )
       let chapter: Chapter = await lastValueFrom(obs$)
+      if (this.showedChapters.find(chap => chap.id == chapter.data.id))
+        return
       this.slides.appendSlide(`<swiper-slide><ion-text class="block h-full scroll px-4 py-4 text-left"></ion-text>
         </swiper-slide>`)
-      this.slides.removeSlide(0)
-      this.transitionIndex -= 1
-      this.setSlideContent(this.lastIndex, chapter.data)
+      if (this.slides.slides.length == this.maxSlides) {
+        this.slides.removeSlide(0)
+        this.showedChapters.shift()
+      }
+
       this.showedChapters.push(chapter.data)
-      this.showedChapters.shift()
-      this.setSlideContent(this.lastIndex, chapter.data)
+      this.setSlideContent(this.slides.slides.length - 1, chapter.data)
       this.initialChapter = this.showedChapters[0];
       this.lastChapter = chapter.data;
 
@@ -419,17 +419,20 @@ export class BibleStudyPage implements OnInit {
         this.initialChapter.previous.id
       )
       let chapter: Chapter = await lastValueFrom(obs$)
-      this.slides.removeSlide(this.slides.slides.length - 1)
+      if (this.showedChapters.find(chap => chap.id == chapter.data.id))
+        return
+      if (this.slides.slides.length == this.maxSlides) {
+        this.slides.removeSlide(this.slides.slides.length - 1)
+        this.showedChapters.pop()
+      }
+
       console.log('slide length: ', this.slides.slides.length - 1);
       this.slides.prependSlide(`<swiper-slide><ion-text class="block h-full scroll px-4 py-4 text-left"></ion-text>
         </swiper-slide>`)
-      this.transitionIndex += 1
       this.showedChapters.unshift(chapter.data)
-      this.showedChapters.pop()
-      this.setSlideContent(this.firstIndex, chapter.data)
+      this.setSlideContent(0, chapter.data)
       this.initialChapter = chapter.data;
       this.lastChapter = this.showedChapters[this.showedChapters.length - 1];
-      return;
     }
   }
 
@@ -438,10 +441,10 @@ export class BibleStudyPage implements OnInit {
     console.log(this.markersData);
   }
 
-setSlideContent(index, data: ChapterData) {
+  setSlideContent(index, data: ChapterData) {
     //console.log('dataa',data);
-    if(data.id == "GEN.25"){
-      console.log('dataa',index,this.slideIndex,data);
+    if (data.id == "GEN.25") {
+      console.log('dataa', index, this.slideIndex, data);
     }
 
     setTimeout(() => {
