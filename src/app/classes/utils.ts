@@ -14,6 +14,20 @@ export const formatDate = (_date: string | Date, format = 'll', locale = 'en') =
   return localMoment.format(format)
 }
 
+/**
+ * Elimina elementos del array mediante una lista de índices
+ * @param array 
+ * @param indices 
+ */
+export const removeByIndexList = (array: Array<any>, indices: Array<number>) => {
+  indices.sort((a, b) => b - a);
+  for (const indice of indices) {
+    if (indice >= 0 && indice < array.length) {
+      array.splice(indice, 1);
+    }
+  }
+}
+
 export enum Colors {
   statusBarDarkMode = '#1F1F1F',
   statusBarLightMode = '#FFFFFF',

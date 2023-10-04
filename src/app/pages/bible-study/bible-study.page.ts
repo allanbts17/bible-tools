@@ -13,7 +13,7 @@ import { StorageService } from 'src/app/services/storage.service';
 import { SharedInfoService } from 'src/app/services/shared-info.service';
 import { SelectPassageModalComponent } from 'src/app/components/select-passage-modal/select-passage-modal.component';
 import _ from 'underscore';
-import { Utils, copy } from 'src/app/classes/utils';
+import { Utils, copy, removeByIndexList } from 'src/app/classes/utils';
 import { SelectBibleModalComponent } from 'src/app/components/select-bible-modal/select-bible-modal.component';
 import { NetworkService } from 'src/app/services/network.service';
 import { Chapter, ChapterData } from 'src/app/interfaces/chapter';
@@ -146,14 +146,6 @@ export class BibleStudyPage implements OnInit {
     if (actualShowChapter.id !== '')
       this.sharedInfo.chapter = actualShowChapter;
 
-
-    // Locking swipes
-    // if (!actualShowChapter?.next) {
-    //   this.slides.allowSlideNext = false;
-    // } else if (!actualShowChapter?.previous) {
-    //   this.slides.allowSlideNext = false;
-    // }
-
     this.noteSelectionSheet.closeSheet();
     this.closeSpace();
 
@@ -168,13 +160,11 @@ export class BibleStudyPage implements OnInit {
   }
 
   ngOnInit() {
-
-
     for (let i = 0; i <= this.lastIndex; i++)
       this.showedChapters.push({
-        content: 'holaaaa mundo',
+        content: '',
         bibleId: '',
-        id: '',
+        id: 'EMPTY',
       } as ChapterData);
 
     setTimeout(() => {
@@ -188,9 +178,6 @@ export class BibleStudyPage implements OnInit {
           }
         });
       }
-    });
-    setTimeout(async () => {
-      // console.log('actual index',await this.slides.getActiveIndex());
     });
   }
 
@@ -249,6 +236,21 @@ export class BibleStudyPage implements OnInit {
   //   );
   // }
 
+  removeEmptySlides() {
+    setTimeout(() => {
+      let indexList = []
+      for (let i = 0; i < this.showedChapters.length; i++) {
+        if (this.showedChapters[i].id == "EMPTY") {
+          this.slides.removeSlide(i)
+          indexList.push(i)
+        }
+      }
+      removeByIndexList(this.showedChapters, indexList)
+      this.initialChapter = this.showedChapters[0];
+      this.lastChapter = this.showedChapters[this.showedChapters.length - 1];
+    })
+  }
+
   setAllSlides(bibleId: string, chapterId: string) {
     this.apiService.getChapter(bibleId, chapterId).subscribe(
       async (chapterContent: Chapter) => {
@@ -257,8 +259,8 @@ export class BibleStudyPage implements OnInit {
         let promiseNext = this.setNextChapter(this.slideIndex, chapter); //.then(slide => console.log(slide)).catch(err => console.log(err))
         let promisePrev = this.setPrevChapter(this.slideIndex, chapter); //.then(slide => console.log(slide)).catch(err => console.log(err))
         await Promise.all([promisePrev, promiseNext]);
-        this.initialChapter = this.showedChapters[0];
-        this.lastChapter = this.showedChapters[this.showedChapters.length - 1];
+        this.removeEmptySlides()
+
         this.start = true;
         console.log(
           'initial and last chapters',
@@ -471,6 +473,8 @@ export class BibleStudyPage implements OnInit {
       // Filling chapter content
       let spaceDIV = '<div class="w-full chapter-space"></div>'; //h-36 or h-0
       let spaceFab = '<div class="fab-space"></div>';
+      console.log('on set text', index, slideElements.length, copy(this.showedChapters));
+
       slideElements[index].insertAdjacentHTML(
         'beforeend',
         data.content + spaceFab + spaceDIV
@@ -670,7 +674,6 @@ export class BibleStudyPage implements OnInit {
   }
 
   async setDefaultData() {
-    //this.swipeLeftLock = true;
     this.setAllSlides(this.sharedInfo.bible.id, this.sharedInfo.chapter.id);
 
   }
