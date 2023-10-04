@@ -38,7 +38,6 @@
 <ion-content scroll-y="false" *ngIf="network.status?.connected">
   <swiper-container
     id="bible-slides"
-    class="h-full w-full"
     #swiperRef
     (activeindexchange)="onActiveIndexChange()"
     (slidenexttransitionend)="start? onTransitionToNext():''"

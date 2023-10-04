@@ -25,7 +25,7 @@ export class SelectPassageModalComponent {
 
   arrowDisable = [true,true]
   slides: Swiper;
-
+  showFab = false
   constructor(public apiService: ApiService) { }
 
   ngOnChanges(e) {
@@ -42,11 +42,14 @@ export class SelectPassageModalComponent {
     setTimeout(() => {
       this.slides = this.swiperRef?.nativeElement.swiper;
       console.log('swiperRef',this.slides);
+      //this.showFab = true
     });
+
   }
 
   modalPresented() {
     console.log("presented");
+    this.showFab = false
     this.showSlides = true
     //this.slides.lockSwipes(true)
     this.showSpinner = true
@@ -59,6 +62,7 @@ export class SelectPassageModalComponent {
   }
 
   setBook(book) {
+    this.showFab = true
     this.slides.slideNext()
     this.arrowDisable = [false,true]
     this.selectedBook = book
@@ -102,6 +106,7 @@ export class SelectPassageModalComponent {
   }
 
   resetValues() {
+    this.showFab = false
     this.title = this.defaultTitle
     this.slides.slideTo(0)
     this.arrowDisable = [true,true]

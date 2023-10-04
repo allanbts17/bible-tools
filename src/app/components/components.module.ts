@@ -20,16 +20,17 @@ import { TabsComponent } from './tabs/tabs.component';
 import { ModalTemplateComponent } from './modal-template/modal-template.component';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { SpinnerComponent } from './spinner/spinner.component';
 
 const components = [ColorPickerComponent,AddNoteModalComponent,GeneralNoteComponent,
 AddCategoryComponent,CustomAlertComponent,SelectBibleModalComponent,SelectPassageModalComponent,
 NoteSelectionSheetComponent,DailyDevotionalMainMenuComponent,AddVerseModalComponent,
-TopicModalComponent,TabsComponent,ModalTemplateComponent]
+TopicModalComponent,TabsComponent,ModalTemplateComponent,SpinnerComponent]
 
 //SwiperCore.use([Autoplay, Keyboard, Pagination, Scrollbar, Zoom, IonicSlides]);
 
 @NgModule({
-  declarations: [components],
+  declarations: [components, SpinnerComponent],
   exports: [components],
   imports: [
     CommonModule,

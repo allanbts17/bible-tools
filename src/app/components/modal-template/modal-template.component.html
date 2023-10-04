@@ -6,16 +6,16 @@
 
 >
   <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>{{ title }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button color="modalight" (click)="dismiss()">Cerrar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
     <ion-content scroll-y="false">
-      <section class="flex flex-col h-full w-full">
-        <ion-toolbar class="flex-none">
-          <ion-title>{{ title }}</ion-title>
-          <ion-buttons slot="end">
-            <ion-button color="modalight" (click)="dismiss()">Cerrar</ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-        <ng-content></ng-content>
-      </section>
+      <ng-content></ng-content>
     </ion-content>
   </ng-template>
 </ion-modal>

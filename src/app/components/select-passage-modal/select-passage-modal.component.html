@@ -2,8 +2,8 @@
   <swiper-container #swiperRef allow-touch-move="false" (afterinit)="swiperInit()" class="h-full">
     <swiper-slide class="h-full">
       <div class="overflow-y-scroll h-full w-full">
-        <ion-list>
-          <ion-item *ngFor="let book of bookList"  (click)="setBook(book)" button>
+        <ion-list class="w-full">
+          <ion-item *ngFor="let book of bookList; let last = last;" [lines]="last ? 'none' : 'full'" (click)="setBook(book)" button>
             <ion-label>{{ book.name }}</ion-label>
           </ion-item>
         </ion-list>
@@ -28,21 +28,26 @@
         <div class=" h-20 col-span-4"></div>
       </div>
 
-      <ion-fab vertical="bottom" horizontal="start" slot="fixed" (click)="returnToPrev()">
+      
+    </swiper-slide>
+  </swiper-container>
+
+  <ion-fab *ngIf="showFab" [ngClass]="{'animate__bounceInUp':slides?.activeIndex == 1,'animate__backOutDown':slides?.activeIndex == 0}"
+  class="animate__animated"
+   vertical="bottom" horizontal="start" slot="fixed" (click)="returnToPrev()">
         <ion-fab-button color="medium">
           <ion-icon name="arrow-back-outline"></ion-icon>
         </ion-fab-button>
       </ion-fab>
-    </swiper-slide>
-  </swiper-container>
 </app-modal-template>
 
 <ng-template #spinner>
-  <div class="flex flex-wrap justify-around h-full overflow-y-scroll">
-    <ion-item class="mt-9">
+  <!-- <div class="flex flex-wrap justify-around h-full overflow-y-scroll">
+    <ion-item class="mt-9" lines="none">
       <ion-spinner name="circles"></ion-spinner>
     </ion-item>
-  </div>
+  </div> -->
+  <app-spinner></app-spinner>
 </ng-template>
 
 
