@@ -12,11 +12,12 @@
 
     <swiper-slide class="h-full w-full">
       <div
-        class="grid grid-cols-4 h-full w-full overflow-y-scroll"
+        class=" h-full w-full overflow-y-scroll"
         *ngIf="chapterList?.length > 0; else spinner"
       >
+      <div class="flex flex-wrap">
         <ion-button
-          class=""
+          class="h-20 chapter-item"
           shape="round"
           color="medium"
           fill=""
@@ -25,7 +26,8 @@
         >
           {{ chapter.number }}
         </ion-button>
-        <div class=" h-20 col-span-4"></div>
+      </div>
+        
       </div>
 
       

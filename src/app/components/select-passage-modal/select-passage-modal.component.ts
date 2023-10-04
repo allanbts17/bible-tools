@@ -38,6 +38,7 @@ export class SelectPassageModalComponent {
 
   }
 
+
   swiperInit(){
     setTimeout(() => {
       this.slides = this.swiperRef?.nativeElement.swiper;
