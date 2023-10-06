@@ -23,3 +23,8 @@ ion-fab {
 .scrolled-slide {
   scroll-behavior: smooth;
 }
+
+.scroll {
+  overflow-y: scroll;
+  touch-action: pan-y;
+}

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ConfigService } from 'src/app/services/config.service';
 import { StorageService } from 'src/app/services/storage.service';
 import * as moment from 'moment'
@@ -11,6 +11,7 @@ import { IonPopover, PopoverController } from '@ionic/angular';
 import { TabsComponent } from 'src/app/components/tabs/tabs.component';
 import { environment } from 'src/environments/environment';
 import { formatDate } from 'src/app/classes/utils';
+import { Swiper }  from 'swiper/types';
 
 const pagSize = 10
 @Component({
@@ -20,11 +21,12 @@ const pagSize = 10
   encapsulation: ViewEncapsulation.None,
 })
 export class DailyDevotionalPage implements OnInit {
+  @ViewChild('swiperRef') swiperRef: ElementRef | undefined;
   @ViewChild(AddNoteModalComponent) addNoteModal: AddNoteModalComponent;
   @ViewChild(AddCategoryComponent) addCategoryModal: AddCategoryComponent;
   @ViewChild(CustomAlertComponent) alert: CustomAlertComponent;
   @ViewChild('popover') popover: IonPopover;
-  @ViewChild('slide') slides: any;
+
   @ViewChild('dailyTabs') myTabs: TabsComponent;
   tabs = []
   categoryList: Category[] = []
@@ -42,6 +44,7 @@ export class DailyDevotionalPage implements OnInit {
   categoryEditSize: string = 'none'
   categoryDeleteSize: string = 'none'
   pageSize
+  slides: Swiper;
 
   constructor(public config: ConfigService,
     public storageService: StorageService,
@@ -52,6 +55,13 @@ export class DailyDevotionalPage implements OnInit {
 
   ngOnInit() {
     this.loadData()
+  }
+
+  swiperInit(){
+    setTimeout(() => {
+      this.slides = this.swiperRef?.nativeElement.swiper;
+      console.log('swiperRef',this.slides);
+    });
   }
 
   async loadData() {
@@ -139,8 +149,8 @@ export class DailyDevotionalPage implements OnInit {
     return this.showFab
   }
 
-  async transitionStarted() {
-    let index = await this.slides.getActiveIndex()
+  transitionStarted() {
+    let index = this.slides.activeIndex
     this.selectedTab = this.tabs[index]
     this.myTabs.tabSelected(this.selectedTab, index, true)
     this.slideIndex = index
@@ -287,9 +297,7 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   getPaginatedNotes(tab) {
-    // console.log(this.getFilteredNotes(tab).length > this.pageSize);
-
-    return this.notes[tab.name] //this.getFilteredNotes(tab) //?.slice(0,pagSize*(this.notePages[tab]+1))
+    return this.notes[tab.name]
   }
 
   filterByCustomType(tabFilteredList) {

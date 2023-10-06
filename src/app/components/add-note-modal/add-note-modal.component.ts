@@ -132,11 +132,6 @@ export class AddNoteModalComponent implements OnInit {
   selectColor(color){
     this.newCategory.color = color
   }
-  getCategoryOptions(){
-    var array = this.categoryList.slice()
-    array.push({category:"Nuevo",color:""})
-    return array
-  }
 
   async addNote(data,category){
     console.log('added note: ',data,category)
@@ -165,6 +160,8 @@ export class AddNoteModalComponent implements OnInit {
   }
 
   handleSelectChange(e){
+    console.log('sel',e);
+    
     var value = e.detail.value
     this.showNewCategoryInput = value == "Nuevo"
   }

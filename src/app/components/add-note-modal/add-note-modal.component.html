@@ -14,18 +14,19 @@
 
   <ion-list *ngIf="!showColorPicker">
     <ion-item>
-      <ion-label>Elige la categoría</ion-label>
       <ion-select
         [(ngModel)]="selectCategoryName"
         placeholder="Categoría"
+        label="Elige la categoría"
         [multiple]="false"
+        label-placement="floating"
         (ionChange)="handleSelectChange($event)"
       >
-        <ion-select-option
-          *ngFor="let cat of getCategoryOptions()"
-          value="{{ cat.category }}"
-          >{{ cat.category }}</ion-select-option
-        >
+       <ion-select-option
+          *ngFor="let cat of categoryList"
+          [value]="cat.category"
+          >{{ cat.category }}</ion-select-option>    
+          <ion-select-option value="Nuevo">Nuevo</ion-select-option>   
       </ion-select>
     </ion-item>
     <ion-item *ngIf="showNewCategoryInput">
