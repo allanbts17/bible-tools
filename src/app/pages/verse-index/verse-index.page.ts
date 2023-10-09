@@ -24,18 +24,17 @@ const pagSize = 10
   encapsulation: ViewEncapsulation.None,
   styleUrls: ['./verse-index.page.scss'],
 })
-export class VerseIndexPage implements OnInit, AfterViewInit {
+export class VerseIndexPage implements OnInit {
   @ViewChild(AddVerseModalComponent) addVerseModal: AddVerseModalComponent;
   @ViewChild(TopicModalComponent) addTopicModal: TopicModalComponent;
   @ViewChild(CustomAlertComponent) alert: CustomAlertComponent;
   @ViewChild(SelectPassageModalComponent) selectPassage: SelectPassageModalComponent;
   @ViewChild('popover') popover: IonPopover;
-  @ViewChild('slide') slides: any;
   @ViewChild('dailyTabs') myTabs: TabsComponent;
 
 
   @ViewChild('swiperRef') swiperRef: ElementRef | undefined;
-  swiper?: Swiper;
+  slides?: Swiper;
   swiperModules = [IonicSlides];
 
   changeShared = true
@@ -58,18 +57,6 @@ export class VerseIndexPage implements OnInit, AfterViewInit {
   versePages = {}
   isAutoScrollingUp = false
   testArr = []
-
-  sliders: string[] = [
-    'Test 1',
-    'Test 2',
-    'Test 3',
-    'Test 4',
-    'Test 5',
-    'Test 6',
-    'Test 7',
-    'Test 8',
-    'Test 9',
-  ]
 
   // public _config: SwiperOptions = {
   //   modules: [Navigation, Pagination, A11y, Mousewheel],
@@ -102,32 +89,10 @@ export class VerseIndexPage implements OnInit, AfterViewInit {
     //this.loadVerses()
   }
   
-  ngAfterViewInit(): void {
+  swiperInit() {
     setTimeout(()=>{
-      this.swiper = this.swiperRef?.nativeElement.swiper;
+      this.slides = this.swiperRef?.nativeElement.swiper;
     })
-  }
-
-
-  onActiveIndexChange() {
-    console.log(this.swiper);
-    console.log(this.swiper?.activeIndex);
-  }
-
-  prepend(){
-    var precount = 0
-    this.swiper.prependSlide(`<swiper-slide>
-    <h1 class="h-40 bg-slate-100">Slide ${precount}</h1>
-  </swiper-slide>`)
-  precount = precount-1
-  }
-
-  apend(){
-    var acount = 4
-    this.swiper.appendSlide(`<swiper-slide>
-    <h1 class="h-40 bg-slate-100">Slide ${acount}</h1>
-  </swiper-slide>`)
-  acount = acount+1
   }
 
   async loadData(){
@@ -372,7 +337,7 @@ export class VerseIndexPage implements OnInit, AfterViewInit {
   }
 
   async transitionStarted(){
-    let index = await this.slides.getActiveIndex()
+    let index = this.slides.activeIndex
     this.selectedTab = this.tabs[index]
     this.myTabs.tabSelected(this.selectedTab,index,true)
     this.slideIndex = index

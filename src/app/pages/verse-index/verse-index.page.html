@@ -18,15 +18,15 @@
         <ng-template>
           <ion-content>
             <ion-list>
-              <ion-item (click)="presentVerseModal()" [button]="true" [detail]="false">
+              <ion-item lines="full" (click)="presentVerseModal()" [button]="true" [detail]="false">
                 <ion-icon name="document-text" slot="start"></ion-icon>
                 <ion-label>Nuevo versículo</ion-label>
               </ion-item>
-              <ion-item (click)="presentTopicModal()" [button]="true" [detail]="false">
+              <ion-item lines="full" (click)="presentTopicModal()" [button]="true" [detail]="false">
                 <ion-icon name="albums" slot="start"></ion-icon>
                 <ion-label>Nuevo tema</ion-label>
               </ion-item>
-              <ion-item id="topic-edit" [button]="true" [detail]="false">
+              <ion-item lines="full" id="topic-edit" [button]="true" [detail]="false">
                 <ion-icon name="create" slot="start"></ion-icon>
                 <ion-label>Editar tema</ion-label>
               </ion-item>
@@ -35,7 +35,7 @@
                 <ng-template>
                   <ion-content>
                     <ion-list>
-                      <ion-item *ngFor="let topic of topicList" (click)="presentTopicModal(topic)" [button]="true" [detail]="false">
+                      <ion-item *ngFor="let topic of topicList; let last = last;" [lines]="last ? 'none' : 'full'" (click)="presentTopicModal(topic)" [button]="true" [detail]="false">
                         <ion-label>{{topic.name}}</ion-label>
                       </ion-item>
                     </ion-list>
@@ -43,7 +43,7 @@
                 </ng-template>
               </ion-popover>
 
-              <ion-item id="topic-delete" [button]="true" [detail]="false">
+              <ion-item lines="full" id="topic-delete" [button]="true" [detail]="false">
                 <ion-icon name="trash" slot="start"></ion-icon>
                 <ion-label>Eliminar tema</ion-label>
               </ion-item>
@@ -52,7 +52,7 @@
                 <ng-template>
                   <ion-content>
                     <ion-list>
-                      <ion-item *ngFor="let topic of topicList" (click)="deleteTopic(topic)" [button]="true" [detail]="false">
+                      <ion-item *ngFor="let topic of topicList; let last = last;" [lines]="last ? 'none' : 'full'" (click)="deleteTopic(topic)" [button]="true" [detail]="false">
                         <ion-label>{{topic.name}}</ion-label>
                       </ion-item>
                     </ion-list>
@@ -60,7 +60,7 @@
                 </ng-template>
               </ion-popover>
 
-              <ion-item (click)="toogleFilter()" [button]="true" [detail]="false">
+              <ion-item lines="none" (click)="toogleFilter()" [button]="true" [detail]="false">
                 <ion-icon name="filter" slot="start"></ion-icon>
                 <ion-label>Filtar versículos</ion-label>
               </ion-item>
@@ -85,33 +85,13 @@
       </ion-button>
     </div>
 
-    <swiper-container #swiperRef (activeindexchange)="onActiveIndexChange()"
-    slides-per-view="1"
-    initial-slide="0"
-    pagination="true"
-    [modules]="swiperModules"
-    >
-      <swiper-slide>
-        <h1 class="h-40  bg-slate-100 overflow-y-scroll">Slide 1sdgfdfgdsgkuhdglkdsjhglskdghdsklghdlkgjhdsgkldhgkl;dfghdkl;ghdsk;ghdf;gkdshg;ksdhg;ghsd;kghsd;ighdsriu;ghdsg;isdhg;iuh;p 1sdgfdfgdsgkuhdglkdsjhglskdghdsklghdlkgjhdsgkldhgkl;dfghdkl;ghdsk;ghdf;gkdshg;ksdhg;ghsd;kghsd;ighdsriu;ghdsg;isdhg;iuh;p 1sdgfdfgdsgkuhdglkdsjhglskdghdsklghdlkgjhdsgkldhgkl;dfghdkl;ghdsk;ghdf;gkdshg;ksdhg;ghsd;kghsd;ighdsriu;ghdsg;isdhg;iuh;p 1sdgfdfgdsgkuhdglkdsjhglskdghdsklghdlkgjhdsgkldhgkl;dfghdkl;ghdsk;ghdf;gkdshg;ksdhg;ghsd;kghsd;ighdsriu;ghdsg;isdhg;iuh;p</h1>
-      </swiper-slide>
-      <swiper-slide>
-        <h1 class="h-40 bg-slate-100 overflow-y-scroll">Slide 2 Slide 1sdgfdfgdsgkuhdglkdsjhglskdghdsklghdlkgjhdsgkldhgkl;dfghdkl;ghdsk;ghdf;gkdshg;ksdhg;ghsd;kghsd;ighdsriu;ghdsg;isdhg;iuh;p 1sdgfdfgdsgkuhdglkdsjhglskdghdsklghdlkgjhdsgkldhgkl;dfghdkl;ghdsk;ghdf;gkdshg;ksdhg;ghsd;kghsd;ighdsriu;ghdsg;isdhg;iuh;p 1sdgfdfgdsgkuhdglkdsjhglskdghdsklghdlkgjhdsgkldhgkl;dfghdkl;ghdsk;ghdf;gkdshg;ksdhg;ghsd;kghsd;ighdsriu;ghdsg;isdhg;iuh;p 1sdgfdfgdsgkuhdglkdsjhglskdghdsklghdlkgjhdsgkldhgkl;dfghdkl;ghdsk;ghdf;gkdshg;ksdhg;ghsd;kghsd;ighdsriu;ghdsg;isdhg;iuh;p</h1>
-      </swiper-slide>
-      <swiper-slide>
-        <h1 class="h-40 bg-slate-100 overflow-y-scroll">Slide 3 Slide 1sdgfdfgdsgkuhdglkdsjhglskdghdsklghdlkgjhdsgkldhgkl;dfghdkl;ghdsk;ghdf;gkdshg;ksdhg;ghsd;kghsd;ighdsriu;ghdsg;isdhg;iuh;p 1sdgfdfgdsgkuhdglkdsjhglskdghdsklghdlkgjhdsgkldhgkl;dfghdkl;ghdsk;ghdf;gkdshg;ksdhg;ghsd;kghsd;ighdsriu;ghdsg;isdhg;iuh;p 1sdgfdfgdsgkuhdglkdsjhglskdghdsklghdlkgjhdsgkldhgkl;dfghdkl;ghdsk;ghdf;gkdshg;ksdhg;ghsd;kghsd;ighdsriu;ghdsg;isdhg;iuh;p 1sdgfdfgdsgkuhdglkdsjhglskdghdsklghdlkgjhdsgkldhgkl;dfghdkl;ghdsk;ghdf;gkdshg;ksdhg;ghsd;kghsd;ighdsriu;ghdsg;isdhg;iuh;p</h1>
-      </swiper-slide>
-    </swiper-container>
-
-    <div>
-      <ion-button (click)="prepend()">Prepend</ion-button>
-      <ion-button  (click)="apend()">Append</ion-button>
-    </div>
-
 
     <!-- Verses -->
-    <!-- <ion-slides #slide class="flex-1 w-full" (ionSlideTransitionStart)="transitionStarted()">
-      <ion-slide class="h-full w-full" *ngFor="let tab of tabs">
-        <div id="slide-{{tab.name}}-verses" class="scrolled-slide-verses h-full w-full overflow-y-scroll ion-content-scroll-host">
+    <swiper-container #swiperRef class="flex-1 w-full" 
+    (afterinit)="swiperInit()"
+    (slidechangetransitionstart)="transitionStarted()">
+      <swiper-slide class="h-full w-full" *ngFor="let tab of tabs">
+        <div id="slide-{{tab.name}}-verses" class="scrolled-slide-verses h-full w-full scroll ion-content-scroll-host">
           <ion-card *ngFor="let verse of getPaginatedVerses(tab)">
             <ion-item class="">
               <ion-label>{{verse.passage.reference}}</ion-label>
@@ -137,8 +117,8 @@
             </ion-infinite-scroll-content>
           </ion-infinite-scroll>
         </div>
-      </ion-slide>
-    </ion-slides> -->
+      </swiper-slide>
+    </swiper-container>
 
     <!-- fab placed to the bottom end -->
     <ion-fab vertical="bottom" horizontal="end" slot="fixed"

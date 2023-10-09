@@ -1,9 +1,13 @@
 <app-modal-template #modal title="Añadir versículo">
   <ion-list>
     <ion-item>
-      <ion-label>Elige el tema del versículo</ion-label>
-      <ion-select [(ngModel)]="selectTopicName" placeholder="Tema" [multiple]="false" (ionChange)="handleSelectChange($event)">
+      <ion-select [(ngModel)]="selectTopicName"
+      label="Elige el tema del versículo"
+      label-placement="floating"
+       placeholder="Tema" 
+       [multiple]="false" (ionChange)="handleSelectChange($event)">
         <ion-select-option *ngFor="let topic of getTopicOptions()" value="{{topic.name}}">{{topic.name}}</ion-select-option>
+        <ion-select-option value="Nuevo">Nuevo</ion-select-option>
       </ion-select>
     </ion-item>
     <ion-item *ngIf="showNewTopicInput">
@@ -13,11 +17,11 @@
     <ion-item *ngIf="!addFromBibleStudyPage" lines="false">
       <ion-label>Seleccione el capítulo y la biblia</ion-label>
     </ion-item>
-    <div *ngIf="!addFromBibleStudyPage" class="flex justify-around">
-      <ion-button (click)="selectChapter()"  fill="clear" color="dark" shape="round" id="open-select-passage-modal-from-verse-index">
+    <div *ngIf="!addFromBibleStudyPage" class="flex justify-center">
+      <ion-button (click)="selectChapter()" strong="true" fill="solid" color="light" shape="round" class="mr-2" id="open-select-passage-modal-from-verse-index">
         {{selectedChapter?.reference}}
       </ion-button>
-      <ion-button (click)="selectBible()" fill="clear" color="dark" shape="round" id="open-select-bible-modal-from-verse-index">
+      <ion-button (click)="selectBible()" strong="true" fill="solid" color="light" shape="round" id="open-select-bible-modal-from-verse-index">
         {{selectedBible?.abbreviationLocal}}
       </ion-button>
     </div>

@@ -206,11 +206,7 @@ export class AddVerseModalComponent implements OnInit {
   }
 
   getTopicOptions(){
-    //console.log('lisssttttt',this.topicList);
-
-    var array = this.topicList?.slice() || []
-    array.push({name:"Nuevo"})
-    return array
+    return this.topicList?.slice() || []
   }
 
   async addVerse(data,topic){

@@ -14,8 +14,8 @@
       <ng-template>
         <ion-content>
           <ion-list>
-            <ion-item (click)="noteEditEvent.emit(note)" [button]="true" [detail]="false">Editar</ion-item>
-            <ion-item (click)="noteDeleteEvent.emit(note)" [button]="true" [detail]="false">Eliminar</ion-item>
+            <ion-item lines="full" (click)="noteEditEvent.emit(note)" [button]="true" [detail]="false">Editar</ion-item>
+            <ion-item lines="none" (click)="noteDeleteEvent.emit(note)" [button]="true" [detail]="false">Eliminar</ion-item>
           </ion-list>
         </ion-content>
       </ng-template>
