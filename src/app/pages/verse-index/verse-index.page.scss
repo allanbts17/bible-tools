@@ -29,3 +29,7 @@ ion-fab {
   overflow-y: scroll;
   touch-action: pan-y;
 }
+
+swiper-slide ion-button {
+  --border-width: 1px;
+}

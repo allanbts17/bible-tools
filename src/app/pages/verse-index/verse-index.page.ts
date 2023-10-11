@@ -16,6 +16,7 @@ import { TabsComponent } from 'src/app/components/tabs/tabs.component';
 import {Swiper} from 'swiper/types';
 import _ from 'underscore'
 import { IonicSlides } from '@ionic/angular';
+import { SelectBibleModalComponent } from 'src/app/components/select-bible-modal/select-bible-modal.component';
 
 const pagSize = 10
 @Component({
@@ -29,6 +30,7 @@ export class VerseIndexPage implements OnInit {
   @ViewChild(TopicModalComponent) addTopicModal: TopicModalComponent;
   @ViewChild(CustomAlertComponent) alert: CustomAlertComponent;
   @ViewChild(SelectPassageModalComponent) selectPassage: SelectPassageModalComponent;
+  @ViewChild(SelectBibleModalComponent) selectBible: SelectBibleModalComponent;
   @ViewChild('popover') popover: IonPopover;
   @ViewChild('dailyTabs') myTabs: TabsComponent;
 
@@ -125,6 +127,7 @@ export class VerseIndexPage implements OnInit {
     }
     //console.log(verse)
     this.isOpenBibleModal = true
+    this.selectBible.modal.present()
   }
 
   openChapterModal(){

@@ -7,11 +7,12 @@ import { Topic } from 'src/app/interfaces/topic';
 import { Verse } from 'src/app/interfaces/verse';
 import { SharedInfoService } from 'src/app/services/shared-info.service';
 import { ApiService } from 'src/app/services/api.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-add-verse-modal',
   templateUrl: './add-verse-modal.component.html',
-  styleUrls: ['./add-verse-modal.component.scss'],
+  styleUrls: ['./add-verse-modal.component.scss']
 })
 export class AddVerseModalComponent implements OnInit {
   @ViewChild('modal') modal: IonModal;

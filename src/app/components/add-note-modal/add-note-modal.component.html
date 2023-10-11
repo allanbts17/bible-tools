@@ -34,13 +34,16 @@
       <ion-input [(ngModel)]="newCategory.category"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label position="floating">Título</ion-label>
-      <ion-input [(ngModel)]="note.title"></ion-input>
+      <ion-input [(ngModel)]="note.title"
+      label="Titulo"
+      label-placement="floating"></ion-input>
     </ion-item>
     <ion-item>
       <ion-textarea
         [(ngModel)]="note.text"
-        placeholder="Escriba aquí el texto"
+        label="Contenido"
+        labelPlacement="floating"
+        placeholder="Escriba aquí el contenido de la nota"
         auto-grow="true"
         wrap="hard"
       ></ion-textarea>
