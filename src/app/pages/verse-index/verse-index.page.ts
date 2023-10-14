@@ -46,7 +46,7 @@ export class VerseIndexPage implements OnInit {
   topicList: Array<Topic> = []
   verseList: Verse[] //[{topic:0,bible:{id:'',reference:''},passage:{},text:"",date:""}]
   filteredVerseList: Verse[]// = [{id:1,topic:0,bible:{id:"822u4320j",reference:'RVR09'},passage:{id:"GEN.1.1",reference:'Génesis 1:1'},text:'Amad al Señor',date:""},{id:2,topic:0,bible:{id:"822u4320j",reference:'RVR09'},passage:{id:"GEN.1.1",reference:'Génesis 1:1'},text:'Amad al Señor',date:""}]
-  selectedTab = ""
+  selectedTab: Topic
   searchTerm = ""
   filterOn = false
   showDate = false
@@ -381,7 +381,7 @@ export class VerseIndexPage implements OnInit {
     setTimeout(async () => {
       let tab = this.selectedTab
       //this.versePages[tab] += 1
-      let empty = await this.storageService.loadMoreVerses(tab) //this.getFilteredNotes(tab)?.slice(pagSize*this.notePages[tab],pagSize*(this.notePages[tab]+1))
+      let empty = await this.storageService.loadMoreVerses(tab.name) //this.getFilteredNotes(tab)?.slice(pagSize*this.notePages[tab],pagSize*(this.notePages[tab]+1))
       e.target.complete();
       if (empty) {
         e.target.disabled = true;

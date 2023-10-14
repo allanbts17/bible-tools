@@ -158,6 +158,8 @@ export class StorageService {
   async loadMoreVerses(topic: string) {
     let lastId = this.versePages[topic]
     let newVerses
+    console.log('topic',topic);
+    
     if (topic == 'all') {
       newVerses = await this.verseRep.getPaginatedVerses(lastId);
     } else {

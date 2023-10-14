@@ -53,6 +53,8 @@ export class VerseRepository {
     }
 
     async getPaginatedVerses(lastId?: number): Promise<Verse[]> {
+        console.log('lastId',lastId);
+        
         return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
             let sqlcmd: string;
             if (lastId) {
@@ -67,6 +69,8 @@ export class VerseRepository {
                 ORDER BY id DESC
                 LIMIT ${this.pagSize}`;
             }
+            console.log('data',lastId,sqlcmd);
+            
             var verses: DBSQLiteValues = await db.query(sqlcmd);
             return this.verseConversion(verses.values) as Verse[];
         });

@@ -110,7 +110,7 @@
           <p class="text-slate-500 w-full text-center mt-2" *ngIf="verses[tab.name]?.length == 0 && filterOn">No existen versículos para este filtro</p>
           <p class="text-slate-500 w-full text-center mt-2" *ngIf="verses[tab.name]?.length == 0 && !filterOn">No existen versículos con este tema</p>
 
-          <ion-infinite-scroll threshold="100px" id="infinite-scroll" class="" (ionInfinite)="onScroll($event)">
+          <ion-infinite-scroll style="height: 120px;" threshold="100px" id="infinite-scroll" class="" (ionInfinite)="onScroll($event)">
             <ion-infinite-scroll-content
               loading-spinner="bubbles"
               loading-text="Cargando más versículos...">
