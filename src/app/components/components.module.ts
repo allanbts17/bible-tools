@@ -18,14 +18,15 @@ import { ModalTemplateComponent } from './modal-template/modal-template.componen
 import { NgxSpinnerModule } from "ngx-spinner";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { SpinnerComponent } from './spinner/spinner.component';
+import { BackdropComponent } from './backdrop/backdrop.component';
 
 const components = [ColorPickerComponent,AddNoteModalComponent,GeneralNoteComponent,
 AddCategoryComponent,CustomAlertComponent,SelectBibleModalComponent,SelectPassageModalComponent,
 NoteSelectionSheetComponent,DailyDevotionalMainMenuComponent,AddVerseModalComponent,
-TopicModalComponent,TabsComponent,ModalTemplateComponent,SpinnerComponent]
+TopicModalComponent,TabsComponent,ModalTemplateComponent,SpinnerComponent,BackdropComponent]
 
 @NgModule({
-  declarations: [components, SpinnerComponent],
+  declarations: [components ],
   exports: [components],
   imports: [
     CommonModule,
