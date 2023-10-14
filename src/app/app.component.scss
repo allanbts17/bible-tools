@@ -170,18 +170,37 @@ ion-item.selected {
   z-index: 99999999;
   height: 100%;
   width: 0%;
-  background-color: #4a6479;
-  //move()
+  background-color: #1e1e1e;
+}
+
+.color-light {
+  background-color: #fff;
 }
 
 .show-animate {
   animation-name: show;
-  animation-duration: 4s;
+  animation-duration: 0.7s;
+  animation-timing-function: linear;
 }
 
 
 @keyframes show {
-  from {width: 0%;}
-  to {width: 100%;}
+  0% {  
+    width: 0%;
+    transform: translateX(0%);
+  }
+  28% { 
+    width: 100%;
+    transform: translateX(0%);
+  }
+  72% { 
+    width: 100%;
+    transform: translateX(0%);
+  }
+  100% {
+    width: 100%;
+    transform: translateX(100%);
+  }
+
 }
 

@@ -1,5 +1,8 @@
 <ion-app>
-  <div class="absolutes cover"></div>
+  <div id="theme-cover" class="cover 
+  {{showAnimate? 'show-animate':''}}
+  {{lightAnimation? 'color-light':''}}
+  "></div>
   <ion-split-pane contentId="main-content">
 
     <ion-menu contentId="main-content" type="overlay" class="{{darkMode? 'dark':''}}">
@@ -46,8 +49,13 @@
         </ion-item>
       </ion-content>
     </ion-menu>
+
+    
+   
+    
     <ion-router-outlet id="main-content"></ion-router-outlet>
 
     <jeep-sqlite *ngIf="isWeb"></jeep-sqlite>
   </ion-split-pane>
+  
 </ion-app>

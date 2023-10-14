@@ -19,7 +19,7 @@ section {
     width: 4px;
     height: 4px;
     border-radius: 50%;
-    color: #023581;
+    color: #9d9fa6; //808289
     box-shadow: 
       calc(1*var(--d))      calc(0*var(--d))     0 0,
       calc(0.707*var(--d))  calc(0.707*var(--d)) 0 1px,
@@ -29,6 +29,10 @@ section {
       calc(-0.707*var(--d)) calc(-0.707*var(--d))0 5px,
       calc(0*var(--d))      calc(-1*var(--d))    0 6px;
     animation: s7 1s infinite steps(8);
+  }
+
+  .dark .spinner-7 {
+    color: #fff;
   }
   
   @keyframes s7 {

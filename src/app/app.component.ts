@@ -30,6 +30,8 @@ export class AppComponent {
   private initPlugin: boolean;
   products: Product[] = [];
   public isWeb: boolean = false;
+  showAnimate = false
+  lightAnimation = false
   constructor(public config: ConfigService,
     public storage: StorageService,
     public theme: ThemeService,
@@ -60,20 +62,31 @@ export class AppComponent {
     this.darkMode = this.settings.darkMode
     this.config.lang = this.settings.lang
     this.darkMode ? this.theme.applyDark() : this.theme.removeDark()
+    this.lightAnimation = this.darkMode
 
   }
 
   changeTheme() {
-    this.darkMode = !this.darkMode
-    this.darkMode ? this.theme.applyDark() : this.theme.removeDark()
-    this.settings.darkMode = this.darkMode
-    this.config.settings = this.settings
-    this.storage.setSettings(this.settings)
+   // this.lightAnimation = this.darkMode
+    this.showAnimate = true
+    setTimeout(() => {
+      this.showAnimate = false
+      this.lightAnimation = this.darkMode
+    }, 700)
+
+    setTimeout(() => {
+      this.darkMode = !this.darkMode
+      this.darkMode ? this.theme.applyDark() : this.theme.removeDark()
+      this.settings.darkMode = this.darkMode
+      this.config.settings = this.settings
+      this.storage.setSettings(this.settings)
+    }, 196)
+
   }
 
   setText() {
     this.header_title = this.config.getData().menu.header
-    console.log('title',this.header_title);
+    console.log('title', this.header_title);
 
     this.header_subtitle = this.config.getData().menu.note
     for (let i = 0; i < this.appPages.length; i++) {
