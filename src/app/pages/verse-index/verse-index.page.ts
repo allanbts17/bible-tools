@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, ViewEncapsulation, AfterViewInit } from '@angular/core';
 import { ConfigService } from 'src/app/services/config.service';
 import { StorageService } from 'src/app/services/storage.service';
-import  * as moment  from 'moment'
+import * as moment from 'moment'
 import { AddCategoryComponent } from 'src/app/components/add-category/add-category.component';
 import { CustomAlertComponent } from 'src/app/components/custom-alert/custom-alert.component';
 import { IonPopover, PopoverController, ToastController } from '@ionic/angular';
@@ -13,10 +13,11 @@ import { ApiService } from 'src/app/services/api.service';
 import { SelectPassageModalComponent } from 'src/app/components/select-passage-modal/select-passage-modal.component';
 import { TopicModalComponent } from 'src/app/components/topic-modal/topic-modal.component';
 import { TabsComponent } from 'src/app/components/tabs/tabs.component';
-import {Swiper} from 'swiper/types';
+import { Swiper } from 'swiper/types';
 import _ from 'underscore'
 import { IonicSlides } from '@ionic/angular';
 import { SelectBibleModalComponent } from 'src/app/components/select-bible-modal/select-bible-modal.component';
+import { copy } from 'src/app/classes/utils';
 
 const pagSize = 10
 @Component({
@@ -81,23 +82,35 @@ export class VerseIndexPage implements OnInit {
     public popoverController: PopoverController,
     public sharedInfo: SharedInfoService,
     public apiService: ApiService,
-    public toastController: ToastController) {}
+    public toastController: ToastController) { }
 
   ngOnInit() {
-   // this.swiper = this.swiperRef?.nativeElement.swiper;
+    // this.swiper = this.swiperRef?.nativeElement.swiper;
     this.loadData()
-    
+    //this.debug()
+
     //this.loadTopics()
     //this.loadVerses()
   }
-  
+
+  debug() {
+    setInterval(() => {
+      console.log('tabs', copy(this.tabs));
+    }, 200)
+    setInterval(() => {
+      console.log('verses', copy(this.verses));
+    }, 200)
+  }
+
+
+
   swiperInit() {
-    setTimeout(()=>{
+    setTimeout(() => {
       this.slides = this.swiperRef?.nativeElement.swiper;
     })
   }
 
-  async loadData(){
+  async loadData() {
     this.verses = this.storageService.verses
     this.versePages = this.storageService.versePages
     console.log(this.versePages)
@@ -118,9 +131,9 @@ export class VerseIndexPage implements OnInit {
     toast.present();
   }
 
-  openBibleModal(verse = undefined){
-    if(verse !== undefined){
-      this.selectedVerse = {...verse}
+  openBibleModal(verse = undefined) {
+    if (verse !== undefined) {
+      this.selectedVerse = { ...verse }
     }
     else {
       this.selectedVerse = undefined
@@ -130,34 +143,34 @@ export class VerseIndexPage implements OnInit {
     this.selectBible.modal.present()
   }
 
-  openChapterModal(){
+  openChapterModal() {
     this.selectPassage.modal.present()
   }
 
-  bibleChange(bible){
-    if(this.selectedVerse !== undefined){
+  bibleChange(bible) {
+    if (this.selectedVerse !== undefined) {
       //let index = this.filteredVerseList.findIndex(verse => verse.id === this.selectedVerse.id)
       this.seletedVersePassage.length = this.selectedVerse.passage.id.length
       this.seletedVersePassage.fill(0)
 
-      for(let i=0;i<this.selectedVerse.passage.id.length;i++){
-        this.getPassage(bible,this.selectedVerse.passage.id[i],i)
+      for (let i = 0; i < this.selectedVerse.passage.id.length; i++) {
+        this.getPassage(bible, this.selectedVerse.passage.id[i], i)
       }
-    //console.log(this.selectedVerse)
+      //console.log(this.selectedVerse)
     } else {
       //this.selectedBible = bible
     }
   }
 
-  getPassage(bible,passId,index){
+  getPassage(bible, passId, index) {
     let aux
-    this.apiService.getPassage(bible.id,passId).subscribe(data=>{
+    this.apiService.getPassage(bible.id, passId).subscribe(data => {
       aux = data
       this.seletedVersePassage[index] = aux.data.content
-      if(!this.seletedVersePassage.some(el => el === 0))
+      if (!this.seletedVersePassage.some(el => el === 0))
         this.buildOutputText(bible)
-    },error=>{
-      if(error.status === 404){
+    }, error => {
+      if (error.status === 404) {
         this.presentToast('El pasaje no se encuentra en esta versión')
       } else {
         console.log(error)
@@ -165,16 +178,16 @@ export class VerseIndexPage implements OnInit {
     })
   }
 
-  async buildOutputText(bible){
+  async buildOutputText(bible) {
     let outputText = ''
     this.seletedVersePassage.forEach(verseRange => {
       var container = document.createElement('div')
-      container.insertAdjacentHTML('beforeend',verseRange)
+      container.insertAdjacentHTML('beforeend', verseRange)
       let spans = container.querySelectorAll('span.verse-span')
       spans.forEach(span => {
-        if(span.childNodes[0].nodeType === 3){
+        if (span.childNodes[0].nodeType === 3) {
           let text = span.childNodes[0].textContent
-          if(text.slice(-1) != ' '){
+          if (text.slice(-1) != ' ') {
             text += ' '
           }
           outputText += text
@@ -182,22 +195,22 @@ export class VerseIndexPage implements OnInit {
       })
     })
     this.selectedVerse.bible = {
-      id:bible.id,
-      reference:bible.abbreviationLocal
+      id: bible.id,
+      reference: bible.abbreviationLocal
     }
     this.selectedVerse.text = outputText
     _.defer(async () => await this.editVerse(this.selectedVerse))
     this.loadVerses()
   }
 
-  async editVerse(data: Verse){
+  async editVerse(data: Verse) {
     let topicName = this.topicList.find((top: Topic) => top.id == data.topic).name
-    await this.storageService.editVerse(data,topicName)
+    await this.storageService.editVerse(data, topicName)
     //await this.storageService.editItemByID('my-verses',data)
   }
 
-  chapterChange(chapter){
-   // this.selectedChapter = chapter
+  chapterChange(chapter) {
+    // this.selectedChapter = chapter
     this.sharedInfo.viChapter = chapter
   }
 
@@ -206,63 +219,72 @@ export class VerseIndexPage implements OnInit {
     this.isOpen = true;
   }
 
-  presentVerseModal(){
+  presentVerseModal() {
     this.addVerseModal.modal.present()
   }
 
-  presentTopicModal(topic: Topic = null){
+  presentTopicModal(topic: Topic = null) {
     //this.popover.dismiss()
-    if(topic == null)
+    if (topic == null)
       this.addTopicModal.setToNewFunction()
     else
       this.addTopicModal.setToEditFunction(topic)
     this.addTopicModal.modal.present()
   }
 
-  deleteTopic(topic){
+  deleteTopic(topic) {
     //this.popover.dismiss()
     this.alert.deleteTopicAlert(topic)
     ////this.alert.moveNotesAlert(cat)
   }
 
-  changeVerseTopic(verse: Verse){
+  changeVerseTopic(verse: Verse) {
     this.alert.changeVerseTopicAlert(verse)
   }
 
-  deleteVerse(verse: Verse){
+  deleteVerse(verse: Verse) {
     this.alert.verseDeleteConfirmationAlert(verse)
   }
 
-  clearSearchTerm(){
+  clearSearchTerm() {
     this.searchTerm = ""
     this.filterVerses()
   }
 
-  quiteFilter(){
+  quiteFilter() {
     this.filterOn = false
     this.clearSearchTerm()
   }
 
-  searchbarChange(e){
+  searchbarChange(e) {
     this.searchTerm = e.detail.value
     this.filterVerses()
     console.log(this.searchTerm)
   }
 
-  toogleFilter(){
+  toogleFilter() {
     //this.popover.dismiss()
-    this.filterOn=!this.filterOn
-    if(!this.filterOn)
+    this.filterOn = !this.filterOn
+    if (!this.filterOn)
       this.quiteFilter()
   }
 
-
-  async loadTopics(){
-    this.topicList = await this.storageService.getTopics()
-    this.fillTabs()
+  updateSlides() {
+    this.slides.update()
   }
 
-  async loadVerses(){
+
+  async loadTopics() {
+    this.topicList = await this.storageService.getTopics()
+    this.fillTabs()
+    setTimeout(() => {
+      this.updateSlides()
+    }, 200)
+
+
+  }
+
+  async loadVerses() {
     /*await this.sortVerses()
     this.verseList = await this.storageService.getData("my-verses")
     this.filterVerses(this.selectedTab)*/
@@ -276,19 +298,19 @@ export class VerseIndexPage implements OnInit {
     })
   }*/
 
-  filterVerses(tab = this.selectedTab){
-    if(this.filterOn){
+  filterVerses(tab = this.selectedTab) {
+    if (this.filterOn) {
       var tabFilteredList = this.filterByCategory(tab)
       this.filteredVerseList = this.filterByCustomType(tabFilteredList)
-    } else{
+    } else {
       this.filteredVerseList = this.filterByCategory(tab)
     }
 
   }
 
-  filterByCategory(tab){
+  filterByCategory(tab) {
     var filtered
-    if(tab === this.config.getData().daly_devotional.tab){
+    if (tab === this.config.getData().daly_devotional.tab) {
       filtered = this.verseList
     } else {
       filtered = this.verseList.filter(verse => {
@@ -301,12 +323,12 @@ export class VerseIndexPage implements OnInit {
     return filtered
   }
 
-  filterByCustomType(tabFilteredList){
+  filterByCustomType(tabFilteredList) {
     var filtered
     filtered = tabFilteredList.filter(verse => {
       var found = verse.text.toUpperCase().includes(this.searchTerm.toUpperCase()) ||
-      verse.bible.reference.toUpperCase().includes(this.searchTerm.toUpperCase()) ||
-      verse.passage.reference.toUpperCase().includes(this.searchTerm.toUpperCase())
+        verse.bible.reference.toUpperCase().includes(this.searchTerm.toUpperCase()) ||
+        verse.passage.reference.toUpperCase().includes(this.searchTerm.toUpperCase())
       return found
     })
     return filtered
@@ -316,106 +338,109 @@ export class VerseIndexPage implements OnInit {
   //   return ['all'].concat(this.topicList)
   // }
 
-  getFilteredVerses(tab){
-    if(this.filterOn)
+  getFilteredVerses(tab) {
+    if (this.filterOn)
       return this.filterByCustomType(this.verses[tab])
     else
       return this.verses[tab.name]
   }
 
-  fillTabs(){
+  fillTabs() {
     this.tabs.length = 0
-    this.tabs.push({ name: 'all', id: -1 })//[this.config.getData().daly_devotional.tab]
-    if(this.topicList !== null)
+    this.tabs.push({ name: 'all', id: -1 })
+    if (this.topicList !== null)
       this.topicList.forEach(tab => this.tabs.push(tab))
     this.selectedTab = this.tabs[0]
     //console.log(this.tabs)
     //console.log('tabs: ',this.tabs)
   }
 
-  tabSelected(e){
+  tabSelected(e) {
     this.selectedTab = e.tab
     //this.filterVerses(tab)
     this.slides.slideTo(e.index)
+    //console.log('slidess',copy(this.slides.slides));
   }
 
-  async transitionStarted(){
+  async transitionStarted() {
+
     let index = this.slides.activeIndex
     this.selectedTab = this.tabs[index]
-    this.myTabs.tabSelected(this.selectedTab,index,true)
+    this.myTabs.tabSelected(this.selectedTab, index, true)
     this.slideIndex = index
     this.showFab = false
+
   }
 
-  getPaginatedVerses(tab){
+  getPaginatedVerses(tab) {
     return this.getFilteredVerses(tab) //?.slice(0,pagSize*(this.versePages[tab]+1))
   }
 
 
-  onScroll(e){
+  onScroll(e) {
     setTimeout(async () => {
       let tab = this.selectedTab
       //this.versePages[tab] += 1
       let empty = await this.storageService.loadMoreVerses(tab) //this.getFilteredNotes(tab)?.slice(pagSize*this.notePages[tab],pagSize*(this.notePages[tab]+1))
       e.target.complete();
-      if(empty){
+      if (empty) {
         e.target.disabled = true;
       }
     }, 500);
   }
 
-  addScrollListener(){
+  addScrollListener() {
     var lastScrollTop = 0
     var delta = 0
     let myTimeout
-    let myInterval = setInterval(()=>{
+    let myInterval = setInterval(() => {
       let scrollSlides = document.getElementsByClassName('scrolled-slide-verses')
-      if(scrollSlides.length > 0){
+      if (scrollSlides.length > 0) {
         clearInterval(myInterval)
         //console.log(scrollSlides)
 
-        for(let i=0;i<scrollSlides.length;i++){
+        for (let i = 0; i < scrollSlides.length; i++) {
           scrollSlides[i].addEventListener('scroll', (e) => {
             let newScrollTop = scrollSlides[i].scrollTop
-            if (newScrollTop > lastScrollTop){
+            if (newScrollTop > lastScrollTop) {
               // downscroll code
               //console.log('down')
               this.showFab = false
               delta = newScrollTop
             } else {
-                // upscroll code
-                //console.log(delta-newScrollTop)
-                if(delta-newScrollTop > 7 && !this.isAutoScrollingUp){
-                  this.showFab = true
-                  clearTimeout(myTimeout)
-                  myTimeout = setTimeout(()=>{
-                    this.showFab = false
-                  },3000)
-                }// else if (this.isAutoScrollingUp){
-                if(newScrollTop === 0){
-                  clearTimeout(myTimeout)
+              // upscroll code
+              //console.log(delta-newScrollTop)
+              if (delta - newScrollTop > 7 && !this.isAutoScrollingUp) {
+                this.showFab = true
+                clearTimeout(myTimeout)
+                myTimeout = setTimeout(() => {
                   this.showFab = false
-                  this.isAutoScrollingUp = false
-                }
-                //}
+                }, 3000)
+              }// else if (this.isAutoScrollingUp){
+              if (newScrollTop === 0) {
+                clearTimeout(myTimeout)
+                this.showFab = false
+                this.isAutoScrollingUp = false
+              }
+              //}
             }
             //console.log(,newScrollTop)
             lastScrollTop = newScrollTop <= 0 ? 0 : newScrollTop; // For Mobile or negative scrolling
           })
         }
       }
-    },50)
+    }, 50)
   }
 
-  scrollToTop(){
+  scrollToTop() {
     let scrollSlide = document.getElementById(`slide-${this.selectedTab}-verses`)
-    scrollSlide.scrollTo(0,0)
+    scrollSlide.scrollTo(0, 0)
     this.showFab = false
     this.isAutoScrollingUp = true
     //console.log(scrollSlide)
   }
 
-  getStatus(){
+  getStatus() {
     return this.showFab
   }
 

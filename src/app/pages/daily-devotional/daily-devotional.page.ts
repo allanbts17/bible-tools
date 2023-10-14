@@ -259,6 +259,14 @@ export class DailyDevotionalPage implements OnInit {
     //   this.categoryList = this.storageService.categories
     // },800)
     this.fillTabs()
+    setTimeout(() => {
+      this.updateSlides()
+    }, 200)
+    
+  }
+
+  updateSlides() {
+    this.slides.update()
   }
 
   async sortNotes() {
