@@ -10,6 +10,9 @@ ion-segment::-webkit-scrollbar {
   display: none;
 }
 
+swiper-container {
+  height: 500px;
+}
 /* Hide scrollbar for IE, Edge and Firefox */
 ion-segment {
   -ms-overflow-style: none;  /* IE and Edge */
@@ -27,4 +30,63 @@ ion-fab {
 .scroll {
   overflow-y: scroll;
   touch-action: pan-y;
+}
+
+ion-searchbar {
+  --border-radius: 100px;
+}
+
+ion-searchbar {
+  --border-radius: 100px !important;
+  --box-shadow: none !important;
+  --background: #ecebeb !important;
+  --color: #707070 !important;
+  --icon-color: #707070 !important;
+  --clear-button-color: #707070 !important;
+}
+
+.calendar-show ion-button {
+  --box-shadow:none;
+}
+
+ion-datetime {
+  --background: #ecebeb;
+ 
+
+  border-radius: 16px;
+ 
+}
+
+.dark ion-datetime {
+  --background: #222428;
+}
+
+ion-datetime {
+  margin: 0.5rem 0;
+}
+
+.calendar-container.show {
+  height: 344px;
+  
+  animation-name: showAn;
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+}
+
+.calendar-container.hide {
+  animation-name: hideAn;
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+  height: 344px;
+}
+
+
+@keyframes showAn {
+  from {height: 0px;}
+  to {height: 344px;}
+}
+
+@keyframes hideAn {
+  from {height: 344px;}
+  to {height: 0px;}
 }

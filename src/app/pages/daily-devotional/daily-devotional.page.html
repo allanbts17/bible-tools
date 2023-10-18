@@ -10,34 +10,80 @@
     </ion-buttons>
     <ion-title *ngIf="!filterOn" slot="">Diario devocional</ion-title>
 
-    <ion-searchbar *ngIf="filterOn && filterType != 'date'" (ionFocus)="searchbarFocus()" (ionCancel)="clearSearchTerm()" [(ngModel)]="searchTerm" (ionChange)="searchbarChange($event)" animated placeholder=""></ion-searchbar>
+    <ion-searchbar
+      *ngIf="filterOn && filterType != 'date'"
+      (ionFocus)="searchbarFocus()"
+      (ionCancel)="clearSearchTerm()"
+      [(ngModel)]="searchTerm"
+      (ionChange)="searchbarChange($event)"
+      animated
+      placeholder=""
+    ></ion-searchbar>
     <ion-buttons slot="primary">
       <ion-button id="daily-dev-menu" (click)="presentPopover($event)">
         <ion-icon slot="icon-only" name="chevron-down-outline"></ion-icon>
       </ion-button>
-      <ion-popover #popover [isOpen]="isOpen" (didDismiss)="isOpen = false" [dismissOnSelect]="true">
+      <ion-popover
+        #popover
+        [isOpen]="isOpen"
+        (didDismiss)="isOpen = false"
+        [dismissOnSelect]="true"
+      >
         <ng-template>
           <ion-content>
             <ion-list>
-              <ion-item lines="full" (click)="presentNoteModal()" [button]="true" [detail]="false">
+              <ion-item
+                lines="full"
+                (click)="presentNoteModal()"
+                [button]="true"
+                [detail]="false"
+              >
                 <ion-icon name="document-text" slot="start"></ion-icon>
                 <ion-label>Nueva nota</ion-label>
               </ion-item>
-              <ion-item lines="full" (click)="presentCategoryModal()" [button]="true" [detail]="false">
+              <ion-item
+                lines="full"
+                (click)="presentCategoryModal()"
+                [button]="true"
+                [detail]="false"
+              >
                 <ion-icon name="albums" slot="start"></ion-icon>
                 <ion-label>Nueva categoría</ion-label>
               </ion-item>
-              <ion-item lines="full" id="category-edit" [button]="true" [detail]="false" (click)="setCategoryEditStyle()">
+              <ion-item
+                lines="full"
+                id="category-edit"
+                [button]="true"
+                [detail]="false"
+                (click)="setCategoryEditStyle()"
+              >
                 <ion-icon name="create" slot="start"></ion-icon>
                 <ion-label>Editar categoría</ion-label>
               </ion-item>
 
-              <ion-popover [animated]="true" trigger="category-edit"  [dismissOnSelect]="true">
+              <ion-popover
+                [animated]="true"
+                trigger="category-edit"
+                [dismissOnSelect]="true"
+              >
                 <ng-template>
                   <ion-content>
-                    <ion-list class="overflow-y-auto" [style.maxHeight]="categoryEditSize">
-                      <ion-item *ngFor="let cat of categoryList; let last = last;" [lines]="last ? 'none' : 'full'" (click)="presentCategoryModal(cat)" [button]="true" [detail]="false">
-                        <ion-icon [style.color]="cat.color" name="ellipse" slot="start"></ion-icon>
+                    <ion-list
+                      class="overflow-y-auto"
+                      [style.maxHeight]="categoryEditSize"
+                    >
+                      <ion-item
+                        *ngFor="let cat of categoryList; let last = last;"
+                        [lines]="last ? 'none' : 'full'"
+                        (click)="presentCategoryModal(cat)"
+                        [button]="true"
+                        [detail]="false"
+                      >
+                        <ion-icon
+                          [style.color]="cat.color"
+                          name="ellipse"
+                          slot="start"
+                        ></ion-icon>
                         <ion-label>{{cat.category}}</ion-label>
                       </ion-item>
                     </ion-list>
@@ -45,17 +91,40 @@
                 </ng-template>
               </ion-popover>
 
-              <ion-item lines="full" id="category-delete" [button]="true" [detail]="false" (click)="setCategoryDeleteStyle()">
+              <ion-item
+                lines="full"
+                id="category-delete"
+                [button]="true"
+                [detail]="false"
+                (click)="setCategoryDeleteStyle()"
+              >
                 <ion-icon name="trash" slot="start"></ion-icon>
                 <ion-label>Eliminar categoría</ion-label>
               </ion-item>
 
-              <ion-popover [animated]="true" trigger="category-delete"  [dismissOnSelect]="true">
+              <ion-popover
+                [animated]="true"
+                trigger="category-delete"
+                [dismissOnSelect]="true"
+              >
                 <ng-template>
                   <ion-content>
-                    <ion-list class="overflow-y-auto" [style.maxHeight]="categoryDeleteSize">
-                      <ion-item *ngFor="let cat of categoryList; let last = last;" [lines]="last ? 'none' : 'full'" (click)="deleteCategory(cat)" [button]="true" [detail]="false">
-                        <ion-icon [style.color]="cat.color" name="ellipse" slot="start"></ion-icon>
+                    <ion-list
+                      class="overflow-y-auto"
+                      [style.maxHeight]="categoryDeleteSize"
+                    >
+                      <ion-item
+                        *ngFor="let cat of categoryList; let last = last;"
+                        [lines]="last ? 'none' : 'full'"
+                        (click)="deleteCategory(cat)"
+                        [button]="true"
+                        [detail]="false"
+                      >
+                        <ion-icon
+                          [style.color]="cat.color"
+                          name="ellipse"
+                          slot="start"
+                        ></ion-icon>
                         <ion-label>{{cat.category}}</ion-label>
                       </ion-item>
                     </ion-list>
@@ -63,7 +132,12 @@
                 </ng-template>
               </ion-popover>
 
-              <ion-item lines="none" (click)="toogleFilter()" [button]="true" [detail]="false">
+              <ion-item
+                lines="none"
+                (click)="toogleFilter()"
+                [button]="true"
+                [detail]="false"
+              >
                 <ion-icon name="filter" slot="start"></ion-icon>
                 <ion-label>Filtar notas</ion-label>
               </ion-item>
@@ -76,69 +150,148 @@
 </ion-header>
 
 <ion-content scroll-y="false">
-
   <section class="h-full flex flex-col">
     <!-- Scrollable Segment -->
-    <div class="sticky top-0 z-10 segment-background flex-none">
-      <app-tabs #dailyTabs [segmentId]="'daily-div'" [tabs]="tabs" (selectedTabEvent)="tabSelected($event)"></app-tabs>
-
+    <div class="z-10 segment-background flex-none">
+      <app-tabs
+        #dailyTabs
+        [segmentId]="'daily-div'"
+        [tabs]="tabs"
+        (selectedTabEvent)="tabSelected($event)"
+      ></app-tabs>
+      <!-- flex justify-center items-center relative -->
       <!-- Filter select -->
-      <div *ngIf="filterOn" class="mx-2 mt-1 flex justify-center items-center relative">
-        <ion-label>Filtrar por:</ion-label>
-        <ion-select [(ngModel)]="filterType" [multiple]="false" (ionChange)="filterTypeSelect($event)">
+      <ion-item *ngIf="filterOn"  class="mx-2 mt-1">
+        <ion-select
+          label="Tipo de filtro"
+          [(ngModel)]="filterType"
+          [multiple]="false"
+          (ionChange)="filterTypeSelect($event)"
+        >
           <ion-select-option value="all">Todo</ion-select-option>
           <ion-select-option value="title">Título</ion-select-option>
           <ion-select-option value="text">Texto</ion-select-option>
           <ion-select-option value="date">Fecha</ion-select-option>
         </ion-select>
-        <button (click)="showDate = !showDate" *ngIf="filterType == 'date'" class="absolute top-1 left-2 w-10">
+
+        <!-- <button (click)="showDate = !showDate" *ngIf="filterType == 'date'" class="absolute top-1 left-2 w-10">
           <ion-icon class="text-3xl" name="calendar-outline"></ion-icon>
         </button>
         <button (click)="cancelFilter()" class="absolute top-1 right-2 w-10">
           <ion-icon class="text-3xl" name="close-outline"></ion-icon>
-        </button>
+        </button> -->
         <!--<button *ngIf="filterType == 'date'" (click)="showDate = !showDate" class="absolute top-1 left-2 w-10">
           <ion-icon class="text-3xl" name="calendar"></ion-icon>
         </button>-->
-      </div>
+      </ion-item>
 
-      <ion-datetime *ngIf="showDate && filterType == 'date'" (ionCancel)="showDate=false" (ionChange)="dateSelectionChange($event)" presentation="date" locale="es-ES" [showDefaultButtons]="false"
-      doneText="Ok"
-      cancelText="Ocultar"></ion-datetime>
+      <div [ngClass]="{'hide':quit,'show':show}" class="calendar-container w-full flex justify-center scale-y-100 overflow-hidden">
+        <ion-datetime
+        color="dark"
+          *ngIf="showDate && filterType == 'date'"
+          (ionCancel)="showDate=false"
+          (ionChange)="dateSelectionChange($event)"
+          presentation="date"
+          locale="es-ES"
+          [showDefaultButtons]="false"
+          doneText="Ok"
+          cancelText="Ocultar"
+        ></ion-datetime>
+      </div>
+      <div
+        *ngIf="!showDate && filterType == 'date'"
+        class="calendar-show w-full flex justify-center"
+      >
+        <ion-button
+          color="light"
+          fill="solid"
+          strong="true"
+          shape="round"
+          (click)="showCalendar()"
+        >
+          Mostrar calendario
+        </ion-button>
+      </div>
     </div>
 
     <!-- Notes-->
-    <swiper-container #swiperRef class="flex-1 w-full" (afterinit)="swiperInit()" (slidechangetransitionstart)="transitionStarted()">
+    <swiper-container
+      #swiperRef
+      class="flex-1 w-full"
+      (afterinit)="swiperInit()"
+      (slidechangetransitionstart)="transitionStarted()"
+    >
       <swiper-slide class="h-full w-full" *ngFor="let tab of tabs">
-        <div id="slide-{{tab.name}}" class="scrolled-slide h-full w-full scroll ion-content-scroll-host">
-          <app-general-note (noteDeleteEvent)="deleteNote($event)" (noteEditEvent)="presentNoteModal($event)" [categories]="categoryList"  *ngFor="let note of getPaginatedNotes(tab); let i = index" [index]="'popover-'+tab.name+'-'+i" [note]="note"></app-general-note>
-          <p class="text-slate-500 w-full text-center mt-2" *ngIf="notes[tab.name]?.length == 0 && filterOn">No existen notas para este filtro</p>
-          <p class="text-slate-500 w-full text-center mt-2" *ngIf="notes[tab.name]?.length == 0 && !filterOn">No existen notas para esta categoría</p>
+        <div
+          id="slide-{{tab.name}}"
+          class="scrolled-slide h-full w-full scroll ion-content-scroll-host"
+        >
+          <app-general-note
+            (noteDeleteEvent)="deleteNote($event)"
+            (noteEditEvent)="presentNoteModal($event)"
+            [categories]="categoryList"
+            *ngFor="let note of getPaginatedNotes(tab); let i = index"
+            [index]="'popover-'+tab.name+'-'+i"
+            [note]="note"
+          ></app-general-note>
+          <p
+            class="text-slate-500 w-full text-center mt-2"
+            *ngIf="notes[tab.name]?.length == 0 && filterOn"
+          >
+            No existen notas para este filtro
+          </p>
+          <p
+            class="text-slate-500 w-full text-center mt-2"
+            *ngIf="notes[tab.name]?.length == 0 && !filterOn"
+          >
+            No existen notas para esta categoría
+          </p>
+          <div *ngIf="showDate && filterType == 'date'" style="height: 100px;"></div>
 
-          <ion-infinite-scroll style="height: 120px;" threshold="100px" id="infinite-scroll" class="" (ionInfinite)="onScroll($event)">
+          <ion-infinite-scroll
+            threshold="100px"
+            id="infinite-scroll"
+            class=""
+            (ionInfinite)="onScroll($event)"
+          >
             <ion-infinite-scroll-content
               loading-spinner="bubbles"
-              loading-text="Cargando más notas...">
+              loading-text="Cargando más notas..."
+            >
             </ion-infinite-scroll-content>
           </ion-infinite-scroll>
         </div>
       </swiper-slide>
     </swiper-container>
 
-     <!-- fab placed to the bottom end -->
-    <ion-fab vertical="bottom" horizontal="end" slot="fixed"
-    [ngClass]="{'animate__fadeInUp':getStatus(),'animate__fadeOutDown':!getStatus()}"
-    class="animate__animated animate__faster">
+    <!-- fab placed to the bottom end -->
+    <ion-fab
+      vertical="bottom"
+      horizontal="end"
+      slot="fixed"
+      [ngClass]="{'animate__fadeInUp':getStatus(),'animate__fadeOutDown':!getStatus()}"
+      class="animate__animated animate__faster"
+    >
       <ion-fab-button color="medium" (click)="scrollToTop()">
         <ion-icon name="arrow-up-outline"></ion-icon>
       </ion-fab-button>
     </ion-fab>
 
     <!-- Modals -->
-    <app-add-note-modal [categoryList]="categoryList" (addCategoryEvent)="loadCategories($event)"></app-add-note-modal>
-    <app-add-category [categoryList]="categoryList" (addCategoryEvent)="loadCategories()"></app-add-category>
+    <app-add-note-modal
+      [categoryList]="categoryList"
+      (addCategoryEvent)="loadCategories($event)"
+    ></app-add-note-modal>
+    <app-add-category
+      [categoryList]="categoryList"
+      (addCategoryEvent)="loadCategories()"
+    ></app-add-category>
 
     <!-- Alert -->
-    <app-custom-alert (categoryErasedEvent)="loadCategories()" [categories]="categoryList" [notes]="notes"></app-custom-alert>
+    <app-custom-alert
+      (categoryErasedEvent)="loadCategories()"
+      [categories]="categoryList"
+      [notes]="notes"
+    ></app-custom-alert>
   </section>
 </ion-content>

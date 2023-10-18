@@ -45,6 +45,8 @@ export class DailyDevotionalPage implements OnInit {
   categoryDeleteSize: string = 'none'
   pageSize
   slides: Swiper;
+  quit = false
+  show = false
 
   constructor(public config: ConfigService,
     public storageService: StorageService,
@@ -194,6 +196,7 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   dateSelectionChange(e) {
+   // this.showDate = false
     var date = e.detail.value
     // var localMoment = moment(date)
     // localMoment.locale('en');
@@ -204,6 +207,33 @@ export class DailyDevotionalPage implements OnInit {
     this.storageService.filterNotesByParam(this.filterType, formatDate(date), this.selectedTab)
     //this.filterNotes()
     //if(this.filteredNoteList.length > 0) this.showDate = false
+    this.hideCalendarAnimation()
+  }
+
+  showCalendarAnimation(){
+    setTimeout(()=>{
+      this.show = true
+     //this.showDate = false
+     setTimeout(()=>{
+      this.show = false
+    },200)
+    },100)
+  }
+
+  hideCalendarAnimation(){
+    setTimeout(()=>{
+      this.quit = true
+     //this.showDate = false
+     setTimeout(()=>{
+      this.showDate = false
+      this.quit = false
+    },200)
+    },100)
+  }
+
+  showCalendar(){
+    this.showDate = true
+    this.showCalendarAnimation()
   }
 
   presentNoteModal(note: Note = null) {
