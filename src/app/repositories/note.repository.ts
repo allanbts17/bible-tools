@@ -122,6 +122,7 @@ export class NoteRepository {
                 ORDER BY id DESC
                 LIMIT ${this.pagSize}`;
             }
+            //console.log('qquery',sqlcmd);
             let values: Array<any> = [category];
             let ret: any = await db.query(sqlcmd, values);
 
@@ -179,7 +180,7 @@ export class NoteRepository {
               ORDER BY id DESC
               LIMIT ${this.pagSize}`;
           }
-          //console.log('query',sqlcmd);
+          //console.log('qquery',sqlcmd);
 
           let values: Array<any> = [];// = [value];
           if(category != -1) values.push(category)

@@ -11,6 +11,7 @@ import { CategoryRepository } from '../repositories/category.repository';
 import { VerseRepository } from '../repositories/verse.repository';
 import { TopicRepository } from '../repositories/topic.repository';
 import * as _ from 'underscore'
+import { copy, lopy } from '../classes/utils';
 const NOTES_KEY = 'notes'
 const CATEGORY_KEY = 'categories'
 const TOPIC_KEY = "topics"
@@ -121,6 +122,8 @@ export class StorageService {
       newNotes = await this.noteRep.filterNotesByParam(param, value, lastId, category.id)
     this.notes[category.name].push(...newNotes)
     this.notePages[category.name] = this.getLastId(newNotes)
+    lopy('notesFilter',this.notes)
+    lopy('notePagesFilter',this.notePages)
     return newNotes.length === 0
   }
 
@@ -152,7 +155,8 @@ export class StorageService {
 
     this.categories.forEach(cat => this.notes[cat.category] = [])
     this.notes['all'] = []
-    console.log(this.notes);
+    console.log(copy(this.notes));
+    console.log(copy(this.notePages))
   }
 
   async loadMoreVerses(topic: string) {

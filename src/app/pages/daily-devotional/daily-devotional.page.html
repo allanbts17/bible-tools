@@ -15,13 +15,16 @@
       (ionFocus)="searchbarFocus()"
       (ionCancel)="clearSearchTerm()"
       [(ngModel)]="searchTerm"
-      (ionChange)="searchbarChange($event)"
+      (ionInput)="searchbarChange($event)"
       animated
       placeholder=""
     ></ion-searchbar>
     <ion-buttons slot="primary">
-      <ion-button id="daily-dev-menu" (click)="presentPopover($event)">
+      <ion-button *ngIf="!filterOn" id="daily-dev-menu" (click)="presentPopover($event)">
         <ion-icon slot="icon-only" name="chevron-down-outline"></ion-icon>
+      </ion-button>
+      <ion-button *ngIf="filterOn" slot="primary" (click)="quitFilter()" >
+        <ion-icon slot="icon-only" name="filter-circle-outline"></ion-icon>
       </ion-button>
       <ion-popover
         #popover
@@ -161,7 +164,7 @@
       ></app-tabs>
       <!-- flex justify-center items-center relative -->
       <!-- Filter select -->
-      <ion-item *ngIf="filterOn"  class="mx-2 mt-1">
+      <ion-item *ngIf="filterOn" class="mx-2 mt-1">
         <ion-select
           label="Tipo de filtro"
           [(ngModel)]="filterType"
@@ -185,9 +188,12 @@
         </button>-->
       </ion-item>
 
-      <div [ngClass]="{'hide':quit,'show':show}" class="calendar-container w-full flex justify-center scale-y-100 overflow-hidden">
+      <div *ngIf="filterOn"
+        [ngClass]="{'hide':quit,'show':show}"
+        class="calendar-container w-full flex justify-center scale-y-100 overflow-hidden"
+      >
         <ion-datetime
-        color="dark"
+          color="dark"
           *ngIf="showDate && filterType == 'date'"
           (ionCancel)="showDate=false"
           (ionChange)="dateSelectionChange($event)"
@@ -199,7 +205,7 @@
         ></ion-datetime>
       </div>
       <div
-        *ngIf="!showDate && filterType == 'date'"
+        *ngIf="!showDate && filterType == 'date' && filterOn"
         class="calendar-show w-full flex justify-center"
       >
         <ion-button
@@ -246,12 +252,16 @@
           >
             No existen notas para esta categoría
           </p>
-          <div *ngIf="showDate && filterType == 'date'" style="height: 100px;"></div>
+          <div
+            *ngIf="showDate && filterType == 'date'"
+            style="height: 100px"
+          ></div>
 
           <ion-infinite-scroll
             threshold="100px"
             id="infinite-scroll"
             class=""
+            [disabled]="tab?.disabled"
             (ionInfinite)="onScroll($event)"
           >
             <ion-infinite-scroll-content

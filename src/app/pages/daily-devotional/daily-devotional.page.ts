@@ -10,8 +10,8 @@ import { Note } from 'src/app/interfaces/note';
 import { IonPopover, PopoverController } from '@ionic/angular';
 import { TabsComponent } from 'src/app/components/tabs/tabs.component';
 import { environment } from 'src/environments/environment';
-import { formatDate } from 'src/app/classes/utils';
-import { Swiper }  from 'swiper/types';
+import { formatDate, log } from 'src/app/classes/utils';
+import { Swiper } from 'swiper/types';
 
 const pagSize = 10
 @Component({
@@ -47,6 +47,7 @@ export class DailyDevotionalPage implements OnInit {
   slides: Swiper;
   quit = false
   show = false
+  lastFilterType: string = ""
 
   constructor(public config: ConfigService,
     public storageService: StorageService,
@@ -59,10 +60,10 @@ export class DailyDevotionalPage implements OnInit {
     this.loadData()
   }
 
-  swiperInit(){
+  swiperInit() {
     setTimeout(() => {
       this.slides = this.swiperRef?.nativeElement.swiper;
-      console.log('swiperRef',this.slides);
+      console.log('swiperRef', this.slides);
     });
   }
 
@@ -85,13 +86,17 @@ export class DailyDevotionalPage implements OnInit {
       let tab = this.selectedTab
       //this.notePages[tab] += 1
       let empty
-      if (this.filterOn)
-        empty = this.storageService.filterNotesByParam(this.filterType, this.searchTerm, this.selectedTab)
+      log('scrolled',e)
+      //debugger
+      if (this.filterOn && this.searchTerm == "")
+        empty = await this.storageService.filterNotesByParam(this.filterType, this.searchTerm, this.selectedTab)
       else
         empty = await this.storageService.loadMoreNotes(tab) //this.getFilteredNotes(tab)?.slice(pagSize*this.notePages[tab],pagSize*(this.notePages[tab]+1))
       e.target.complete();
       if (empty) {
-        e.target.disabled = true;
+        log('empty')
+        //e.target.disabled = true;
+        tab["disabled"] = true
       }
     }, 500);
   }
@@ -161,10 +166,15 @@ export class DailyDevotionalPage implements OnInit {
 
   filterTypeSelect(e) {
     var value = e.detail.value
-    console.log(value, this.searchTerm);
-    if (this.searchTerm != ""){
+    console.log(value, this.filterType, this.searchTerm);
+    if (this.lastFilterType == 'date' && value != 'date') {
+      this.searchTerm = ""
+    }
+    this.lastFilterType = value
+    if (this.searchTerm != "") {
       this.storageService.resetNotes()
       this.storageService.filterNotesByParam(value, this.searchTerm, this.selectedTab)
+      this.enableScrolls()
     }
 
     //if(value == 'date') this.showDate = true
@@ -174,9 +184,19 @@ export class DailyDevotionalPage implements OnInit {
   searchbarChange(e) {
     this.searchTerm = e.detail.value
     //this.filterNotes()
-    console.log(this.searchTerm)
+    console.log('searchbar', this.searchTerm)
     this.storageService.resetNotes()
     this.storageService.filterNotesByParam(this.filterType, this.searchTerm, this.selectedTab)
+    this.enableScrolls()
+    
+  }
+
+  enableScrolls(all = true){
+    if(all){
+      this.tabs.forEach(tab => tab.disabled = false)
+    } else {
+      this.tabs.find(tab => tab.name == this.selectedTab.name).disabled = false
+    }
   }
 
   searchbarFocus() {
@@ -196,7 +216,7 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   dateSelectionChange(e) {
-   // this.showDate = false
+    // this.showDate = false
     var date = e.detail.value
     // var localMoment = moment(date)
     // localMoment.locale('en');
@@ -205,33 +225,34 @@ export class DailyDevotionalPage implements OnInit {
     console.log(formatDate(date))
     this.storageService.resetNotes()
     this.storageService.filterNotesByParam(this.filterType, formatDate(date), this.selectedTab)
+    this.enableScrolls()
     //this.filterNotes()
     //if(this.filteredNoteList.length > 0) this.showDate = false
     this.hideCalendarAnimation()
   }
 
-  showCalendarAnimation(){
-    setTimeout(()=>{
+  showCalendarAnimation() {
+    setTimeout(() => {
       this.show = true
-     //this.showDate = false
-     setTimeout(()=>{
-      this.show = false
-    },200)
-    },100)
+      //this.showDate = false
+      setTimeout(() => {
+        this.show = false
+      }, 200)
+    }, 100)
   }
 
-  hideCalendarAnimation(){
-    setTimeout(()=>{
+  hideCalendarAnimation() {
+    setTimeout(() => {
       this.quit = true
-     //this.showDate = false
-     setTimeout(()=>{
-      this.showDate = false
-      this.quit = false
-    },200)
-    },100)
+      //this.showDate = false
+      setTimeout(() => {
+        this.showDate = false
+        this.quit = false
+      }, 200)
+    }, 100)
   }
 
-  showCalendar(){
+  showCalendar() {
     this.showDate = true
     this.showCalendarAnimation()
   }
@@ -292,7 +313,18 @@ export class DailyDevotionalPage implements OnInit {
     setTimeout(() => {
       this.updateSlides()
     }, 200)
-    
+
+  }
+
+  quitFilter() {
+    this.filterOn = false
+    this.searchTerm = ""
+    this.quit = false
+    this.show = false
+    this.showDate = false
+    this.storageService.resetNotes()
+    this.storageService.refillNotes()
+    this.enableScrolls()
   }
 
   updateSlides() {
@@ -309,9 +341,9 @@ export class DailyDevotionalPage implements OnInit {
 
   fillTabs() {
     this.tabs.length = 0
-    this.tabs.push({ name: 'all', id: -1 })
+    this.tabs.push({ name: 'all', id: -1, disabled: false })
     if (this.categoryList !== null)
-      this.categoryList.forEach(cat => this.tabs.push({ name: cat.category, id: cat.id }))
+      this.categoryList.forEach(cat => this.tabs.push({ name: cat.category, id: cat.id, disabled: false }))
     this.selectedTab = this.tabs[0]
   }
 
@@ -320,8 +352,8 @@ export class DailyDevotionalPage implements OnInit {
     this.slides.slideTo(e.index)
     console.log(this.selectedTab);
 
-    if (this.filterOn){
-      this.storageService.resetNotes()
+    if (this.filterOn) {
+      //this.storageService.resetNotes()
       this.storageService.filterNotesByParam(this.filterType, this.searchTerm, this.selectedTab)
     }
 

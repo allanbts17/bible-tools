@@ -5,6 +5,15 @@ export const copy = (source: any) => {
   return cloneDeep(source)
 }
 
+export const lopy = (...data: any[]) => {
+  console.log(...data.map(i => copy(i)))
+}
+
+
+export const log = (...data: any[]) => {
+  console.log(...data)
+}
+
 export const makeId = (length: number): string => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let randomId = '';
