@@ -12,6 +12,7 @@ import { VerseRepository } from '../repositories/verse.repository';
 import { TopicRepository } from '../repositories/topic.repository';
 import * as _ from 'underscore'
 import { copy, lopy } from '../classes/utils';
+import { ConfigService } from './config.service';
 const NOTES_KEY = 'notes'
 const CATEGORY_KEY = 'categories'
 const TOPIC_KEY = "topics"
@@ -38,7 +39,8 @@ export class StorageService {
     private noteRep: NoteRepository,
     private verseRep: VerseRepository,
     private categoryrRep: CategoryRepository,
-    private topicRep: TopicRepository) {
+    private topicRep: TopicRepository,
+    private conf: ConfigService) {
     //this.init();
     //setTimeout(()=> this.removeItem(CATEGORY_KEY,200),4000)
   }
@@ -340,13 +342,9 @@ export class StorageService {
 
 
   async getSettings() {
-    var default_settings = {
-      darkMode: false,
-      lang: 'es'
-    }
     const storedData = await this.storage.get(SETTINGS_KEY)
-    if (storedData == null) this.setSettings(default_settings)
-    return storedData || default_settings
+    if (storedData == null) this.setSettings(this.conf.default_settings)
+    return storedData || this.conf.default_settings
   }
 
   async getData(key) {

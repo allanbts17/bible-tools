@@ -43,7 +43,7 @@
                 </ng-template>
               </ion-popover>
 
-              <ion-item lines="full" id="topic-delete" [button]="true" [detail]="false">
+              <ion-item lines="full" id="topic-delete" [button]="true" [detail]="false" [lines]="FF_VERSE_FILTER? 'full':'none'">
                 <ion-icon name="trash" slot="start"></ion-icon>
                 <ion-label>Eliminar tema</ion-label>
               </ion-item>
@@ -60,7 +60,7 @@
                 </ng-template>
               </ion-popover>
 
-              <ion-item lines="none" (click)="toogleFilter()" [button]="true" [detail]="false">
+              <ion-item *ngIf="FF_VERSE_FILTER" lines="none" (click)="toogleFilter()" [button]="true" [detail]="false">
                 <ion-icon name="filter" slot="start"></ion-icon>
                 <ion-label>Filtar versículos</ion-label>
               </ion-item>

@@ -7,6 +7,13 @@ import { Settings } from '../interfaces/settings';
 export class ConfigService {
   lang = "es"
   settings: Settings
+  default_settings: Settings = {
+    darkMode: false,
+    lang: 'es',
+    options: {
+      allowButtonSliding: false
+    }
+  }
   availableBibleLanguages = [{id:"spa",name:"Español"},{id:"eng",name:"English"}]
 
   text_data = {

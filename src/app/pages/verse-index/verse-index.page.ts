@@ -18,7 +18,7 @@ import _ from 'underscore'
 import { IonicSlides } from '@ionic/angular';
 import { SelectBibleModalComponent } from 'src/app/components/select-bible-modal/select-bible-modal.component';
 import { copy } from 'src/app/classes/utils';
-
+import { environment } from 'src/environments/environment';
 const pagSize = 10
 @Component({
   selector: 'app-verse-index',
@@ -34,12 +34,11 @@ export class VerseIndexPage implements OnInit {
   @ViewChild(SelectBibleModalComponent) selectBible: SelectBibleModalComponent;
   @ViewChild('popover') popover: IonPopover;
   @ViewChild('dailyTabs') myTabs: TabsComponent;
-
-
   @ViewChild('swiperRef') swiperRef: ElementRef | undefined;
+
+  readonly FF_VERSE_FILTER = environment.featureFlags.verseFilter
   slides?: Swiper;
   swiperModules = [IonicSlides];
-
   changeShared = true
   bibles = []
   tabs = []
@@ -60,6 +59,7 @@ export class VerseIndexPage implements OnInit {
   versePages = {}
   isAutoScrollingUp = false
   testArr = []
+
 
   // public _config: SwiperOptions = {
   //   modules: [Navigation, Pagination, A11y, Mousewheel],

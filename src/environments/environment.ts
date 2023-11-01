@@ -5,7 +5,10 @@
 export const environment = {
   production: false,
   databaseName: 'test',
-  pageSize: 10
+  pageSize: 10,
+  featureFlags: {
+    verseFilter: false
+  }
 };
 
 /*

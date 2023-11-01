@@ -20,6 +20,7 @@ import { Chapter, ChapterData } from 'src/app/interfaces/chapter';
 import { forkJoin, lastValueFrom } from 'rxjs';
 import { IonicSlides } from '@ionic/angular';
 import { Swiper } from 'swiper/types';
+import { ConfigService } from 'src/app/services/config.service';
 
 @Component({
   selector: 'app-bible-study',
@@ -70,11 +71,14 @@ export class BibleStudyPage implements OnInit {
   emptySlide = `<swiper-slide><ion-text class="block h-full scroll px-4 py-4 text-left"></ion-text>
   </swiper-slide>`
 
+  get ALLOW_BUTTON_SLIDE() { return this.conf.settings.options.allowButtonSliding }
+
   constructor(
     public apiService: ApiService,
     public storage: StorageService,
     public sharedInfo: SharedInfoService,
     protected network: NetworkService,
+    protected conf: ConfigService
 
   ) {
     //this.getAvailablaBibles()
@@ -472,7 +476,7 @@ export class BibleStudyPage implements OnInit {
 
       // Filling chapter content
       let spaceDIV = '<div class="w-full chapter-space"></div>'; //h-36 or h-0
-      let spaceFab = '<div class="fab-space"></div>';
+      let spaceFab = this.ALLOW_BUTTON_SLIDE? '<div class="fab-space"></div>':'';
       console.log('on set text', index, slideElements.length, copy(this.showedChapters));
 
       slideElements[index].insertAdjacentHTML(
@@ -559,14 +563,12 @@ export class BibleStudyPage implements OnInit {
     for (let i = 0; i < space.length; i++) {
       if (!space[i].classList.contains('h-36')) space[i].classList.add('h-36');
     }
-
-    fab[0].classList.remove('down');
-    fab[1].classList.remove('down');
-
-    fab[0].classList.add('lift');
-    fab[1].classList.add('lift');
-
-    console.log(fab[0].classList);
+    if (fab.length > 0) {
+      fab[0].classList.remove('down');
+      fab[1].classList.remove('down');
+      fab[0].classList.add('lift');
+      fab[1].classList.add('lift');
+    }
   }
 
   closeSpace() {
@@ -575,12 +577,12 @@ export class BibleStudyPage implements OnInit {
     for (let i = 0; i < space.length; i++) {
       if (space[i].classList.contains('h-36'))
         space[i].classList.remove('h-36');
-
-      fab[0].classList.remove('lift');
-      fab[1].classList.remove('lift');
-
-      fab[0].classList.add('down');
-      fab[1].classList.add('down');
+      if (fab.length > 0) {
+        fab[0].classList.remove('lift');
+        fab[1].classList.remove('lift');
+        fab[0].classList.add('down');
+        fab[1].classList.add('down');
+      }
     }
   }
 
