@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of, from } from 'rxjs';
 import { map }  from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { LoadingController, ModalController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { lopy } from '../classes/utils';
 import { SpinnerComponent } from '../components/spinner/spinner.component';
 import { DummyComponent } from '../components/dummy/dummy.component';
@@ -15,8 +15,22 @@ export class RequestService {
   loadingPresented = false
 
   constructor(private http: HttpClient,
-    private loadingCtrl: LoadingController,
-    private modalCtrl: ModalController) { }
+    private modalCtrl: ModalController,
+    private alertController: AlertController) { }
+
+
+    ngOnInit() {}
+  
+    async errorMessageAlert() {
+      const alert = await this.alertController.create({
+        header: 'Error',
+        //subHeader: 'Important message',
+        message: 'Lo sentimos hubo un inconveniente, intente de nuevo',
+        buttons: ['OK'],
+      });
+  
+      await alert.present();
+    }
 
   private async showLoading() {
     if(!this.loadingPresented){
@@ -66,7 +80,9 @@ export class RequestService {
       request$.subscribe(data => {
         if(showLoading) this.hideLoading()
         sucess(data)
-      },error => {
+      },async error => {
+        //console.log('on error',error);
+        if(handleError) await this.errorMessageAlert()
         if(showLoading) this.hideLoading()
         reject(error)
       })
