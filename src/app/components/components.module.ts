@@ -19,6 +19,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { SpinnerComponent } from './spinner/spinner.component';
 import { BackdropComponent } from './backdrop/backdrop.component';
+import { DummyComponent } from './dummy/dummy.component';
 
 const components = [ColorPickerComponent,AddNoteModalComponent,GeneralNoteComponent,
 AddCategoryComponent,CustomAlertComponent,SelectBibleModalComponent,SelectPassageModalComponent,
@@ -26,7 +27,7 @@ NoteSelectionSheetComponent,DailyDevotionalMainMenuComponent,AddVerseModalCompon
 TopicModalComponent,TabsComponent,ModalTemplateComponent,SpinnerComponent,BackdropComponent]
 
 @NgModule({
-  declarations: [components ],
+  declarations: [components, DummyComponent ],
   exports: [components],
   imports: [
     CommonModule,

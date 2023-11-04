@@ -83,7 +83,7 @@ export class SelectPassageModalComponent {
 
   getChapterList(bibleId, bookId) {
     let aux, data
-    this.apiService.getChapterList(bibleId, bookId).subscribe((chapters) => {
+    this.apiService.getChapterList(bibleId, bookId,false).subscribe((chapters) => {
       aux = chapters
       data = aux.data
       console.log('data',aux);

@@ -16,7 +16,7 @@
 @import "~@ionic/angular/css/normalize.css";
 @import "~@ionic/angular/css/structure.css";
 @import "~@ionic/angular/css/typography.css";
-@import '~@ionic/angular/css/display.css';
+@import "~@ionic/angular/css/display.css";
 
 /* Optional CSS utils that can be commented out */
 @import "~@ionic/angular/css/padding.css";
@@ -41,9 +41,25 @@
 @tailwind utilities;
 
 ion-modal {
- // --height: 95%;
- // --border-radius: 16px;
-  --box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  // --height: 95%;
+  // --border-radius: 16px;
+  --box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+ion-modal.loading-modal {
+  --background: #fff0;
+  app-spinner {
+    background-color: #fff0;
+    .spinner-7 {
+      color: #fff;
+    }
+  }
+}
+
+ion-modal.loading-modal::part(backdrop) {
+  background: rgb(0, 0, 0);
+  opacity: 0.3;
 }
 
 ion-modal::part(backdrop) {
@@ -65,8 +81,8 @@ ion-modal ion-toolbar {
 // }
 
 .dark section div.segment-background {
-  background-color: #121212;;
- }
+  background-color: #121212;
+}
 
 //  ion-item ion-spinner.spinner-circles svg {
 //   position: absolute;
@@ -87,7 +103,6 @@ ion-modal ion-toolbar {
 //     height: 150px;
 //   }
 // }
-
 
 swiper-container {
   width: 100%;
@@ -123,6 +138,8 @@ swiper-slide {
 //   max-height: 100%;
 // }
 
-ion-select, ion-input, ion-textarea {
+ion-select,
+ion-input,
+ion-textarea {
   --highlight-color-valid: var(--highlight-color-focused) !important;
 }

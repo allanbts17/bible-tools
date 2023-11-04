@@ -222,7 +222,7 @@ export class BibleStudyPage implements OnInit {
     //this.slideIndex = 0
     ///debugger
     this.resetSlides()
-    this.apiService.getChapter(bibleId, chapterId).subscribe(
+    this.apiService.getChapter(bibleId, chapterId, true).subscribe(
       async (chapterContent: Chapter) => {
         let chapter = chapterContent.data;
         this.chapterToSlideDistribution(this.slideIndex, chapter);
@@ -279,7 +279,7 @@ export class BibleStudyPage implements OnInit {
     slide += 1;
     if (chapter?.next != undefined && slide <= this.lastIndex) {
       let chapterContent: Chapter = (await this.apiService
-        .getChapter(chapter.bibleId, chapter.next.id)
+        .getChapter(chapter.bibleId, chapter.next.id,true)
         .toPromise()) as Chapter;
       this.chapterToSlideDistribution(slide, chapterContent.data, false);
       //if (this.swipeRightLock) await this.slides.lockSwipeToNext(false);
@@ -298,7 +298,7 @@ export class BibleStudyPage implements OnInit {
 
     if (chapter?.previous != undefined && slide >= this.firstIndex) {
       let chapterContent: Chapter = (await this.apiService
-        .getChapter(chapter.bibleId, chapter.previous.id)
+        .getChapter(chapter.bibleId, chapter.previous.id,true)
         .toPromise()) as Chapter;
       this.chapterToSlideDistribution(slide, chapterContent.data, false);
       //if (this.swipeLeftLock) this.slides.lockSwipeToPrev(false);
