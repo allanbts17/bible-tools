@@ -25,17 +25,18 @@ export class InitializeAppService {
         await this.migrationService.migrate();
         await this.storageService.init();
         let status = await this.network.getStatus()
-        if (status.connected) {
-          await this.shareInfo.init()
-        } else {
-          let obs$ = this.network.status$.subscribe(async status => {
-            if (status.connected){
-              await this.shareInfo.init()
-              obs$.unsubscribe()
-            }
-          })
+        await this.shareInfo.init()
+        // if (status.connected) {
+        //   await this.shareInfo.init()
+        // } else {
+        //   let obs$ = this.network.status$.subscribe(async status => {
+        //     if (status.connected){
+        //       await this.shareInfo.init()
+        //       obs$.unsubscribe()
+        //     }
+        //   })
 
-        }
+        // }
 
       } catch (error) {
         throw Error(`initializeAppError: ${error}`);

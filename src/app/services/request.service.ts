@@ -64,11 +64,11 @@ export class RequestService {
     showLoading = true,
     handleError = true): Observable<any>{
     let index = path + JSON.stringify(headers)
-    if(showLoading) this.showLoading()
     if(this.cache[index]){
-      if(showLoading) this.hideLoading()
       return of(this.cache[index])
     }
+    if(showLoading) this.showLoading()
+    
     let request$ = this.http.get<T>(path,headers).pipe(map(data => {
       if(saveCache){
         this.cache[index] = data
