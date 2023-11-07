@@ -1,72 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ionic App</title>
 
-<head>
-  <meta charset="utf-8" />
-  <title>Ionic App</title>
+    <base href="/" />
 
-  <base href="/" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="viewport"
+      content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
 
-  <meta name="color-scheme" content="light dark" />
-  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="format-detection" content="telephone=no" />
-  <meta name="msapplication-tap-highlight" content="no" />
+    <link rel="icon" type="image/png" href="assets/icon/favicon.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
 
-  <link rel="icon" type="image/png" href="assets/icon/favicon.png" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <!-- add to homescreen for ios -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              clifford: "#da373d",
+            },
+          },
+        },
+      };
+    </script>
+    <script>
+      function rgbToYIQ({ r, g, b }) {
+        return (r * 299 + g * 587 + b * 114) / 1000;
+      }
 
-  <!-- add to homescreen for ios -->
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            clifford: '#da373d',
-          }
+      function hexToRgb(hex) {
+        if (!hex || hex === undefined || hex === "") {
+          return undefined;
         }
+
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+
+        return result
+          ? {
+              r: parseInt(result[1], 16),
+              g: parseInt(result[2], 16),
+              b: parseInt(result[3], 16),
+            }
+          : undefined;
       }
-    }
-  </script>
-  <script>
-    function rgbToYIQ({r, g, b}) {
-      return ((r * 299) + (g * 587) + (b * 114)) / 1000;
-    }
+      function contrast(colorHex, threshold = 128) {
+        if (colorHex === undefined) {
+          return "#000";
+        }
 
-    function hexToRgb(hex) {
-      if (!hex || hex === undefined || hex === '') {
-        return undefined;
+        const rgb = hexToRgb(colorHex);
+
+        if (rgb === undefined) {
+          return "#000";
+        }
+
+        return rgbToYIQ(rgb) >= threshold ? "#000" : "#fff";
       }
+    </script>
+    <script
+      type="text/javascript"
+      src="https://pkg.api.bible/fumsV3.min.js"
+    ></script>
+    <script>
+      /* This code ensures that FUMS will be reported correctly even if fumsV3.min.js has not finished loading before an attempt is made. */
+      window.fumsData = window.fumsData || [];
+      window.fums =
+        window.fums ||
+        function () {
+          window.fumsData.push(arguments);
+        };
+    </script>
+  </head>
 
-      const result =
-            /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-
-      return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-      } : undefined;
-    }
-    function contrast(colorHex, threshold = 128) {
-      if (colorHex === undefined) {
-        return '#000';
-      }
-
-      const rgb = hexToRgb(colorHex);
-
-      if (rgb === undefined) {
-        return '#000';
-      }
-
-      return rgbToYIQ(rgb) >= threshold ? '#000' : '#fff';
-    }
-  </script>
-</head>
-
-<body>
-  <app-root></app-root>
-</body>
-
+  <body>
+    <app-root></app-root>
+  </body>
 </html>

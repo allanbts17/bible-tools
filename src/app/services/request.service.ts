@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, from } from 'rxjs';
-import { map }  from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AlertController, ModalController } from '@ionic/angular';
 import { lopy } from '../classes/utils';
 import { SpinnerComponent } from '../components/spinner/spinner.component';
 import { DummyComponent } from '../components/dummy/dummy.component';
+
+declare var fums;
 
 @Injectable({
   providedIn: 'root'
@@ -19,25 +21,25 @@ export class RequestService {
     private alertController: AlertController) { }
 
 
-    ngOnInit() {}
-  
-    async errorMessageAlert() {
-      const alert = await this.alertController.create({
-        header: 'Error',
-        //subHeader: 'Important message',
-        message: 'Lo sentimos hubo un inconveniente, intente de nuevo',
-        buttons: ['OK'],
-      });
-  
-      await alert.present();
-    }
+  ngOnInit() { }
+
+  async errorMessageAlert() {
+    const alert = await this.alertController.create({
+      header: 'Error',
+      //subHeader: 'Important message',
+      message: 'Lo sentimos hubo un inconveniente, intente de nuevo',
+      buttons: ['OK'],
+    });
+
+    await alert.present();
+  }
 
   private async showLoading() {
-    if(!this.loadingPresented){
+    if (!this.loadingPresented) {
       this.loadingPresented = true
       const modal = await this.modalCtrl.create({
         component: SpinnerComponent,
-        cssClass:'loading-modal',
+        cssClass: 'loading-modal',
         showBackdrop: true,
         animated: true
       });
@@ -45,7 +47,7 @@ export class RequestService {
     }
   }
 
-  private async hideLoading(){
+  private async hideLoading() {
     await this.modalCtrl.dismiss()
     this.loadingPresented = false
   }
@@ -59,31 +61,42 @@ export class RequestService {
    * @param handleError default true
    * @returns {Observable<any>}
    */
-  request<T>(path: string,headers?,
+  request<T>(path: string, headers?,
     saveCache = true,
     showLoading = true,
-    handleError = true): Observable<any>{
+    handleError = true): Observable<any> {
     let index = path + JSON.stringify(headers)
-    if(this.cache[index]){
+    if (this.cache[index]) {
       return of(this.cache[index])
     }
-    if(showLoading) this.showLoading()
-    
-    let request$ = this.http.get<T>(path,headers).pipe(map(data => {
-      if(saveCache){
+    if (showLoading) this.showLoading()
+
+    let request$ = this.http.get<T>(path, headers).pipe(map(data => {
+      if (saveCache) {
         this.cache[index] = data
       }
       return data
     }))
 
-    let promise = new Promise((sucess,reject)=>{
-      request$.subscribe(data => {
-        if(showLoading) this.hideLoading()
+    let promise = new Promise((sucess, reject) => {
+      request$.subscribe((data: any) => {
+        //console.log('dataa',data);
+
+        if (data?.meta?.fumsToken)
+          fums(
+            "trackView",
+            data.meta.fumsToken
+          ).then(data => {
+            console.log('sended',data);
+          });
+
+        if (showLoading) this.hideLoading()
+
         sucess(data)
-      },async error => {
+      }, async error => {
         //console.log('on error',error);
-        if(handleError) await this.errorMessageAlert()
-        if(showLoading) this.hideLoading()
+        if (handleError) await this.errorMessageAlert()
+        if (showLoading) this.hideLoading()
         reject(error)
       })
     })

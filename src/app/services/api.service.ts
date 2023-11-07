@@ -74,13 +74,14 @@ export class ApiService {
   * On bible-study.page, I can see Gn 1 RVR09 on reference bible app
   */
   getChapter(bibleId,chapterId,showLoding = false,includeNotes=false){
-    const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/chapters/"+`${chapterId}`+'?include-verse-spans=true&include-notes='+`${includeNotes}`+'&';
+    const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/chapters/"+`${chapterId}`+'?include-verse-spans=true&include-notes='+`${includeNotes}`+'&fums-version=3';
     const url = path
     var includeNotes = true
     const ur = `${url}include-notes=${includeNotes}&`;
     /*this.getVerses(bibleId,chapterId).subscribe(ver => {
       console.log(ver)
     })*/
+
     return this.req.request(path,{headers: this.chapterHeader},true,showLoding);
   }
 
