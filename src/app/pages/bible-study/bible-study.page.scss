@@ -1,11 +1,10 @@
-
-#bible-slides{
+#bible-slides {
   font-size: 1rem;
   font-weight: 400;
   user-select: text;
 
   .selected-verse {
-    background-color: rgba($color: #9a9a9a, $alpha: 5.0);
+    background-color: rgba($color: #9a9a9a, $alpha: 5);
     color: white;
   }
 
@@ -73,10 +72,8 @@
     }
   }
 
-
-
   .selected-verse span.v {
-    background-color: rgba($color: #9a9a9a, $alpha: 5.0);
+    background-color: rgba($color: #9a9a9a, $alpha: 5);
     color: white;
   }
 
@@ -86,37 +83,37 @@
     margin-right: 5px;
     font-weight: 450;
     font-size: 0.8rem;
-    color: rgb(55, 55, 55)
+    color: rgb(55, 55, 55);
     //color: red
-   }
+  }
 
-   /* Paragraphs*/
-   .p{
+  /* Paragraphs*/
+  .p {
     margin-bottom: 0.3rem;
     margin-bottom: 0.3rem;
-   }
+  }
 
   /** Titles*/
-  .s1{
+  .s1 {
     font-size: 1.4rem;
     font-weight: 600;
     margin-top: 0.5rem;
   }
-   /** Subtitles */
-  .s2{
+  /** Subtitles */
+  .s2 {
     font-size: 1.2rem;
     font-weight: 600;
     margin-top: 0.5rem;
   }
 
   /* Another highlighted text */
-  .s{
+  .s {
     font-size: 1.1rem;
     font-weight: 600;
   }
 
   /**Reference*/
-  .r{
+  .r {
     font-size: 0.9rem;
     font-weight: 400;
     margin-bottom: 0.5rem;
@@ -128,7 +125,7 @@
   }
 
   /** Indentation*/
-  .li1{
+  .li1 {
     margin-left: 5%;
     margin-right: 5%;
     margin-top: 1rem;
@@ -139,14 +136,14 @@
   .q1 {
     margin-left: 5%;
   }
-  .q2{
+  .q2 {
     margin-left: 10%;
   }
 
   /*TODO: Change color for dark mode*/
   /** Red text */
-  .wj{
-    color: red
+  .wj {
+    color: red;
   }
 
   /** God's name highlight*/
@@ -155,9 +152,7 @@
     font-weight: 440;
     font-style: italic;
   }
-
 }
-
 
 ion-fab-button {
   width: 40px;
@@ -166,7 +161,6 @@ ion-fab-button {
     height: 30px;
   }
 }
-
 
 ion-fab.lift {
   animation-name: liftAn;
@@ -185,16 +179,30 @@ div.fab-space {
 }
 
 @keyframes liftAn {
-  from {margin-bottom: 0px;}
-  to {margin-bottom: 120px;}
+  from {
+    margin-bottom: 0px;
+  }
+  to {
+    margin-bottom: 120px;
+  }
 }
 
 @keyframes downAn {
-  from {margin-bottom: 120px;}
-  to {margin-bottom: 0px;}
+  from {
+    margin-bottom: 120px;
+  }
+  to {
+    margin-bottom: 0px;
+  }
 }
 
 .scroll {
   overflow-y: scroll;
   touch-action: pan-y;
+}
+
+.copyright {
+  text-align: center;
+  font-size: 12px;
+  margin-top: 5px;
 }

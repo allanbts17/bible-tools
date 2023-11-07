@@ -419,11 +419,12 @@ export class BibleStudyPage implements OnInit {
       // Filling chapter content
       let spaceDIV = '<div class="w-full chapter-space"></div>'; //h-36 or h-0
       let spaceFab = this.ALLOW_BUTTON_SLIDE ? '<div class="fab-space"></div>' : '';
+      let copyrightInfo = '<div class="copyright">' + data.copyright + '</div>'
       console.log('on set text', index, slideElements.length, copy(this.showedChapters));
 
       slideElements[index].insertAdjacentHTML(
         'beforeend',
-        data.content + spaceFab + spaceDIV
+        data.content + copyrightInfo + spaceFab + spaceDIV
       );
 
       // Color markers
