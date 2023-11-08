@@ -8,6 +8,15 @@ export const environment = {
   pageSize: 10,
   featureFlags: {
     verseFilter: false
+  },
+  firebase: {
+    apiKey: "AIzaSyDC7H8v4GBCifIxvQP_RwX3svsjmge_Fu4",
+    authDomain: "bible-tools-efb12.firebaseapp.com",
+    projectId: "bible-tools-efb12",
+    storageBucket: "bible-tools-efb12.appspot.com",
+    messagingSenderId: "1060338076200",
+    appId: "1:1060338076200:web:2465f6ae264a780fa5831d",
+    measurementId: "G-KTL87XPBV7"
   }
 };
 

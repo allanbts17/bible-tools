@@ -48,6 +48,12 @@
           ></ion-toggle>
         </ion-item>
       </ion-content>
+      <ion-footer *ngIf="versionMessage" class="version-msg p-2" (click)="openGooglePlay()">
+
+          <p class="text-xl font-bold">{{versionMessage.title}}</p>
+          <p class="text-base">{{versionMessage.msg}}</p>
+
+      </ion-footer>
     </ion-menu>
 
     

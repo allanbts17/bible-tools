@@ -5,6 +5,7 @@ import { Settings } from '../interfaces/settings';
   providedIn: 'root'
 })
 export class ConfigService {
+  versionApp = 1
   lang = "es"
   settings: Settings
   default_settings: Settings = {

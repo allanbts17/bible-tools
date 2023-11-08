@@ -9,6 +9,9 @@ import { SQLiteService } from './services/sqlite.service';
 import { StorageService } from './services/storage.service';
 import { ThemeService } from './services/theme.service';
 import { register } from 'swiper/element/bundle';
+import { AppUpdate } from '@capawesome/capacitor-app-update';
+import { FirestoreService } from './services/firestore.service';
+import { VersionMessage } from './interfaces/version-message';
 
 register();
 
@@ -32,16 +35,25 @@ export class AppComponent {
   public isWeb: boolean = false;
   showAnimate = false
   lightAnimation = false
+  versionMessage: VersionMessage
   constructor(public config: ConfigService,
     public storage: StorageService,
     public theme: ThemeService,
-    public platform: Platform
-   /* private _detail: DetailService,*/) {
+    public platform: Platform,
+    private firestore: FirestoreService
+
+    ) {
     this.init()
   }
 
-  async init() {
+  getCurrentAppVersion = async () => {
+    const result = await AppUpdate.getAppUpdateInfo();
+    return result.currentVersion;
+  };
 
+  async init() {
+   
+    
     // let div = document.createElement('div')
     // div.classList.add('cover')
     // //let con =
@@ -51,6 +63,14 @@ export class AppComponent {
       //SplashScreen.hide();
       await this.getSettings()
       this.setText()
+      
+      try {
+        this.config.versionApp = parseFloat(await this.getCurrentAppVersion())
+      console.log('version',this.config.versionApp);
+      } catch (err){
+        this.config.versionApp = 1
+      }
+      this.versionMessage = await this.firestore.getVersionMessage()
     });
   }
 
@@ -64,6 +84,10 @@ export class AppComponent {
     this.darkMode ? this.theme.applyDark() : this.theme.removeDark()
     this.lightAnimation = this.darkMode
 
+  }
+
+  openGooglePlay(){
+    console.log('opening google play');
   }
 
   changeTheme() {

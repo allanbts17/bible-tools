@@ -19,7 +19,10 @@ import { DetailService } from './services/detail.service';
 import { DatabaseService } from './services/database.service';
 import { MigrationService } from './services/migrations.service';
 //import { NgxSpinnerModule } from "ngx-spinner";
-
+import { environment } from 'src/environments/environment';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { FIREBASE_OPTIONS } from '@angular/fire/compat';
 
 export function initializeFactory(init: InitializeAppService) {
   return () => init.initializeApp();
@@ -31,6 +34,8 @@ export function initializeFactory(init: InitializeAppService) {
   imports: [BrowserModule,
     IonicModule.forRoot(),
     FormsModule,
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideFirestore(() => getFirestore()),
 
     IonicStorageModule.forRoot({
       name: "new-database",
@@ -50,6 +55,7 @@ export function initializeFactory(init: InitializeAppService) {
       deps: [InitializeAppService],
       multi: true
     },
+    { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
 
     MigrationService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }

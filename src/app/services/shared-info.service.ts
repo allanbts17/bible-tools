@@ -55,6 +55,8 @@ export class SharedInfoService {
     if (lastChapter !== null) {
       this.bible = this.allBibles.find(bible => bible.id === lastChapter.bibleId)
       let aux: any = await this.apiService.getChapter(lastChapter.bibleId,lastChapter.chapterId).toPromise()
+      console.log('auuux',aux);
+      
       this.chapter = aux.data
     } else {
       this.bible = this.bibleList[0].bibles[0]

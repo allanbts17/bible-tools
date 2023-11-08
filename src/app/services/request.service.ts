@@ -90,8 +90,7 @@ export class RequestService {
             console.log('sended',data);
           });
 
-        if (showLoading) this.hideLoading()
-
+        if (showLoading) this.hideLoading() 
         sucess(data)
       }, async error => {
         //console.log('on error',error);
