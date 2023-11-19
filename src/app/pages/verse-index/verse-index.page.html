@@ -87,7 +87,8 @@
 
 
     <!-- Verses -->
-    <swiper-container #swiperRef class="flex-1 w-full" 
+    <div [style]="contentHeight">
+      <swiper-container #swiperRef class="flex-1 w-full" 
     (afterinit)="swiperInit()"
     (slidechangetransitionstart)="transitionStarted()">
       <swiper-slide class="h-full w-full" *ngFor="let tab of tabs">
@@ -119,7 +120,8 @@
         </div>
       </swiper-slide>
     </swiper-container>
-
+    </div>
+    
     <!-- fab placed to the bottom end -->
     <ion-fab vertical="bottom" horizontal="end" slot="fixed"
     [ngClass]="{'animate__fadeInUp':getStatus(),'animate__fadeOutDown':!getStatus()}"

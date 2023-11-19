@@ -59,7 +59,7 @@ export class VerseIndexPage implements OnInit {
   versePages = {}
   isAutoScrollingUp = false
   testArr = []
-
+  contentHeight: string
 
   // public _config: SwiperOptions = {
   //   modules: [Navigation, Pagination, A11y, Mousewheel],
@@ -87,6 +87,7 @@ export class VerseIndexPage implements OnInit {
   ngOnInit() {
     // this.swiper = this.swiperRef?.nativeElement.swiper;
     this.loadData()
+    this.contentHeight = `height: ${window.screen.height - 56 - 48}px;` 
     //this.debug()
 
     //this.loadTopics()

@@ -47,6 +47,8 @@ export class SharedInfoService {
       this.bibleList.push(aux);
       this.allBibles.push(...<any>bibles);
     }
+    console.log('bible listtt',this.bibleList);
+    
   }
 
   async setChapterAndBible() {

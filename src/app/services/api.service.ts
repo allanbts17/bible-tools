@@ -131,10 +131,10 @@ export class ApiService {
     return this.req.request(path);
   }
 
-  getRVBibleVerses(bookId,verses){
-    const path = this.spanish_api_endpoint + "/books/" + `${bookId}` + "/verses/" + `${verses}`
-    return this.req.request(path);
-  }
+  // getRVBibleVerses(bookId,verses){
+  //   const path = this.spanish_api_endpoint + "/books/" + `${bookId}` + "/verses/" + `${verses}`
+  //   return this.req.request(path);
+  // }
 
   getAllLanguages(){
     return new Promise((resolve, reject) => {
@@ -156,10 +156,11 @@ export class ApiService {
       this.getAllBibles().subscribe((bibles)=>{
         this.auxBibles = bibles
         var bibleList = []
-        this.auxBibles.data.forEach(bible => {
-          if(id==bible.language.id)
-            bibleList.push(bible)
-        });
+        // this.auxBibles.data.forEach(bible => {
+        //   if(id==bible.language.id)
+        //     bibleList.push(bible)
+        // });
+        bibleList = this.auxBibles.data.filter(bible => id==bible.language.id);
         resolve(bibleList)
       },(error)=>{
         reject(error)

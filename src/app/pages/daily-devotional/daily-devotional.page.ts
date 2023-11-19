@@ -48,16 +48,36 @@ export class DailyDevotionalPage implements OnInit {
   quit = false
   show = false
   lastFilterType: string = ""
+  swiperHeightInterval: any
 
   constructor(public config: ConfigService,
     public storageService: StorageService,
     public popoverController: PopoverController) {
     this.pageSize = environment.pageSize
+
   }
 
 
   ngOnInit() {
     this.loadData()
+  }
+
+  ionViewWillEnter(){
+   // console.log('ion will enter');
+    this.swiperHeightInterval =  setInterval(()=>{
+      let headerHeight = 56
+      let tabsLimit = document.getElementById("tabs-limit").getBoundingClientRect().height
+      let contentHeight = window.screen.height - tabsLimit - headerHeight
+      let swiperHeightContainer = document.getElementById("swiper-height-limit")
+      swiperHeightContainer.style.height = `${contentHeight}px`
+     // console.log(swiperHeightContainer.style.height);
+      
+    },200)
+  }
+
+  ionViewDidLeave(){
+    //console.log('ion did leave');
+    clearInterval(this.swiperHeightInterval)
   }
 
   swiperInit() {

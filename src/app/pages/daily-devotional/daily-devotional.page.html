@@ -155,7 +155,7 @@
 <ion-content scroll-y="false">
   <section class="h-full flex flex-col">
     <!-- Scrollable Segment -->
-    <div class="z-10 segment-background flex-none">
+    <div id="tabs-limit" class="z-10 segment-background flex-none">
       <app-tabs
         #dailyTabs
         [segmentId]="'daily-div'"
@@ -221,9 +221,10 @@
     </div>
 
     <!-- Notes-->
-    <swiper-container
+    <div id="swiper-height-limit" class="flex-1 ">
+      <swiper-container
       #swiperRef
-      class="flex-1 w-full"
+      class="w-full"
       (afterinit)="swiperInit()"
       (slidechangetransitionstart)="transitionStarted()"
     >
@@ -273,6 +274,8 @@
         </div>
       </swiper-slide>
     </swiper-container>
+    </div>
+    
 
     <!-- fab placed to the bottom end -->
     <ion-fab
