@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Settings } from '../interfaces/settings';
+import { RemoteConfig } from '../interfaces/remote-config';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,9 @@ export class ConfigService {
     options: {
       allowButtonSliding: false
     }
+  }
+  remoteConfig: RemoteConfig = {
+    requestToFirebase: true
   }
   availableBibleLanguages = [{id:"spa",name:"Español"},{id:"eng",name:"English"}]
 

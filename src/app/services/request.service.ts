@@ -3,9 +3,11 @@ import { Observable, of, from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AlertController, ModalController } from '@ionic/angular';
-import { lopy } from '../classes/utils';
+import { log, lopy } from '../classes/utils';
 import { SpinnerComponent } from '../components/spinner/spinner.component';
 import { DummyComponent } from '../components/dummy/dummy.component';
+import { ConfigService } from './config.service';
+import { FirestoreService } from './firestore.service';
 
 declare var fums;
 
@@ -18,7 +20,10 @@ export class RequestService {
 
   constructor(private http: HttpClient,
     private modalCtrl: ModalController,
-    private alertController: AlertController) { }
+    private alertController: AlertController,
+    private config: ConfigService,
+    private firestore: FirestoreService
+    ) { }
 
 
   ngOnInit() { }
@@ -70,8 +75,16 @@ export class RequestService {
       return of(this.cache[index])
     }
     if (showLoading) this.showLoading()
-
-    let request$ = this.http.get<T>(path, headers).pipe(map(data => {
+    const selectEmiter = ()=>{
+  log('to firebase',this.config.remoteConfig.requestToFirebase)
+      if(this.config.remoteConfig.requestToFirebase)
+        return this.firestore.apiFirestoreRequest(path)
+      else
+        return this.http.get<T>(path, headers)
+    }
+    let request$ = selectEmiter().pipe(map(data => {
+      console.log('dataa',data);
+      
       if (saveCache) {
         this.cache[index] = data
       }

@@ -12,6 +12,7 @@ import { register } from 'swiper/element/bundle';
 import { AppUpdate } from '@capawesome/capacitor-app-update';
 import { FirestoreService } from './services/firestore.service';
 import { VersionMessage } from './interfaces/version-message';
+import { log } from './classes/utils';
 
 register();
 
@@ -46,14 +47,14 @@ export class AppComponent {
     this.init()
   }
 
+
+
   getCurrentAppVersion = async () => {
     const result = await AppUpdate.getAppUpdateInfo();
     return result.currentVersion;
   };
 
   async init() {
-   
-    
     // let div = document.createElement('div')
     // div.classList.add('cover')
     // //let con =
@@ -72,18 +73,21 @@ export class AppComponent {
       }
       this.versionMessage = await this.firestore.getVersionMessage()
     });
+    this.config.remoteConfig = await this.firestore.getRemoteConfig()
+    console.log('set: ',this.config.remoteConfig)
   }
 
   async getSettings() {
     this.settings = await this.storage.getSettings()
-    //console.log('set: ',this.settings)
+    
+    
     this.config.settings = this.settings
     console.log(this.config.settings)
     this.darkMode = this.settings.darkMode
     this.config.lang = this.settings.lang
     this.darkMode ? this.theme.applyDark() : this.theme.removeDark()
     this.lightAnimation = this.darkMode
-
+    
   }
 
   openGooglePlay(){

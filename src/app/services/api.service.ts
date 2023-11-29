@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BibleSummary } from '../interfaces/bible-summary';
 import { Bible } from '../interfaces/bible';
 import { RequestService } from './request.service';
+import { log } from '../classes/utils';
 
 
 @Injectable({
@@ -106,30 +107,30 @@ export class ApiService {
   }
 
 
-  getBookSectionList(bibleId,bookId){
-    const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/books/"+`${bookId}`+"/sections";
-    return this.req.request(path,{headers: this.reqHeader});
-  }
+  // getBookSectionList(bibleId,bookId){
+  //   const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/books/"+`${bookId}`+"/sections";
+  //   return this.req.request(path,{headers: this.reqHeader});
+  // }
 
-  getBibleContent(){
-    const path = `${this.bible_com_endpoint}`+"/content/rvr60.html.js?passage=Jn&key="+this.bible_com_key;
-    return this.req.request(path,{headers:this.RV_reqHeader});
-  }
+  // getBibleContent(){
+  //   const path = `${this.bible_com_endpoint}`+"/content/rvr60.html.js?passage=Jn&key="+this.bible_com_key;
+  //   return this.req.request(path,{headers:this.RV_reqHeader});
+  // }
 
-  getBible(id){
-    const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${id}`;
-    return this.req.request<Bible>(path,{headers: this.reqHeader});
-  }
+  // getBible(id){
+  //   const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${id}`;
+  //   return this.req.request<Bible>(path,{headers: this.reqHeader});
+  // }
 
-  getRVBibleBookList(){
-    const path = this.spanish_api_endpoint + "/books"
-    return this.req.request(path,{headers:this.RV_reqHeader});
-  }
+  // getRVBibleBookList(){
+  //   const path = this.spanish_api_endpoint + "/books"
+  //   return this.req.request(path,{headers:this.RV_reqHeader});
+  // }
 
-  getRVBibleBook(bookId){
-    const path = this.spanish_api_endpoint + "/books/" + `${bookId}`
-    return this.req.request(path);
-  }
+  // getRVBibleBook(bookId){
+  //   const path = this.spanish_api_endpoint + "/books/" + `${bookId}`
+  //   return this.req.request(path);
+  // }
 
   // getRVBibleVerses(bookId,verses){
   //   const path = this.spanish_api_endpoint + "/books/" + `${bookId}` + "/verses/" + `${verses}`
@@ -160,6 +161,8 @@ export class ApiService {
         //   if(id==bible.language.id)
         //     bibleList.push(bible)
         // });
+        console.log(this.auxBibles)
+        log(bibles)
         bibleList = this.auxBibles.data.filter(bible => id==bible.language.id);
         resolve(bibleList)
       },(error)=>{

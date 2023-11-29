@@ -5,9 +5,17 @@ service cloud.firestore {
     match /{document=**} {
       allow write: if false; 
     }
+
+    match /VersionMessages/{document=**} {
+      allow read: if true
+    }
     
-     match /VersionMessages/{document=**} {
-      	allow read: if true
-      }
+    match /Config/{document=**} {
+      allow read: if true
+    }
+
+    match /Bibles/{document=**} {
+      allow read: if true
+    }
   }
 }
