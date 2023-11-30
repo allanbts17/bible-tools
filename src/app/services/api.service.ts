@@ -53,6 +53,8 @@ export class ApiService {
       this.getBibleBookList(bibleId).subscribe(books => {
         aux = books
         bookList = aux.data
+        
+        
         this.getChapterList(bibleId,bookList[0].id).subscribe(chapters => {
           aux = chapters
           chapterList = aux.data

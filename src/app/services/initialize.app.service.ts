@@ -7,6 +7,8 @@ import { StorageService } from './storage.service';
 import { SharedInfoService } from './shared-info.service';
 import { NetworkService } from './network.service';
 import _ from 'underscore'
+import { FirestoreService } from './firestore.service';
+import { ConfigService } from './config.service';
 
 @Injectable()
 export class InitializeAppService {
@@ -16,7 +18,9 @@ export class InitializeAppService {
     private migrationService: MigrationService,
     private storageService: StorageService,
     private shareInfo: SharedInfoService,
-    private network: NetworkService) { }
+    private network: NetworkService,
+    private firestore: FirestoreService,
+    private config: ConfigService) { }
 
   async initializeApp() {
     await this.sqliteService.initializePlugin().then(async (ret) => {
@@ -25,7 +29,18 @@ export class InitializeAppService {
         await this.migrationService.migrate();
         await this.storageService.init();
         let status = await this.network.getStatus()
+        try {
+          if (status.connected)
+            this.config.remoteConfig = await this.firestore.getRemoteConfig()
+          console.log('set: ', this.config.remoteConfig)
+        } catch (error) {
+
+        }
+
         await this.shareInfo.init()
+
+
+
         // if (status.connected) {
         //   await this.shareInfo.init()
         // } else {

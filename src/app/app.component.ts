@@ -73,8 +73,8 @@ export class AppComponent {
       }
       this.versionMessage = await this.firestore.getVersionMessage()
     });
-    this.config.remoteConfig = await this.firestore.getRemoteConfig()
-    console.log('set: ',this.config.remoteConfig)
+    // this.config.remoteConfig = await this.firestore.getRemoteConfig()
+    // console.log('set: ',this.config.remoteConfig)
   }
 
   async getSettings() {

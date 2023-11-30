@@ -100,6 +100,7 @@ export class SelectPassageModalComponent {
     if (bibleId != undefined) {
       this.apiService.getBibleBookList(bibleId).subscribe((books) => {
         data = books
+        console.log('booksss',books);
         this.bookList = data.data
         console.log(data);
       })

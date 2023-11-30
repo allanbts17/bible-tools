@@ -50,9 +50,9 @@ export class FirestoreService {
     }
 
     const getChapter = new RegExp(/https\:\/\/api\.scripture\.api\.bible\/v1\/bibles\/(.+)\/chapters\/(.+)\?.+/)
-    const getAllBibles = new RegExp(/https\:\/\/api\.scripture\.api\.bible\/v1\/bibles/)
-    const getAllBooks = new RegExp(/https\:\/\/api\.scripture\.api\.bible\/v1\/bibles\/(.+)\/books/)
-    const getAllChapters = new RegExp(/https\:\/\/api\.scripture\.api\.bible\/v1\/bibles\/(.+)\/books\/(.+)\/chapters/)
+    const getAllBibles = new RegExp(/https\:\/\/api\.scripture\.api\.bible\/v1\/bibles$/)
+    const getAllBooks = new RegExp(/https\:\/\/api\.scripture\.api\.bible\/v1\/bibles\/(.+)\/books$/)
+    const getAllChapters = new RegExp(/https\:\/\/api\.scripture\.api\.bible\/v1\/bibles\/(.+)\/books\/(.+)\/chapters$/)
     const getPassages = new RegExp(/https\:\/\/api\.scripture\.api\.bible\/v1\/bibles\/(.+)\/passages\/(.+)\/\?.+/)
     const getAllVerses = new RegExp(/https\:\/\/api\.scripture\.api\.bible\/v1\/bibles\/(.+)\/chapters\/(.+)\/verses.*/)
     const getVerse = new RegExp(/https\:\/\/api\.scripture\.api\.bible\/v1\/bibles\/(.+)\/verses\/(.+).*/)
