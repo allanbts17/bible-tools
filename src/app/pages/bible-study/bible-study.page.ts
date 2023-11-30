@@ -201,6 +201,7 @@ export class BibleStudyPage implements OnInit {
   removeEmptySlides() {
     setTimeout(() => {
       let indexList = []
+      log('showed on remove',this.showedChapters)
       for (let i = 0; i < this.showedChapters.length; i++) {
         if (this.showedChapters[i].id == "EMPTY") {
           this.slides.removeSlide(i)
@@ -210,6 +211,10 @@ export class BibleStudyPage implements OnInit {
       removeByIndexList(this.showedChapters, indexList)
       this.initialChapter = this.showedChapters[0];
       this.lastChapter = this.showedChapters[this.showedChapters.length - 1];
+
+      if (this.showedChapters[0].id == 'GEN.1' && this.sharedInfo.chapter.id == 'GEN.1'){
+        this.slides.removeSlide(0)
+      }
 
       //In case of Apoc
       if (this.showedChapters[this.showedChapters.length - 1].id == 'REV.22')
@@ -268,6 +273,7 @@ export class BibleStudyPage implements OnInit {
     }
     //lopy('test',this.slides.slides,this.showedChapters)
     this.blockTransitionAction = true
+    
     this.slideIndex = 2
     this.slides.slideTo(2, 0)
     setTimeout(() => {
