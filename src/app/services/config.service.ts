@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Settings } from '../interfaces/settings';
 import { RemoteConfig } from '../interfaces/remote-config';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ export class ConfigService {
     darkMode: false,
     lang: 'es',
     options: {
-      allowButtonSliding: false
+      allowButtonSliding: false,
+      fontSize: 1
     }
   }
   remoteConfig: RemoteConfig = {
@@ -46,7 +48,10 @@ export class ConfigService {
       }
     }
   }
-  constructor() { }
+
+  fontSizeChange$: Subject<number> = new Subject<number>
+  constructor() { 
+  }
 
   setLang(lang){
     this.lang = lang
@@ -54,5 +59,22 @@ export class ConfigService {
 
   getData(){
     return this.text_data[this.lang]
+  }
+
+  changeFontSize(size: number){
+    const maxInput = 7
+    const minInput = 1
+    const maxOutput = 2
+    const minOutput = 1
+    let res = minOutput + (maxOutput - minOutput)/(maxInput - minInput) * (size - minInput)
+    this.fontSizeChange$.next(res)
+  }
+
+  interpolateFontSize(size: number){
+    const maxInput = 7
+    const minInput = 1
+    const maxOutput = 2
+    const minOutput = 1
+    return minOutput + (maxOutput - minOutput)/(maxInput - minInput) * (size - minInput)
   }
 }

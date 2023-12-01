@@ -87,6 +87,7 @@ export class AppComponent {
     this.config.lang = this.settings.lang
     this.darkMode ? this.theme.applyDark() : this.theme.removeDark()
     this.lightAnimation = this.darkMode
+    this.config.changeFontSize(this.config.settings.options.fontSize)
     
   }
 
@@ -120,6 +121,14 @@ export class AppComponent {
     for (let i = 0; i < this.appPages.length; i++) {
       this.appPages[i].title = this.config.getData().menu.items[i]
     }
+  }
+
+  onRangeChange(e: any){
+    let size = e.detail.value
+    this.config.settings.options.fontSize = e.detail.value
+    this.config.changeFontSize(this.config.settings.options.fontSize)
+    this.storage.setSettings(this.config.settings)
+    log(e.detail.value)
   }
 }
 

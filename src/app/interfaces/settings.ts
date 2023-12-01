@@ -2,6 +2,7 @@ export interface Settings {
   darkMode: boolean,
   lang: string,
   options: {
-    allowButtonSliding: boolean
+    allowButtonSliding: boolean,
+    fontSize: number
   }
 }

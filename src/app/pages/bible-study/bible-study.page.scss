@@ -1,5 +1,5 @@
 #bible-slides {
-  font-size: 1rem;
+  //font-size: 1rem;
   font-weight: 400;
   user-select: text;
 
@@ -82,7 +82,7 @@
   span.v {
     margin-right: 5px;
     font-weight: 450;
-    font-size: 0.8rem;
+    font-size: 0.8em;
     color: rgb(55, 55, 55);
     //color: red
   }
@@ -91,30 +91,31 @@
   .p {
     margin-bottom: 0.3rem;
     margin-bottom: 0.3rem;
+    //font-size
   }
 
   /** Titles*/
   .s1 {
-    font-size: 1.4rem;
+    font-size: 1.4em;
     font-weight: 600;
     margin-top: 0.5rem;
   }
   /** Subtitles */
   .s2 {
-    font-size: 1.2rem;
+    font-size: 1.2em;
     font-weight: 600;
     margin-top: 0.5rem;
   }
 
   /* Another highlighted text */
   .s {
-    font-size: 1.1rem;
+    font-size: 1.1em;
     font-weight: 600;
   }
 
   /**Reference*/
   .r {
-    font-size: 0.9rem;
+    font-size: 0.9em;
     font-weight: 400;
     margin-bottom: 0.5rem;
   }
@@ -148,7 +149,7 @@
 
   /** God's name highlight*/
   .nd {
-    font-size: 1.05rem;
+    font-size: 1.05em;
     font-weight: 440;
     font-style: italic;
   }
@@ -203,6 +204,6 @@ div.fab-space {
 
 .copyright {
   text-align: center;
-  font-size: 12px;
-  margin-top: 16px;
+  font-size: 0.9em;
+  margin-top: 1em;
 }

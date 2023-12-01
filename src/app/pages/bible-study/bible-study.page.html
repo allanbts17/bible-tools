@@ -38,6 +38,7 @@
 <ion-content scroll-y="false" *ngIf="network.status?.connected">
   <swiper-container
     id="bible-slides"
+    [ngStyle]="{'font-size':fontSize}"
     #swiperRef
     (activeindexchange)="onActiveIndexChange()"
     (slidenexttransitionend)="start? onTransitionToNext():''"

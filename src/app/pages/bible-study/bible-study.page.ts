@@ -71,6 +71,7 @@ export class BibleStudyPage implements OnInit {
   emptySlide = `<swiper-slide><ion-text class="block h-full scroll px-4 py-4 text-left"></ion-text>
   </swiper-slide>`
   blockTransitionAction = false
+  fontSize: string
 
   get ALLOW_BUTTON_SLIDE() { return this.conf.settings.options.allowButtonSliding }
 
@@ -82,6 +83,10 @@ export class BibleStudyPage implements OnInit {
     protected conf: ConfigService
 
   ) {
+    this.fontSize = `${conf.interpolateFontSize(conf.settings.options.fontSize)}rem`
+    this.conf.fontSizeChange$.subscribe(size => {
+      this.fontSize = `${size}rem`
+     })
     //this.getAvailablaBibles()
     this.loadMarkedVerses();
   }
@@ -89,6 +94,7 @@ export class BibleStudyPage implements OnInit {
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.slides = this.swiperRef?.nativeElement.swiper;
+      
     });
   }
 
