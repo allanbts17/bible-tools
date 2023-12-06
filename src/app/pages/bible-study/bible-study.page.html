@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="{{conf.TOOLBAR_COLOR}}">
     <ion-buttons slot="start">
       <ion-menu-toggle>
         <ion-button>
@@ -11,7 +11,7 @@
       *ngIf="network.status?.connected && sharedInfo.chapter && sharedInfo.bible"
     >
       <ion-button
-        color="light"
+        color="{{conf.TOOLBAR_BUTTONS_COLOR}}"
         fill="solid"
         strong="true"
         shape="round"
@@ -22,7 +22,7 @@
       </ion-button>
       <ion-button
         slot="end"
-        color="light"
+        color="{{conf.TOOLBAR_BUTTONS_COLOR}}"
         fill="solid"
         strong="true"
         shape="round"

@@ -49,6 +49,10 @@ export class ConfigService {
     }
   }
 
+  readonly TOOLBAR_COLOR = "btprimary"
+  readonly TOOLBAR_BUTTONS_COLOR = "btsecondary"
+  readonly UNIQUEBAR_COLOR = "bttertiary"
+
   fontSizeChange$: Subject<number> = new Subject<number>
   constructor() { 
   }

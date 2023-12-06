@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar [color]="config.TOOLBAR_COLOR">
     <ion-buttons slot="start">
       <ion-menu-toggle>
         <ion-button>
@@ -94,7 +94,7 @@
       <swiper-slide class="h-full w-full" *ngFor="let tab of tabs">
         <div id="slide-{{tab.name}}-verses" class="scrolled-slide-verses h-full w-full scroll ion-content-scroll-host">
           <ion-card *ngFor="let verse of getPaginatedVerses(tab)">
-            <ion-item class="">
+            <ion-item [color]="config.UNIQUEBAR_COLOR" class="">
               <ion-label>{{verse.passage.reference}}</ion-label>
               <ion-button (click)="openBibleModal(verse)" fill="outline" color="dark" shape="round" >{{verse.bible.reference}}</ion-button>
               <ion-button fill="outline" color="dark" shape="round" (click)="changeVerseTopic(verse)">
