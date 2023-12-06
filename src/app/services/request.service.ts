@@ -23,7 +23,7 @@ export class RequestService {
     private alertController: AlertController,
     private config: ConfigService,
     private firestore: FirestoreService
-    ) { }
+  ) { }
 
 
   ngOnInit() { }
@@ -75,16 +75,17 @@ export class RequestService {
       return of(this.cache[index])
     }
     if (showLoading) this.showLoading()
-    const selectEmiter = ()=>{
-  log('to firebase',this.config.remoteConfig.requestToFirebase)
-      if(this.config.remoteConfig.requestToFirebase)
+    const selectEmiter = () => {
+      log('to firebase', this.config.remoteConfig.requestToFirebase)
+      if (this.config.remoteConfig.requestToFirebase)
         return this.firestore.apiFirestoreRequest(path)
       else
         return this.http.get<T>(path, headers)
     }
+    log('selectEmitter',selectEmiter())
     let request$ = selectEmiter().pipe(map(data => {
-      console.log('dataa',data);
-      
+      console.log('dataa', data);
+
       if (saveCache) {
         this.cache[index] = data
       }
@@ -100,10 +101,10 @@ export class RequestService {
             "trackView",
             data.meta.fumsToken
           ).then(data => {
-            console.log('sended',data);
+            console.log('sended', data);
           });
 
-        if (showLoading) this.hideLoading() 
+        if (showLoading) this.hideLoading()
         sucess(data)
       }, async error => {
         //console.log('on error',error);

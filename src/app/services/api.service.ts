@@ -89,9 +89,9 @@ export class ApiService {
   }
 
   /**passageId example: REV.10.3-REV.10.6 */
-  getPassage(bibleId,passageId){
+  getPassage(bibleId,passageId,handleError = true){
     const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${bibleId}`+"/passages/"+`${passageId}`+'?content-type=html&include-verse-spans=true&';
-    return this.req.request(path,{headers: this.reqHeader});
+    return this.req.request(path,{headers: this.reqHeader},true,true,handleError);
   }
 
   getVerses(bibleId,chapterId){
