@@ -145,8 +145,11 @@ export class AddVerseModalComponent implements OnInit {
   getPassage(passId, index) {
     let aux
     this.apiService.getPassage(this.selectedBible.id, passId).subscribe(data => {
+      console.log('from verse m',data);
+      
       aux = data
       this.passageOutput[index] = aux.data.content
+      console.log('from verse m',this.passageOutput[index]);
       this.showNotFoundMessage = false
       if (!this.passageOutput.some(el => el === 0))
         this.buildOutputText()

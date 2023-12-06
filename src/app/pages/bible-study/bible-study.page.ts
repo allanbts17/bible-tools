@@ -218,9 +218,9 @@ export class BibleStudyPage implements OnInit {
       this.initialChapter = this.showedChapters[0];
       this.lastChapter = this.showedChapters[this.showedChapters.length - 1];
 
-      if (this.showedChapters[0].id == 'GEN.1' && this.sharedInfo.chapter.id == 'GEN.1'){
-        this.slides.removeSlide(0)
-      }
+      // if (this.showedChapters[0].id == 'GEN.1' && this.sharedInfo.chapter.id == 'GEN.1'){
+      //   this.slides.removeSlide(0)
+      // }
 
       //In case of Apoc
       if (this.showedChapters[this.showedChapters.length - 1].id == 'REV.22')

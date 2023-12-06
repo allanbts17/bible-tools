@@ -1,6 +1,6 @@
 export interface Chapter {
   data: ChapterData;
-  meta: ChapterMeta;
+  meta: ChapterMeta|{fumsToken: string};
 }
 
 interface ChapterMeta {
