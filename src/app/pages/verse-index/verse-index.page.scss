@@ -33,3 +33,7 @@ ion-fab {
 swiper-slide ion-button {
   --border-width: 1px;
 }
+
+.dark ion-card-content,.dark ion-card ion-item ion-label {
+  color: white !important;
+}

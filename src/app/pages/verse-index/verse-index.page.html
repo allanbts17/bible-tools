@@ -72,7 +72,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content scroll-y="false">
+<ion-content scroll-y="false" class="{{config.settings.darkMode? 'dark':''}}">
   <section class="h-full flex flex-col">
     <!-- Scrollable Segment -->
     <div class="sticky top-0 z-10 segment-background flex-none">
@@ -94,7 +94,7 @@
       <swiper-slide class="h-full w-full" *ngFor="let tab of tabs">
         <div id="slide-{{tab.name}}-verses" class="scrolled-slide-verses h-full w-full scroll ion-content-scroll-host">
           <ion-card *ngFor="let verse of getPaginatedVerses(tab)">
-            <ion-item [color]="config.UNIQUEBAR_COLOR" class="">
+            <ion-item [color]="config.settings.darkMode? config.TOOLBAR_COLOR:config.UNIQUEBAR_COLOR" class="">
               <ion-label>{{verse.passage.reference}}</ion-label>
               <ion-button (click)="openBibleModal(verse)" fill="outline" color="dark" shape="round" >{{verse.bible.reference}}</ion-button>
               <ion-button fill="outline" color="dark" shape="round" (click)="changeVerseTopic(verse)">
@@ -126,7 +126,7 @@
     <ion-fab vertical="bottom" horizontal="end" slot="fixed"
     [ngClass]="{'animate__fadeInUp':getStatus(),'animate__fadeOutDown':!getStatus()}"
     class="animate__animated animate__faster">
-      <ion-fab-button color="medium" (click)="scrollToTop()">
+      <ion-fab-button color="btprimary" (click)="scrollToTop()">
         <ion-icon name="arrow-up-outline"></ion-icon>
       </ion-fab-button>
     </ion-fab>

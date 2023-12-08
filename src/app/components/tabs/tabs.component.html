@@ -1,4 +1,4 @@
-<ion-segment id="{{segmentId}}" class="relative" scrollable #segment selectOnFocus="true" value="{{tabs[0]?.name}}">
+<ion-segment color="btprimary" id="{{segmentId}}" class="relative" scrollable #segment selectOnFocus="true" value="{{tabs[0]?.name}}">
   <ion-segment-button #segmentButton (click)="tabSelected(tab,i)" *ngFor="let tab of tabs; let i = index" value="{{tab?.name}}">
     <ion-label>{{tab?.name == 'all'? config.getData().daly_devotional.tab:tab?.name}}</ion-label>
   </ion-segment-button>

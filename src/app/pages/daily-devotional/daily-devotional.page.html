@@ -34,7 +34,7 @@
       >
         <ng-template>
           <ion-content>
-            <ion-list>
+            <ion-list class="menu-list">
               <ion-item
                 lines="full"
                 (click)="presentNoteModal()"
@@ -285,7 +285,7 @@
       [ngClass]="{'animate__fadeInUp':getStatus(),'animate__fadeOutDown':!getStatus()}"
       class="animate__animated animate__faster"
     >
-      <ion-fab-button color="medium" (click)="scrollToTop()">
+      <ion-fab-button color="btprimary" (click)="scrollToTop()">
         <ion-icon name="arrow-up-outline"></ion-icon>
       </ion-fab-button>
     </ion-fab>

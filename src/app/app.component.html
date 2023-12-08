@@ -21,6 +21,7 @@
             <p>{{ header_title }}</p>
           </div>
         </div>
+
         <ion-list id="inbox-list">
           <ion-menu-toggle
             auto-hide="false"
@@ -49,14 +50,14 @@
               ? config.getData().menu.theme[1]
               : config.getData().menu.theme[0]
           }}</ion-label>
-          <ion-toggle
+          <ion-toggle color="btprimary"
             [ngModel]="darkMode"
             (ngModelChange)="changeTheme()"
           ></ion-toggle>
         </ion-item>
 
         <ion-item>
-          <ion-range
+          <ion-range color="btprimary"
             aria-label="Font Size"
             [ticks]="true"
             [snaps]="true"
@@ -72,11 +73,14 @@
       </ion-content>
       <ion-footer
         *ngIf="versionMessage"
-        class="version-msg p-2"
+        class="version-msg p-3"
         (click)="openGooglePlay()"
       >
-        <p class="text-xl font-bold">{{ versionMessage.title }}</p>
-        <p class="text-base">{{ versionMessage.msg }}</p>
+      <div>
+        <p class="size-title font-bold">{{ versionMessage.title }}</p>
+        <p class="size-msg">{{ versionMessage.msg }}</p>
+      </div>
+
       </ion-footer>
     </ion-menu>
 

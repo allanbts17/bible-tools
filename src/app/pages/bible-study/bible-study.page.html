@@ -37,6 +37,7 @@
 
 <ion-content scroll-y="false" *ngIf="network.status?.connected">
   <swiper-container
+    class="{{conf.settings.darkMode? 'dark':''}}"
     id="bible-slides"
     [ngStyle]="{'font-size':fontSize}"
     #swiperRef

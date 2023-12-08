@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 declare var contrast;
 import  * as moment  from 'moment'
 import { Note } from 'src/app/interfaces/note';
+import { ConfigService } from 'src/app/services/config.service';
 
 @Component({
   selector: 'app-general-note',
@@ -18,7 +19,8 @@ export class GeneralNoteComponent implements OnInit {
 
   touched = false
 
-  constructor(/*public popoverController: PopoverController*/) { }
+  constructor(/*public popoverController: PopoverController*/
+  protected config: ConfigService) { }
 
   ngOnInit() {
     //console.log('general note',this.note);

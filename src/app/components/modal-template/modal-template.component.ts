@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, Output, ViewChild, EventEmitter } from '@angular/core';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { IonModal } from '@ionic/angular';
-import { Colors } from 'src/app/classes/utils';
+import { Colors, makeId } from 'src/app/classes/utils';
 import { ConfigService } from 'src/app/services/config.service';
 
 @Component({
@@ -14,9 +14,13 @@ export class ModalTemplateComponent implements OnInit {
   @Input() title
   @Output() modalDidPresent = new EventEmitter<any>()
   @Output() closedEvent = new EventEmitter<any>()
-  constructor(private config: ConfigService) { }
+  @Input() toolbarColor: string = '#1D71B8'
+  constructor(private config: ConfigService) { 
+  }
 
-  ngOnInit() { }
+  ngOnInit() { 
+    
+  }
 
   willDismiss() {
     try {

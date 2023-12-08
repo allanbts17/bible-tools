@@ -87,6 +87,8 @@
     //color: red
   }
 
+
+
   /* Paragraphs*/
   .p {
     margin-bottom: 0.3rem;
@@ -214,4 +216,9 @@ ion-header {
 
 ion-toolbar {
   box-shadow:none !important;
+}
+
+#bible-slides.dark span.v {
+  color: white;
+  //color: red
 }

@@ -1,7 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Mukta:wght@600&display=swap');
 
 ion-menu {
-  --menu-color: #4a6479;
+  //--menu-color: #255b88;
+  --menu-color: #1a629e;
   --menu-sel-color: #8496a6;
   --select-background: rgba(72, 137, 190, 0.434);
 }
@@ -141,6 +142,14 @@ ion-note {
   color: var(--ion-color-medium-shade);
 }
 
+ion-list#inbox-list {
+  padding: 0px 0px !important;
+  
+  ion-item {
+  //  height: 40px;
+  }
+}
+
 ion-item.selected {
  // --color: var(--ion-color-primary);
 }
@@ -149,7 +158,9 @@ ion-item.selected {
   height: 100px;
   width: 100%;
   background: rgb(29,113,184);
-  background: linear-gradient(180deg, rgba(29,113,184,1) 0%, rgba(0,172,233,1) 100%);
+  //background: linear-gradient(180deg, rgba(29,113,184,1) 0%, rgba(0,172,233,1) 100%);
+  background: linear-gradient(180deg, rgba(29,113,184,1) 40%, rgba(54, 148, 224,1) 100%);
+  border-radius: 0px 0px 9px 9px;
   div {
     img {
       height: 50%;
@@ -165,6 +176,15 @@ ion-item.selected {
   }
 
 }
+
+ion-toggle {
+  --track-background: #9eb7cc;
+   // background-color: #b4d0e7;
+  /* Required for iOS handle to overflow the height of the track */
+  overflow: visible;
+}
+
+
 
 .cover {
   z-index: 99999999;
@@ -205,12 +225,26 @@ ion-item.selected {
 }
 
 .version-msg {
-  color: #3b5061;
+  color: #0f3f66;
 }
 
 .dark .version-msg {
   color: white;
 }
+
+ion-footer {
+  border-radius: 15px 15px 0 0;
+  .size-title {
+    font-size: 18px;
+  }
+  .size-msg {
+    font-size: 14px;
+  }
+  // width: 304px;
+  // padding: 0px;
+  // margin: 16px;
+}
+
 
 
 

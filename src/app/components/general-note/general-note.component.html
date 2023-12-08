@@ -1,4 +1,4 @@
-<ion-card>
+<ion-card class="{{config.settings.darkMode? 'dark':''}}">
   <ion-card-header class="flex justify-between text-left" [style.background]="getCategoryValues()?.color">
     <div>
       <ion-card-title class="font-semibold" [style.color]="getContrastColor()">{{getCategoryValues()?.category}}</ion-card-title>
@@ -13,7 +13,7 @@
     <ion-popover [animated]="true" trigger="{{index}}" [dismissOnSelect]="true">
       <ng-template>
         <ion-content>
-          <ion-list>
+          <ion-list class="menu-list">
             <ion-item lines="full" (click)="noteEditEvent.emit(note)" [button]="true" [detail]="false">Editar</ion-item>
             <ion-item lines="none" (click)="noteDeleteEvent.emit(note)" [button]="true" [detail]="false">Eliminar</ion-item>
           </ion-list>
