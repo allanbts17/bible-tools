@@ -50,10 +50,14 @@ export const removeByIndexList = (array: Array<any>, indices: Array<number>) => 
 }
 
 export enum Colors {
-  statusBarDarkMode = '#1F1F1F',
-  statusBarLightMode = '#FFFFFF',
-  statusBarModalDarkMode = '#0d0d0d',
-  statusBarModalLightMode = '#222428',
+  // statusBarDarkMode = '#1F1F1F',
+  // statusBarLightMode = '#FFFFFF',
+  // statusBarModalDarkMode = '#0d0d0d',
+  // statusBarModalLightMode = '#222428',
+  statusBarDarkMode = '#1D71B8',
+  statusBarLightMode = '#1D71B8',
+  statusBarModalDarkMode = '#1D71B8',
+  statusBarModalLightMode = '#1D71B8',
 }
 
 export class Utils {

@@ -13,7 +13,7 @@
     <ion-popover [animated]="true" trigger="{{index}}" [dismissOnSelect]="true">
       <ng-template>
         <ion-content>
-          <ion-list class="menu-list">
+          <ion-list class="{{config.settings.darkMode? 'dark':''}} menu-list">
             <ion-item lines="full" (click)="noteEditEvent.emit(note)" [button]="true" [detail]="false">Editar</ion-item>
             <ion-item lines="none" (click)="noteDeleteEvent.emit(note)" [button]="true" [detail]="false">Eliminar</ion-item>
           </ion-list>

@@ -17,7 +17,7 @@
       <ion-popover #popover [isOpen]="isOpen" (didDismiss)="isOpen = false" [dismissOnSelect]="true">
         <ng-template>
           <ion-content>
-            <ion-list>
+            <ion-list class="menu-list">
               <ion-item lines="full" (click)="presentVerseModal()" [button]="true" [detail]="false">
                 <ion-icon name="document-text" slot="start"></ion-icon>
                 <ion-label>Nuevo versículo</ion-label>

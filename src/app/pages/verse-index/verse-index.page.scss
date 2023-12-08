@@ -37,3 +37,13 @@ swiper-slide ion-button {
 .dark ion-card-content,.dark ion-card ion-item ion-label {
   color: white !important;
 }
+
+.menu-list ion-item,.menu-list ion-item ion-icon {
+  color: #1a629e;
+  font-weight: 400;
+}
+
+.dark .menu-list ion-item,.dark .menu-list ion-item ion-icon {
+  color: #fff;
+  font-weight: 400;
+}
