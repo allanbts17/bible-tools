@@ -18,6 +18,6 @@ export class ThemeService {
   removeDark() {
     document.querySelector('body').classList.remove('dark');
     StatusBar.setBackgroundColor({color: Colors.statusBarLightMode})
-    StatusBar.setStyle({style: Style.Light})
+    StatusBar.setStyle({style: Style.Dark})
   }
 }

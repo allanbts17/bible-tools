@@ -29,7 +29,7 @@ export class ModalTemplateComponent implements OnInit {
         StatusBar.setStyle({ style: Style.Dark })
       } else {
         StatusBar.setBackgroundColor({ color: Colors.statusBarLightMode })
-        StatusBar.setStyle({ style: Style.Light })
+        StatusBar.setStyle({ style: Style.Dark })
       }
       //console.log('destroyed');
     } catch (err) {
