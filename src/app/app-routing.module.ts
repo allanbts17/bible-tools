@@ -18,6 +18,10 @@ const routes: Routes = [
   {
     path: 'verse-index',
     loadChildren: () => import('./pages/verse-index/verse-index.module').then( m => m.VerseIndexPageModule)
+  },
+  {
+    path: 'download',
+    loadChildren: () => import('./pages/download/download.module').then( m => m.DownloadPageModule)
   }
 ];
 

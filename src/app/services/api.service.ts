@@ -40,9 +40,9 @@ export class ApiService {
     return this.request(path);
   }*/
 
-  getBibleBookList(id){
+  getBibleBookList(id, showLoading = true){
     const path = `${this.base_api_endpoint}`+"/v1/bibles/"+`${id}`+"/books";
-    return this.req.request(path,{headers: this.reqHeader});
+    return this.req.request(path,{headers: this.reqHeader},true,showLoading);
   }
 
   getBibleFirstChapter(bibleId){

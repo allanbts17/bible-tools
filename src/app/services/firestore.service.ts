@@ -40,6 +40,18 @@ export class FirestoreService {
     return data
   }
 
+  async getBooks(bibleId: string) {
+    let response$ = this.afs.collection(`Bibles/${bibleId}/Books`).get()
+    let data = (await firstValueFrom(response$)).docs.map(doc => doc.data())
+    return data
+  }
+
+  async getChapters(bibleId: string, bookId: string) {
+    let response$ = this.afs.collection(`Bibles/${bibleId}/Books/${bookId}/Chapters`).get()
+    let data = (await firstValueFrom(response$)).docs.map(doc => doc.data())
+    return data
+  }
+
   apiFirestoreRequest(url: string) {
     let response$: Observable<any>
     try {

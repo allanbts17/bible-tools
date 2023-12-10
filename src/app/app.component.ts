@@ -25,7 +25,8 @@ export class AppComponent {
   public appPages = [
     { title: 'Bible', url: '/bible-study', icon: 'book' },
     { title: 'Daily devotional', url: '/daily-devotional', icon: 'document-text' },
-    { title: 'Verse index', url: '/verse-index', icon: 'list' }
+    { title: 'Verse index', url: '/verse-index', icon: 'list' },
+    { title: 'Download', url: '/download', icon: 'download' }
   ];
   header_title = "Herramientas Bíblicas"
   header_subtitle = ""
