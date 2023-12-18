@@ -36,7 +36,7 @@ export class RequestService {
       buttons: ['OK'],
     });
 
-    await alert.present();
+    alert.present();
   }
 
   private async showLoading() {
@@ -74,45 +74,50 @@ export class RequestService {
     if (this.cache[index]) {
       return of(this.cache[index])
     }
-    if (showLoading) this.showLoading()
-    const selectEmiter = () => {
-      log('to firebase', this.config.remoteConfig.requestToFirebase)
-      if (this.config.remoteConfig.requestToFirebase)
-        return this.firestore.apiFirestoreRequest(path)
-      else
-        return this.http.get<T>(path, headers)
-    }
-    log('selectEmitter',selectEmiter())
-    let request$ = selectEmiter().pipe(map(data => {
-      console.log('dataa', data);
 
-      if (saveCache) {
-        this.cache[index] = data
+    try {
+      const selectEmiter = () => {
+        log('to firebase', this.config.remoteConfig.requestToFirebase)
+        if (this.config.remoteConfig.requestToFirebase)
+          return this.firestore.apiFirestoreRequest(path)
+        else
+          return this.http.get<T>(path, headers)
       }
-      return data
-    }))
-
-    let promise = new Promise((sucess, reject) => {
-      request$.subscribe((data: any) => {
-        //console.log('dataa',data);
-
-        if (data?.meta?.fumsToken)
-          fums(
-            "trackView",
-            data.meta.fumsToken
-          ).then(data => {
-            console.log('sended', data);
-          });
-
-        if (showLoading) this.hideLoading()
-        sucess(data)
-      }, async error => {
-        //console.log('on error',error);
-        if (handleError) await this.errorMessageAlert()
-        if (showLoading) this.hideLoading()
-        reject(error)
+  
+      //log('selectEmitter',selectEmiter())
+      let request$ = selectEmiter().pipe(map(data => {
+        //console.log('dataa', data);
+  
+        if (saveCache) {
+          this.cache[index] = data
+        }
+        return data
+      }))
+  
+      let promise = new Promise((sucess, reject) => {
+        request$.subscribe(async (data: any) => {
+          //console.log('dataa',data);
+          if (showLoading) await this.showLoading()
+          if (data?.meta?.fumsToken)
+            fums(
+              "trackView",
+              data.meta.fumsToken
+            ).then(data => {
+              console.log('sended', data);
+            });
+  
+          if (showLoading) this.hideLoading()
+          sucess(data)
+        }, async error => {
+          //console.log('on error',error);
+          if (showLoading) await this.hideLoading()
+          if (handleError) await this.errorMessageAlert()
+          reject(error)
+        })
       })
-    })
-    return from(promise)
+      return from(promise)
+    } catch (error) {
+      console.log('request error',error);
+    }
   }
 }

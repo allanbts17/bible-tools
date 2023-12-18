@@ -86,7 +86,7 @@ export class BibleStudyPage implements OnInit {
     this.fontSize = `${conf.interpolateFontSize(conf.settings.options.fontSize)}rem`
     this.conf.fontSizeChange$.subscribe(size => {
       this.fontSize = `${size}rem`
-     })
+    })
     //this.getAvailablaBibles()
     this.loadMarkedVerses();
   }
@@ -94,7 +94,49 @@ export class BibleStudyPage implements OnInit {
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.slides = this.swiperRef?.nativeElement.swiper;
-      
+      // setInterval(() => {
+      //   lopy("swiper interval", this.swiperRef?.nativeElement.swiper)
+      // }, 500)
+    });
+  }
+
+  ngOnInit() {
+    for (let i = 0; i <= this.lastIndex; i++)
+      this.showedChapters.push({
+        content: '',
+        bibleId: '',
+        id: 'EMPTY',
+      } as ChapterData);
+    this.setDefaultData();
+    setTimeout(() => {
+      let obs$ = this.network.status$.subscribe(async (status) => {
+
+        setTimeout(async () => {
+          console.log('to reload page');
+          this.slides = this.swiperRef?.nativeElement.swiper;
+          lopy("debug", "network status", status)
+          lopy("debug", "on network sus slides", this.slides)
+          lopy("debug", "swiperRef", this.swiperRef)
+          this.showedChapters = []
+          this.showedChapters.push({
+            content: '',
+            bibleId: '',
+            id: 'EMPTY',
+          } as ChapterData);
+          this.sharedInfo.once = false
+          await this.sharedInfo.init()
+          this.setDefaultData();
+
+        });
+
+        if (status.connected) {
+          
+          //this.setDefaultData();
+          //obs$.unsubscribe()
+        } else {
+          //lopy("debug", "network off swiperRef", this.swiperRef)
+        }
+      });
     });
   }
 
@@ -182,32 +224,10 @@ export class BibleStudyPage implements OnInit {
     }, 2000);
   }
 
-  ngOnInit() {
-    for (let i = 0; i <= this.lastIndex; i++)
-      this.showedChapters.push({
-        content: '',
-        bibleId: '',
-        id: 'EMPTY',
-      } as ChapterData);
-      this.setDefaultData();
-    // setTimeout(() => {
-    //   if (this.network.status.connected) {
-    //     this.setDefaultData();
-    //   } else {
-    //     let obs$ = this.network.status$.subscribe(async (status) => {
-    //       if (status.connected) {
-    //         this.setDefaultData();
-    //         obs$.unsubscribe()
-    //       }
-    //     });
-    //   }
-    // });
-  }
-
   removeEmptySlides() {
     setTimeout(() => {
       let indexList = []
-      log('showed on remove',this.showedChapters)
+      log('showed on remove', this.showedChapters)
       for (let i = 0; i < this.showedChapters.length; i++) {
         if (this.showedChapters[i].id == "EMPTY") {
           this.slides.removeSlide(i)
@@ -264,7 +284,9 @@ export class BibleStudyPage implements OnInit {
   }
 
   resetSlides() {
-    if (!this.slides) return
+    console.log('slidesssss', this.slides);
+    lopy("debug", "on resetSlides - slides", this.slides)
+    if (!this.slides || this.slides?.destroyed) return
     this.showedChapters = []
     this.start = false
     this.transitionStatus = false
@@ -279,7 +301,7 @@ export class BibleStudyPage implements OnInit {
     }
     //lopy('test',this.slides.slides,this.showedChapters)
     this.blockTransitionAction = true
-    
+
     this.slideIndex = 2
     this.slides.slideTo(2, 0)
     setTimeout(() => {
@@ -291,7 +313,7 @@ export class BibleStudyPage implements OnInit {
     slide += 1;
     if (chapter?.next != undefined && slide <= this.lastIndex) {
       let chapterContent: Chapter = (await this.apiService
-        .getChapter(chapter.bibleId, chapter.next.id,true)
+        .getChapter(chapter.bibleId, chapter.next.id, true)
         .toPromise()) as Chapter;
       this.chapterToSlideDistribution(slide, chapterContent.data, false);
       //if (this.swipeRightLock) await this.slides.lockSwipeToNext(false);
@@ -310,7 +332,7 @@ export class BibleStudyPage implements OnInit {
 
     if (chapter?.previous != undefined && slide >= this.firstIndex) {
       let chapterContent: Chapter = (await this.apiService
-        .getChapter(chapter.bibleId, chapter.previous.id,true)
+        .getChapter(chapter.bibleId, chapter.previous.id, true)
         .toPromise()) as Chapter;
       this.chapterToSlideDistribution(slide, chapterContent.data, false);
       //if (this.swipeLeftLock) this.slides.lockSwipeToPrev(false);
@@ -633,6 +655,7 @@ export class BibleStudyPage implements OnInit {
   }
 
   async setDefaultData() {
+    lopy("debug", "sharedInfo bible and chapter", this.sharedInfo.bible, this.sharedInfo.chapter)
     this.setAllSlides(this.sharedInfo.bible.id, this.sharedInfo.chapter.id);
 
   }

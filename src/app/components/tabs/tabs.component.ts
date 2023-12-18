@@ -21,27 +21,27 @@ export class TabsComponent implements OnInit {
   constructor(public config: ConfigService) { }
 
   ngOnInit() {
-    console.log('tabs app',this.tabs);
+    console.log('tabs app', this.tabs);
 
   }
   //test
-  scrollTabs(index){
-    setTimeout(()=>{
+  scrollTabs(index) {
+    setTimeout(() => {
       let segment = document.getElementById(this.segmentId)
       var buttons = segment.getElementsByTagName('ion-segment-button')
       let rect = buttons[index].getBoundingClientRect()
       let windowWidth = window.innerWidth
       let scrollableSegment = document.getElementById(this.segmentId)
-      if((rect.x+rect.width) > windowWidth){
-        let move = rect.x+rect.width - windowWidth
-        scrollableSegment.scrollBy(move,0)
-      } else if(rect.x < 0){
-        scrollableSegment.scrollBy(rect.x,0)
+      if ((rect.x + rect.width) > windowWidth) {
+        let move = rect.x + rect.width - windowWidth
+        scrollableSegment.scrollBy(move, 0)
+      } else if (rect.x < 0) {
+        scrollableSegment.scrollBy(rect.x, 0)
       }
     })
   }
 
-  tabSelected(tab,index,parentsTabSelected = false){
+  tabSelected(tab, index, parentsTabSelected = false) {
     //console.log('selee:',tab,index,parentsTabSelected)
     let buttons = this.getButtons()
     let buttonClientRect = buttons[index].getBoundingClientRect()
@@ -51,13 +51,13 @@ export class TabsComponent implements OnInit {
     //console.log(indicatorId)
     //let segment = document.getElementById(this.segmentId)
     //let customIndicator = <HTMLElement>segment.querySelector(indicatorId)
-    let text = '#'+this.segmentId+' #'+indicatorId
+    let text = '#' + this.segmentId + ' #' + indicatorId
     let customIndicator = <HTMLElement>document.querySelector(text)
     //console.log('segm: ',segment.childNodes)
     //console.log('custInd: ',customIndicator)
 
-    if(!this.start){
-      let segmentEl =  document.getElementById(this.segmentId)
+    if (!this.start) {
+      let segmentEl = document.getElementById(this.segmentId)
       let firstButtonWidth = buttons[0].getBoundingClientRect().width
       customIndicator.style.width = `${firstButtonWidth}px`
       customIndicator.style.left = `${firstButtonX}px`
@@ -66,15 +66,18 @@ export class TabsComponent implements OnInit {
       this.start = true
     }
 
-    setTimeout(()=>{
+    setTimeout(() => {
       customIndicator.style.width = `${buttonClientRect.width}px`
-      customIndicator.style.left = `${buttonClientRect.x-firstButtonX}px`
-      /*console.log('width: ',customIndicator.style.width,
-      'left: ',customIndicator.style.left)*/
+      customIndicator.style.left = `${buttonClientRect.x - firstButtonX}px`
+      buttons.forEach(btn => {
+        btn.classList.remove('segment-button-checked')
+      })
+      buttons[index].classList.add('segment-button-checked')
+      
       this.scrollTabs(index)
     })
 
-    if(!parentsTabSelected){
+    if (!parentsTabSelected) {
       this.selectedTabEvent.emit({
         tab: tab,
         index: index

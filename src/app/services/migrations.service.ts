@@ -47,7 +47,11 @@ export class MigrationService {
 
   async createTables() {
     for (let table of CreateTables) {
+      // await this.deleteTable('bibles')
+      // await this.deleteTable('books')
+      // await this.deleteTable('chapters')
       await this.databaseService.executeQuery(async (db) => {
+      //  console.log(table);
         await db.execute(table);
       });
     }
@@ -58,6 +62,12 @@ export class MigrationService {
       await db.execute(createSchemaProducts);
     });
   }
+
+  async deleteTable(table: string): Promise<any> {
+    await this.databaseService.executeQuery(async (db) => {
+      await db.execute(`DROP TABLE ${table}`);
+    });
+  } 
 
   async createTestTable(): Promise<void> {
     console.log(`going to create a connection`)

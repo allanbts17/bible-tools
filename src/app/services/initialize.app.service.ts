@@ -29,6 +29,7 @@ export class InitializeAppService {
         await this.migrationService.migrate();
         await this.storageService.init();
         let status = await this.network.getStatus()
+        this.network.status = status
         try {
           if (status.connected)
             this.config.remoteConfig = await this.firestore.getRemoteConfig()

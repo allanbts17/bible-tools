@@ -17,8 +17,13 @@ ion-segment {
   scroll-behavior: smooth;
 }
 
-.indicator-hided ion-segment-button {
-  --indicator-color: rgba(255, 255, 255, 0);
+// .indicator-hided ion-segment-button {
+//   --indicator-color: rgba(255, 255, 255, 0);
+// }
+
+
+.indicator-hided ion-segment-button::part(indicator-background) {
+  background: #fff0;
 }
 
 #custom-indicator {

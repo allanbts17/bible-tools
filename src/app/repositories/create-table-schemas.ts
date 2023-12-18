@@ -43,11 +43,51 @@ CREATE TABLE IF NOT EXISTS marked (
 );
 `;
 
-export const CreateTables = [categories, notes, topics, verses, marked]
+export const bibles: string = `
+CREATE TABLE IF NOT EXISTS bibles (
+  id TEXT NOT NULL,
+  dblId TEXT,
+  abbreviation TEXT,
+  abbreviationLocal TEXT,
+  language TEXT,
+  countries TEXT,
+  name TEXT,
+  nameLocal TEXT,
+  description TEXT,
+  descriptionLocal TEXT,
+  type TEXT,
+  updatedAt TEXT,
+  relatedDbl TEXT,
+  audioBibles TEXT,
+  bookList TEXT
+);
+`;
 
-// export const bible: string = `
-// CREATE TABLE IF NOT EXISTS bible (
-//   id TEXT NOT NULL,
-//   name TEXT NOT NULL
-// );
-// `;
+export const books: string = `
+CREATE TABLE IF NOT EXISTS books (
+  id TEXT NOT NULL,
+  abbreviation TEXT,
+  bibleId TEXT,
+  chapterList TEXT,
+  name TEXT,
+  nameLong TEXT
+);
+`;
+
+export const chapters: string = `
+CREATE TABLE IF NOT EXISTS chapters (
+  id TEXT NOT NULL,
+  bibleId TEXT,
+  number TEXT,
+  bookId TEXT,
+  reference TEXT,
+  copyright TEXT,
+  verseCount INTEGER,
+  content TEXT,
+  next TEXT,
+  previous TEXT,
+  meta TEXT
+);
+`;
+
+export const CreateTables = [categories, notes, topics, verses, marked, /*bibles, books, chapters*/]

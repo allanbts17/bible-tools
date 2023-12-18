@@ -22,8 +22,9 @@ export class DatabaseService {
   async executeQuery<T>(callback: SQLiteDBConnectionCallback<T>, databaseName: string = environment.databaseName): Promise<T> {
     try {
       let isConnection = await this.sqlite.isConnection(databaseName);
-
+      //console.log('isConnection', isConnection)
       if (isConnection.result) {
+
         let db = await this.sqlite.retrieveConnection(databaseName);
         return await callback(db);
       }
@@ -37,6 +38,16 @@ export class DatabaseService {
     } catch (error) {
       throw Error(`DatabaseServiceError: ${error}`);
     }
+  }
+
+  async createConnection(databaseName: string = environment.databaseName): Promise<SQLiteDBConnection>{
+    const db = await this.sqlite.createConnection(databaseName, false, "no-encryption", 1);
+    await db.open();
+    return db;
+  }
+
+  async closeConnection(databaseName: string = environment.databaseName): Promise<void>{
+    return await this.sqlite.closeConnection(databaseName);
   }
 }
 

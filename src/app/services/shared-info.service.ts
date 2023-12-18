@@ -3,6 +3,8 @@ import { ApiService } from './api.service';
 import { ConfigService } from './config.service';
 import { StorageService } from './storage.service';
 import { copy } from '../classes/utils';
+import { BibleDataRepository } from '../repositories/bible-data.repository';
+import { NoteRepository } from '../repositories/note.repository';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +19,8 @@ export class SharedInfoService {
   once = false
   constructor(private config: ConfigService,
     private apiService: ApiService,
-    private storage: StorageService) { }
+    private storage: StorageService,
+    private bibleRep: BibleDataRepository) { }
 
   async init() {
     if(!this.once){
@@ -25,6 +28,11 @@ export class SharedInfoService {
       await this.getAvailableBibles();
       await this.setChapterAndBible();
       console.log('on sharedInfo');
+      let bibles = await this.bibleRep.getBibles()
+      let books = await this.bibleRep.getBooks()
+      let chapter = await this.bibleRep.getChapters()
+      console.log('bibles sql',bibles,books,chapter);
+      
     }
 
 

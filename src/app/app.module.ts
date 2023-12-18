@@ -48,7 +48,7 @@ export function initializeFactory(init: InitializeAppService) {
     DetailService,
     DatabaseService,
     InitializeAppService,
-  //  ProductRepository,
+    //  ProductRepository,
     {
       provide: APP_INITIALIZER,
       useFactory: initializeFactory,

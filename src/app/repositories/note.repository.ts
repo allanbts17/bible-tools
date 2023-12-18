@@ -5,7 +5,7 @@ import { DatabaseService } from '../services/database.service';
 import { Note } from '../interfaces/note';
 import { StorageService } from '../services/storage.service';
 import { environment } from 'src/environments/environment';
-import { formatDate } from '../classes/utils';
+import { formatDate, lopy } from '../classes/utils';
 
 @Injectable({
     providedIn: 'root'

@@ -13,6 +13,7 @@ import { AppUpdate } from '@capawesome/capacitor-app-update';
 import { FirestoreService } from './services/firestore.service';
 import { VersionMessage } from './interfaces/version-message';
 import { log } from './classes/utils';
+import { environment } from 'src/environments/environment';
 
 register();
 
@@ -26,7 +27,6 @@ export class AppComponent {
     { title: 'Bible', url: '/bible-study', icon: 'book' },
     { title: 'Daily devotional', url: '/daily-devotional', icon: 'document-text' },
     { title: 'Verse index', url: '/verse-index', icon: 'list' },
-    { title: 'Download', url: '/download', icon: 'download' }
   ];
   header_title = "Herramientas Bíblicas"
   header_subtitle = ""
@@ -46,12 +46,16 @@ export class AppComponent {
 
     ) {
     this.init()
+    if(environment.featureFlags.downloadBibles){
+      this.appPages.push({ title: 'Download', url: '/download', icon: 'download' })
+    }
   }
 
 
 
   getCurrentAppVersion = async () => {
     const result = await AppUpdate.getAppUpdateInfo();
+    console.log('appUpdateResult',result)
     return result.currentVersion;
   };
 

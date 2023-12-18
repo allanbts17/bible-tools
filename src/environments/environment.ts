@@ -7,7 +7,8 @@ export const environment = {
   databaseName: 'test',
   pageSize: 10,
   featureFlags: {
-    verseFilter: false
+    verseFilter: false,
+    downloadBibles: false
   },
   firebase: {
     apiKey: "AIzaSyDC7H8v4GBCifIxvQP_RwX3svsjmge_Fu4",

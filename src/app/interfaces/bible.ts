@@ -7,14 +7,15 @@ export interface Bible {
   abbreviationLocal:	string;
   copyright:	string;
   language:	Language;
-  countries:	[];
+  countries:	any[];
   name:	string;
   nameLocal:	string;
   description:	string;
   descriptionLocal:	string;
-  info:	string;
   type:	string;
   updatedAt:	string;
   relatedDbl:	string;
-  audioBibles:	[];
+  audioBibles:any[];
+  bookList: any[];
+  order: number;
 }
