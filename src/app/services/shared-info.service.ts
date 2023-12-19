@@ -5,6 +5,7 @@ import { StorageService } from './storage.service';
 import { copy } from '../classes/utils';
 import { BibleDataRepository } from '../repositories/bible-data.repository';
 import { NoteRepository } from '../repositories/note.repository';
+import { NetworkService } from './network.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,19 +21,23 @@ export class SharedInfoService {
   constructor(private config: ConfigService,
     private apiService: ApiService,
     private storage: StorageService,
-    private bibleRep: BibleDataRepository) { }
+    private bibleRep: BibleDataRepository,
+    private network: NetworkService) { }
 
   async init() {
-    if(!this.once){
+    if (!this.once) {
       this.once = true
-      await this.getAvailableBibles();
-      await this.setChapterAndBible();
+      if (this.network.status.connected) {
+        await this.getAvailableBibles();
+        await this.setChapterAndBible();
+      }
+
       console.log('on sharedInfo');
-      let bibles = await this.bibleRep.getBibles()
-      let books = await this.bibleRep.getBooks()
-      let chapter = await this.bibleRep.getChapters()
-      console.log('bibles sql',bibles,books,chapter);
-      
+      // let bibles = await this.bibleRep.getBibles()
+      // let books = await this.bibleRep.getBooks()
+      // let chapter = await this.bibleRep.getChapters()
+      // console.log('bibles sql',bibles,books,chapter);
+
     }
 
 
@@ -55,8 +60,8 @@ export class SharedInfoService {
       this.bibleList.push(aux);
       this.allBibles.push(...<any>bibles);
     }
-    console.log('bible listtt',this.bibleList);
-    
+    console.log('bible listtt', this.bibleList);
+
   }
 
   async setChapterAndBible() {
@@ -64,9 +69,9 @@ export class SharedInfoService {
     console.log('last chap', lastChapter);
     if (lastChapter !== null) {
       this.bible = this.allBibles.find(bible => bible.id === lastChapter.bibleId)
-      let aux: any = await this.apiService.getChapter(lastChapter.bibleId,lastChapter.chapterId).toPromise()
-      console.log('auuux',aux);
-      
+      let aux: any = await this.apiService.getChapter(lastChapter.bibleId, lastChapter.chapterId).toPromise()
+      console.log('auuux', aux);
+
       this.chapter = aux.data
     } else {
       this.bible = this.bibleList[0].bibles[0]
@@ -83,7 +88,7 @@ export class SharedInfoService {
 
   async getBibleFirstChapter(bible) {
     let firstChapterData: any = await this.apiService.getBibleFirstChapter(bible.id)
-    let chapter: any = await this.apiService.getChapter(firstChapterData.bibleId,firstChapterData.id).toPromise()
+    let chapter: any = await this.apiService.getChapter(firstChapterData.bibleId, firstChapterData.id).toPromise()
     return chapter.data
   }
 

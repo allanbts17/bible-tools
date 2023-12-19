@@ -19,7 +19,7 @@ export class ConfigService {
     }
   }
   remoteConfig: RemoteConfig = {
-    requestToFirebase: false
+    requestToFirebase: true
   }
   availableBibleLanguages = [{id:"spa",name:"Español"},{id:"eng",name:"English"}]
 

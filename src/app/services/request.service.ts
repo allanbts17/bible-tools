@@ -8,6 +8,7 @@ import { SpinnerComponent } from '../components/spinner/spinner.component';
 import { DummyComponent } from '../components/dummy/dummy.component';
 import { ConfigService } from './config.service';
 import { FirestoreService } from './firestore.service';
+import { NetworkService } from './network.service';
 
 declare var fums;
 
@@ -22,7 +23,8 @@ export class RequestService {
     private modalCtrl: ModalController,
     private alertController: AlertController,
     private config: ConfigService,
-    private firestore: FirestoreService
+    private firestore: FirestoreService,
+    private network: NetworkService
   ) { }
 
 
@@ -93,8 +95,9 @@ export class RequestService {
         }
         return data
       }))
-  
+
       let promise = new Promise((sucess, reject) => {
+        
         request$.subscribe(async (data: any) => {
           //console.log('dataa',data);
           if (showLoading) await this.showLoading()

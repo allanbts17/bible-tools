@@ -55,7 +55,8 @@ export class InitializeAppService {
         // }
 
       } catch (error) {
-        throw Error(`initializeAppError: ${error}`);
+        console.log(`initializeAppError: ${error}`)
+        //throw Error(`initializeAppError: ${error}`);
       }
 
     });
