@@ -6,7 +6,7 @@
   <p *ngIf="showEmptyMsg" class="w-full text-center text-red-600">Faltan espacios por llenar</p>
   <p *ngIf="showUsedMsg || showUsedOnEdit" class="w-full text-center text-red-600">Ese tema ya existe</p>
   <div class="mt-5 flex justify-center w-full">
-    <ion-button color="dark" (click)="saveTopic()">Guardar</ion-button>
+    <ion-button color="btprimary" (click)="saveTopic()">Guardar</ion-button>
   </div>
 </app-modal-template>
 <!--<ion-modal #modal>
@@ -25,7 +25,7 @@
       <p *ngIf="showEmptyMsg" class="w-full text-center text-red-600">Faltan espacios por llenar</p>
       <p *ngIf="showUsedMsg || showUsedOnEdit" class="w-full text-center text-red-600">Ese tema ya existe</p>
       <div class="mt-5 flex justify-center w-full">
-        <ion-button color="dark" (click)="saveTopic()">Guardar</ion-button>
+        <ion-button color="btprimary" (click)="saveTopic()">Guardar</ion-button>
       </div>
     </ion-content>
   </ng-template>

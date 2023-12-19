@@ -39,11 +39,31 @@ ion-searchbar {
 ion-searchbar {
   --border-radius: 100px !important;
   --box-shadow: none !important;
-  --background: #ecebeb !important;
-  --color: #707070 !important;
-  --icon-color: #707070 !important;
-  --clear-button-color: #707070 !important;
+  // --background: #ecebeb !important;
+  // --color: #707070 !important;
+  // --icon-color: #707070 !important;
+  // --clear-button-color: #707070 !important;
 }
+
+ion-select {
+  --placeholder-color: #707070;
+}
+
+
+ion-select::part(label) {
+  color: #707070;
+}
+
+ion-select::part(text) {
+  color: #707070;
+}
+
+ion-select::part(icon) {
+  color:  #707070;
+  opacity: 1;
+}
+
+
 
 .calendar-show ion-button {
   --box-shadow:none;

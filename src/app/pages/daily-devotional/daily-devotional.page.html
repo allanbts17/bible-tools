@@ -164,8 +164,9 @@
       ></app-tabs>
       <!-- flex justify-center items-center relative -->
       <!-- Filter select -->
-      <ion-item *ngIf="filterOn" class="mx-2 mt-1">
+      <ion-item *ngIf="filterOn" lines="full" class=" mt-1">
         <ion-select
+          color="btprimary"
           label="Tipo de filtro"
           [(ngModel)]="filterType"
           [multiple]="false"
@@ -193,7 +194,7 @@
         class="calendar-container w-full flex justify-center scale-y-100 overflow-hidden"
       >
         <ion-datetime
-          color="dark"
+          color="btprimary"
           *ngIf="showDate && filterType == 'date'"
           (ionCancel)="showDate=false"
           (ionChange)="dateSelectionChange($event)"
