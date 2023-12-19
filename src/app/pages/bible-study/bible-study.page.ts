@@ -54,7 +54,7 @@ export class BibleStudyPage implements OnInit {
 
   firstIndex = 0;
   lastIndex = 4;
-  slideIndex = 2;
+  slideIndex = 1;
 
   initialChapter: ChapterData;
   lastChapter: ChapterData;
@@ -114,9 +114,9 @@ export class BibleStudyPage implements OnInit {
         setTimeout(async () => {
           console.log('to reload page');
           this.slides = this.swiperRef?.nativeElement.swiper;
-          lopy("debug", "network status", status)
-          lopy("debug", "on network sus slides", this.slides)
-          lopy("debug", "swiperRef", this.swiperRef)
+          // lopy("debug", "network status", status)
+          // lopy("debug", "on network sus slides", this.slides)
+          // lopy("debug", "swiperRef", this.swiperRef)
           this.showedChapters = []
           this.showedChapters.push({
             content: '',
@@ -165,10 +165,8 @@ export class BibleStudyPage implements OnInit {
       if (this.transitionStatus && (index == 0 || index == this.slides.slides.length - 1)) {
         let direction = index == 0 ? 'left' : 'right'
         //console.log('transition - Error, next slide not loaded',direction,index,this.showedChapters);
-
         this.sharedInfo.chapter = this.showedChapters[this.slideIndex];
         console.log('enter here', this.sharedInfo.chapter);
-
         this.utils.addToStack(async () => { this.updateText(direction) });
       }
     }, 300)
@@ -285,7 +283,7 @@ export class BibleStudyPage implements OnInit {
 
   resetSlides() {
     console.log('slidesssss', this.slides);
-    lopy("debug", "on resetSlides - slides", this.slides)
+    //lopy("debug", "on resetSlides - slides", this.slides)
     if (!this.slides || this.slides?.destroyed) return
     this.showedChapters = []
     this.start = false
@@ -302,8 +300,8 @@ export class BibleStudyPage implements OnInit {
     //lopy('test',this.slides.slides,this.showedChapters)
     this.blockTransitionAction = true
 
-    this.slideIndex = 2
-    this.slides.slideTo(2, 0)
+    this.slideIndex = 1
+    this.slides.slideTo(1, 0)
     setTimeout(() => {
       this.blockTransitionAction = false
     }, 200)
@@ -436,9 +434,6 @@ export class BibleStudyPage implements OnInit {
 
   setSlideContent(index, data: ChapterData) {
     //console.log('dataa',data);
-    if (data.id == "GEN.25") {
-      console.log('dataa', index, this.slideIndex, data);
-    }
 
     setTimeout(() => {
       var slideNodeList = document.querySelectorAll(
@@ -655,7 +650,7 @@ export class BibleStudyPage implements OnInit {
   }
 
   async setDefaultData() {
-    lopy("debug", "sharedInfo bible and chapter", this.sharedInfo.bible, this.sharedInfo.chapter)
+    //lopy("debug", "sharedInfo bible and chapter", this.sharedInfo.bible, this.sharedInfo.chapter)
     this.setAllSlides(this.sharedInfo.bible.id, this.sharedInfo.chapter.id);
 
   }
