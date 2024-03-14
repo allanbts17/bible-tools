@@ -21,6 +21,7 @@ import { forkJoin, lastValueFrom } from 'rxjs';
 import { IonicSlides } from '@ionic/angular';
 import { Swiper } from 'swiper/types';
 import { ConfigService } from 'src/app/services/config.service';
+import { App } from '@capacitor/app';
 
 @Component({
   selector: 'app-bible-study',
@@ -72,7 +73,7 @@ export class BibleStudyPage implements OnInit {
   </swiper-slide>`
   blockTransitionAction = false
   fontSize: string
-
+  networkStatus: boolean
   get ALLOW_BUTTON_SLIDE() { return this.conf.settings.options.allowButtonSliding }
 
   constructor(
@@ -89,6 +90,19 @@ export class BibleStudyPage implements OnInit {
     })
     //this.getAvailablaBibles()
     this.loadMarkedVerses();
+
+    // App.addListener('appStateChange', ({ isActive }) => {
+    //   console.log('App state changed. Is active?', isActive);
+    // });
+
+    // App.addListener('pause', () => {
+    //   console.log('App paused');
+    // });
+
+    // App.addListener('resume', () => {
+    //   console.log('App resumed');
+    // });
+
   }
 
   ngAfterViewInit(): void {
@@ -110,27 +124,28 @@ export class BibleStudyPage implements OnInit {
     this.setDefaultData();
     setTimeout(() => {
       let obs$ = this.network.status$.subscribe(async (status) => {
+        if (this.networkStatus !== status.connected && this.networkStatus !== undefined)
+          setTimeout(async () => {
+            console.log('to reload page');
+            this.networkStatus = status.connected
+            this.slides = this.swiperRef?.nativeElement.swiper;
+            // lopy("debug", "network status", status)
+            // lopy("debug", "on network sus slides", this.slides)
+            // lopy("debug", "swiperRef", this.swiperRef)
+            this.showedChapters = []
+            this.showedChapters.push({
+              content: '',
+              bibleId: '',
+              id: 'EMPTY',
+            } as ChapterData);
+            this.sharedInfo.once = false
+            await this.sharedInfo.init()
+            this.setDefaultData();
 
-        setTimeout(async () => {
-          console.log('to reload page');
-          this.slides = this.swiperRef?.nativeElement.swiper;
-          // lopy("debug", "network status", status)
-          // lopy("debug", "on network sus slides", this.slides)
-          // lopy("debug", "swiperRef", this.swiperRef)
-          this.showedChapters = []
-          this.showedChapters.push({
-            content: '',
-            bibleId: '',
-            id: 'EMPTY',
-          } as ChapterData);
-          this.sharedInfo.once = false
-          await this.sharedInfo.init()
-          this.setDefaultData();
-
-        });
+          });
 
         if (status.connected) {
-          
+
           //this.setDefaultData();
           //obs$.unsubscribe()
         } else {

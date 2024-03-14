@@ -5,6 +5,7 @@ ion-menu {
   --menu-color: #1a629e;
   --menu-sel-color: #8496a6;
   --select-background: rgba(72, 137, 190, 0.434);
+  --width: 250px;
 }
 
 ion-menu ion-content {
@@ -170,7 +171,8 @@ ion-item.selected {
       font-family: 'Mukta', sans-serif;
       line-height: 30px;
       margin-left: 10px;
-      font-size: 25px;
+      font-size: 1.8rem;
+      width: 6rem;
       color: #fff;
     }
   }

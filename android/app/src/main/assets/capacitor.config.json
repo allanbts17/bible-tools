@@ -1,5 +1,5 @@
 {
-	"appId": "bible.tools.dev",
+	"appId": "bible.tools.com",
 	"appName": "Bible Tools",
 	"webDir": "www",
 	"bundledWebRuntime": false,
@@ -11,5 +11,8 @@
 			"splashFullScreen": true,
 			"splashImmersive": true
 		}
+	},
+	"server": {
+		"androidScheme": "https"
 	}
 }

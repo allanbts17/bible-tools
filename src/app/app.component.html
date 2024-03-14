@@ -14,7 +14,7 @@
     >
       <ion-content>
         <div id="menu-header" class="flex justify-start">
-          <div class="flex-none pl-2 h-full flex items-center">
+          <div class="flex-none pl-4 pr-2 h-full flex items-center">
             <img src="../assets/only_logo_1.png" />
           </div>
           <div class="flex-1 h-full flex items-center">
@@ -72,10 +72,12 @@
         </ion-item>
       </ion-content>
       <ion-footer
+      color="btprimary"
         *ngIf="versionMessage"
-        class="version-msg p-3"
-        (click)="openGooglePlay()"
+        class="version-msg p-3 ion-activatable ripple-parent"
+        (click)="openGooglePlay(versionMessage.url)"
       >
+      <ion-ripple-effect></ion-ripple-effect>
       <div>
         <p class="size-title font-bold">{{ versionMessage.title }}</p>
         <p class="size-msg">{{ versionMessage.msg }}</p>

@@ -14,6 +14,7 @@ import { FirestoreService } from './services/firestore.service';
 import { VersionMessage } from './interfaces/version-message';
 import { log } from './classes/utils';
 import { environment } from 'src/environments/environment';
+import { Browser } from '@capacitor/browser';
 
 register();
 
@@ -96,8 +97,9 @@ export class AppComponent {
     
   }
 
-  openGooglePlay(){
+  async openGooglePlay(url: string){
     console.log('opening google play');
+    await Browser.open({ url: url });
   }
 
   changeTheme() {
