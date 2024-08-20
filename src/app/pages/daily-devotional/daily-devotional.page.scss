@@ -49,6 +49,10 @@ ion-select {
   --placeholder-color: #707070;
 }
 
+#swiper-height-limit {
+  height: 10px;
+}
+
 
 ion-select::part(label) {
   color: #707070;

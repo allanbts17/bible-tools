@@ -63,16 +63,16 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   ionViewWillEnter(){
-   // console.log('ion will enter');
-    this.swiperHeightInterval =  setInterval(()=>{
-      let headerHeight = 56
-      let tabsLimit = document.getElementById("tabs-limit").getBoundingClientRect().height
-      let contentHeight = window.screen.height - tabsLimit - headerHeight
-      let swiperHeightContainer = document.getElementById("swiper-height-limit")
-      swiperHeightContainer.style.height = `${contentHeight}px`
-     // console.log(swiperHeightContainer.style.height);
+  //  // console.log('ion will enter');
+  //   this.swiperHeightInterval =  setInterval(()=>{
+  //     let headerHeight = 56
+  //     let tabsLimit = document.getElementById("tabs-limit").getBoundingClientRect().height
+  //     let contentHeight = window.screen.height - tabsLimit - headerHeight
+  //     let swiperHeightContainer = document.getElementById("swiper-height-limit")
+  //     swiperHeightContainer.style.height = `${contentHeight}px`
+  //    // console.log(swiperHeightContainer.style.height);
       
-    },200)
+  //   },200)
   }
 
   ionViewDidLeave(){
@@ -322,13 +322,10 @@ export class DailyDevotionalPage implements OnInit {
   }
 
   async loadCategories(categories?) {
-    if (categories)
-      this.categoryList = categories
-    else
-      this.categoryList = await this.storageService.getCategories()
     // setTimeout(()=>{
     //   this.categoryList = this.storageService.categories
     // },800)
+    this.categoryList = categories? categories:await this.storageService.getCategories()
     this.fillTabs()
     setTimeout(() => {
       this.updateSlides()
