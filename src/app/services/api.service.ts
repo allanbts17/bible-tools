@@ -31,9 +31,9 @@ export class ApiService {
 
   constructor(private req: RequestService) { }
 
-  getAllBibles(){
+  getAllBibles(showLoading = true){
     const path = `${this.base_api_endpoint}`+"/v1/bibles";
-    return this.req.request(path,{headers: this.reqHeader});
+    return this.req.request(path,{headers: this.reqHeader},true,showLoading);
   }
  /* getAllBibles(){
     const path = `${this.bible_com_endpoint}`+"/find?key="+this.bible_com_key;
@@ -154,9 +154,9 @@ export class ApiService {
     });
   }
 
-  getBiblesByLanguageId(id){
+  getBiblesByLanguageId(id,showLoading: boolean){
     return new Promise((resolve, reject) => {
-      this.getAllBibles().subscribe((bibles)=>{
+      this.getAllBibles(showLoading).subscribe((bibles)=>{
         this.auxBibles = bibles
         var bibleList = []
         // this.auxBibles.data.forEach(bible => {

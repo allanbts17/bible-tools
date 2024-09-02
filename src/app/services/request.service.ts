@@ -41,7 +41,7 @@ export class RequestService {
     alert.present();
   }
 
-  private async showLoading() {
+  public async showLoading() {
     if (!this.loadingPresented) {
       this.loadingPresented = true
       const modal = await this.modalCtrl.create({
@@ -54,7 +54,7 @@ export class RequestService {
     }
   }
 
-  private async hideLoading() {
+  public async hideLoading() {
     await this.modalCtrl.dismiss()
     this.loadingPresented = false
   }
@@ -73,6 +73,8 @@ export class RequestService {
     showLoading = true,
     handleError = true): Observable<any> {
     let index = path + JSON.stringify(headers)
+    // if(showLoading)
+    //   console.log('loading request',path)
     if (this.cache[index]) {
       return of(this.cache[index])
     }
@@ -100,7 +102,7 @@ export class RequestService {
         
         request$.subscribe(async (data: any) => {
           //console.log('dataa',data);
-          if (showLoading) await this.showLoading()
+          
           if (data?.meta?.fumsToken)
             fums(
               "trackView",
@@ -118,7 +120,9 @@ export class RequestService {
           reject(error)
         })
       })
+      if (showLoading) this.showLoading()
       return from(promise)
+
     } catch (error) {
       console.log('request error',error);
     }

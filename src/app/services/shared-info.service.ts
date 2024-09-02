@@ -6,6 +6,7 @@ import { copy } from '../classes/utils';
 import { BibleDataRepository } from '../repositories/bible-data.repository';
 import { NoteRepository } from '../repositories/note.repository';
 import { NetworkService } from './network.service';
+import { RequestService } from './request.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,12 +23,14 @@ export class SharedInfoService {
     private apiService: ApiService,
     private storage: StorageService,
     private bibleRep: BibleDataRepository,
-    private network: NetworkService) { }
+    private network: NetworkService,
+    private req: RequestService) { }
 
   async init() {
     if (!this.once) {
       this.once = true
       if (this.network.status.connected) {
+        this.req.showLoading()
         await this.getAvailableBibles();
         await this.setChapterAndBible();
       }
@@ -52,7 +55,7 @@ export class SharedInfoService {
     for (let i = 0; i < this.config.availableBibleLanguages.length; i++) {
       let aux;
       var lang = this.config.availableBibleLanguages[i];
-      let bibles = await this.apiService.getBiblesByLanguageId(lang.id);
+      let bibles = await this.apiService.getBiblesByLanguageId(lang.id,false);
       aux = {
         lang: lang,
         bibles: bibles

@@ -22,6 +22,7 @@ import { IonicSlides } from '@ionic/angular';
 import { Swiper } from 'swiper/types';
 import { ConfigService } from 'src/app/services/config.service';
 import { App } from '@capacitor/app';
+import { RequestService } from 'src/app/services/request.service';
 
 @Component({
   selector: 'app-bible-study',
@@ -81,7 +82,8 @@ export class BibleStudyPage implements OnInit {
     public storage: StorageService,
     public sharedInfo: SharedInfoService,
     protected network: NetworkService,
-    protected conf: ConfigService
+    protected conf: ConfigService,
+    private req: RequestService
 
   ) {
     this.fontSize = `${conf.interpolateFontSize(conf.settings.options.fontSize)}rem`
@@ -270,9 +272,12 @@ export class BibleStudyPage implements OnInit {
       async (chapterContent: Chapter) => {
         let chapter = chapterContent.data;
         this.chapterToSlideDistribution(this.slideIndex, chapter);
+        
         let promiseNext = this.setNextChapter(this.slideIndex, chapter); //.then(slide => console.log(slide)).catch(err => console.log(err))
         let promisePrev = this.setPrevChapter(this.slideIndex, chapter); //.then(slide => console.log(slide)).catch(err => console.log(err))
+        this.req.showLoading()
         await Promise.all([promisePrev, promiseNext]);
+        this.req.hideLoading()
         this.removeEmptySlides()
 
         this.start = true;
@@ -326,7 +331,7 @@ export class BibleStudyPage implements OnInit {
     slide += 1;
     if (chapter?.next != undefined && slide <= this.lastIndex) {
       let chapterContent: Chapter = (await this.apiService
-        .getChapter(chapter.bibleId, chapter.next.id, true)
+        .getChapter(chapter.bibleId, chapter.next.id, false)
         .toPromise()) as Chapter;
       this.chapterToSlideDistribution(slide, chapterContent.data, false);
       //if (this.swipeRightLock) await this.slides.lockSwipeToNext(false);
@@ -345,7 +350,7 @@ export class BibleStudyPage implements OnInit {
 
     if (chapter?.previous != undefined && slide >= this.firstIndex) {
       let chapterContent: Chapter = (await this.apiService
-        .getChapter(chapter.bibleId, chapter.previous.id, true)
+        .getChapter(chapter.bibleId, chapter.previous.id, false)
         .toPromise()) as Chapter;
       this.chapterToSlideDistribution(slide, chapterContent.data, false);
       //if (this.swipeLeftLock) this.slides.lockSwipeToPrev(false);
