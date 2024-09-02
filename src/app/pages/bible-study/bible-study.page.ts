@@ -449,7 +449,11 @@ export class BibleStudyPage implements OnInit {
 
   async loadMarkedVerses() {
     this.markersData = await this.storage.getData('marked');
-    console.log(this.markersData);
+    console.log('marked',this.markersData);
+  }
+
+  updateMarkedVerses(){
+    
   }
 
   setSlideContent(index, data: ChapterData) {

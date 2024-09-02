@@ -6,6 +6,7 @@ import { Share } from '@capacitor/share';
 import { ConfigService } from 'src/app/services/config.service';
 import { AddVerseModalComponent } from '../add-verse-modal/add-verse-modal.component';
 import { Verse } from 'src/app/interfaces/verse';
+import { MarkedVerse } from 'src/app/interfaces/marked-verse';
 
 
 @Component({
@@ -18,6 +19,7 @@ export class NoteSelectionSheetComponent implements OnInit {
   @Output() closeSheetEvent = new EventEmitter<any>()
   @Input() bible
   @Input() chapter
+  @Output() markedChangeEvent = new EventEmitter<any>()
   private showCard = false
   passageReference = ''
   selectedData
@@ -86,16 +88,18 @@ export class NoteSelectionSheetComponent implements OnInit {
 
       if(searchedData !== undefined){
         await this.storage.removeItemByID('marked',{id:searchedData.id})
+        this.markedChangeEvent.emit()
       }
     }
     this.showHighlightColors = false
+
   }
 
   async saveHighlightColor(selColor){
 
     let storedData = await this.storage.getData('marked')
     for(let i=0;i<this.verses.length;i++){
-      let data = {
+      let data: MarkedVerse = {
         verse: this.chapter.id +'.'+ this.verses[i],
         color: selColor
       }
@@ -111,7 +115,7 @@ export class NoteSelectionSheetComponent implements OnInit {
         //console.log('new',data)
         await this.storage.addData('marked',data)
       } else {
-        let newData = {
+        let newData: MarkedVerse = {
           id: searchedData.id,
           verse: this.chapter.id +'.'+ this.verses[i],
           color: selColor
@@ -119,6 +123,7 @@ export class NoteSelectionSheetComponent implements OnInit {
         //console.log('edit',newData)
         await this.storage.editItemByID('marked',newData)
       }
+      this.markedChangeEvent.emit()
 
 
       // console.log(data)

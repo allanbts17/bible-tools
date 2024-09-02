@@ -89,6 +89,7 @@
     [bible]="sharedInfo.bible"
     [chapter]="sharedInfo.chapter"
     (closeSheetEvent)="closeSelectionSheet()"
+    (markedChangeEvent)="loadMarkedVerses()"
   ></app-note-selection-sheet>
   <app-select-bible-modal
     [triggerId]="'open-select-bible-modal'"
