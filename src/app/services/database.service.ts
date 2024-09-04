@@ -49,5 +49,12 @@ export class DatabaseService {
   async closeConnection(databaseName: string = environment.databaseName): Promise<void>{
     return await this.sqlite.closeConnection(databaseName);
   }
+
+  async exportToJson(databaseName: string = environment.databaseName){
+    await this.createConnection()
+    await this.sqlite.exportToJson(databaseName)
+    await this.closeConnection()
+
+  }
 }
 

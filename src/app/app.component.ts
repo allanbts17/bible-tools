@@ -15,6 +15,8 @@ import { VersionMessage } from './interfaces/version-message';
 import { log } from './classes/utils';
 import { environment } from 'src/environments/environment';
 import { Browser } from '@capacitor/browser';
+import { DatabaseService } from './services/database.service';
+import { RequestService } from './services/request.service';
 
 register();
 
@@ -43,13 +45,25 @@ export class AppComponent {
     public storage: StorageService,
     public theme: ThemeService,
     public platform: Platform,
-    private firestore: FirestoreService
+    private firestore: FirestoreService,
+    sql: SQLiteService,
+    private dbService: DatabaseService,
+    //req: RequestService
 
     ) {
+      
     this.init()
     if(environment.featureFlags.downloadBibles){
       this.appPages.push({ title: 'Download', url: '/download', icon: 'download' })
     }
+
+    // setTimeout(async () => {
+    //   await databa.exportToJson()
+    // },6000)
+  }
+
+  async exportDatabase(){
+    await this.dbService.exportToJson()
   }
 
 

@@ -4,7 +4,8 @@ import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { CapacitorSQLite, SQLiteDBConnection, SQLiteConnection, capSQLiteSet,
          capSQLiteChanges, capSQLiteValues, capEchoResult, capSQLiteResult,
-         capNCDatabasePathResult } from '@capacitor-community/sqlite';
+         capNCDatabasePathResult, 
+         CapacitorSQLitePlugin} from '@capacitor-community/sqlite';
 
 @Injectable()
 
@@ -12,7 +13,7 @@ export class SQLiteService {
     sqlite: SQLiteConnection;
     isService: boolean = false;
     platform: string;
-    sqlitePlugin: any;
+    sqlitePlugin: CapacitorSQLitePlugin;
     native: boolean = false;
 
     constructor() {
@@ -504,6 +505,22 @@ export class SQLiteService {
         } else {
             return Promise.reject(new Error(`no connection open`));
         }
+
+    }
+
+    /**
+     * Export to a Json Object
+     * @param jsonstring
+     */
+    async exportToJson(databaseName: string, exportMode = 'full', readOnly = false, encrypted = false){
+        let data = await this.sqlitePlugin.exportToJson({
+            database: databaseName,
+            jsonexportmode: exportMode,
+            readonly: readOnly,
+            encrypted: encrypted
+
+        })
+        console.log("JSON Data",data)
 
     }
 
