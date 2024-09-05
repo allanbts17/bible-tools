@@ -8,7 +8,8 @@ export const environment = {
   pageSize: 10,
   featureFlags: {
     verseFilter: false,
-    downloadBibles: false
+    downloadBibles: false,
+    exportDatabase: true
   },
   firebase: {
     apiKey: "AIzaSyDC7H8v4GBCifIxvQP_RwX3svsjmge_Fu4",

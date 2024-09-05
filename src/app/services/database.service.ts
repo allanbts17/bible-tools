@@ -52,8 +52,9 @@ export class DatabaseService {
 
   async exportToJson(databaseName: string = environment.databaseName){
     await this.createConnection()
-    await this.sqlite.exportToJson(databaseName)
+    let data = await this.sqlite.exportToJson(databaseName)
     await this.closeConnection()
+    return data
 
   }
 }

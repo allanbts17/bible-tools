@@ -5,7 +5,8 @@ import { Capacitor } from '@capacitor/core';
 import { CapacitorSQLite, SQLiteDBConnection, SQLiteConnection, capSQLiteSet,
          capSQLiteChanges, capSQLiteValues, capEchoResult, capSQLiteResult,
          capNCDatabasePathResult, 
-         CapacitorSQLitePlugin} from '@capacitor-community/sqlite';
+         CapacitorSQLitePlugin,
+         capSQLiteVersionUpgrade} from '@capacitor-community/sqlite';
 
 @Injectable()
 
@@ -103,12 +104,11 @@ export class SQLiteService {
      * @param statements
      */
     async addUpgradeStatement(database:string,
-                              toVersion: number, statements: string[])
+                             upgrade: capSQLiteVersionUpgrade[])
                                         : Promise<void> {
         if(this.sqlite != null) {
             try {
-                await this.sqlite.addUpgradeStatement(database, toVersion,
-                                                      statements);
+                await this.sqlite.addUpgradeStatement(database, upgrade);
                 return Promise.resolve();
             } catch (err) {
                 return Promise.reject(new Error(err));
@@ -520,8 +520,7 @@ export class SQLiteService {
             encrypted: encrypted
 
         })
-        console.log("JSON Data",data)
-
+        return data
     }
 
     /**

@@ -34,9 +34,6 @@ export function initializeFactory(init: InitializeAppService) {
   imports: [BrowserModule,
     IonicModule.forRoot(),
     FormsModule,
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideFirestore(() => getFirestore()),
-
     IonicStorageModule.forRoot({
       name: "new-database",
       driverOrder: [CordovaSQLiteDriver._driver, Drivers.IndexedDB]
@@ -48,6 +45,8 @@ export function initializeFactory(init: InitializeAppService) {
     DetailService,
     DatabaseService,
     InitializeAppService,
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideFirestore(() => getFirestore()),
     //  ProductRepository,
     {
       provide: APP_INITIALIZER,

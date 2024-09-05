@@ -41,6 +41,7 @@ export class AppComponent {
   showAnimate = false
   lightAnimation = false
   versionMessage: VersionMessage
+  allowExportToJson: boolean = false
   constructor(public config: ConfigService,
     public storage: StorageService,
     public theme: ThemeService,
@@ -51,19 +52,45 @@ export class AppComponent {
     //req: RequestService
 
     ) {
-      
+      this.allowExportToJson = environment.featureFlags.exportDatabase
     this.init()
     if(environment.featureFlags.downloadBibles){
       this.appPages.push({ title: 'Download', url: '/download', icon: 'download' })
     }
-
-    // setTimeout(async () => {
-    //   await databa.exportToJson()
-    // },6000)
   }
 
   async exportDatabase(){
-    await this.dbService.exportToJson()
+    let data = await this.dbService.exportToJson()
+    console.log("JSON Data",data)
+    const jsonString = JSON.stringify(data, null, 2);
+    function downloadJson(jsonString: string, fileName: string) {
+      // Create a blob of the JSON data
+      const blob = new Blob([jsonString], { type: 'application/json' });
+    
+      // Create a link element
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+    
+      // Set the download attribute with the desired file name
+      a.href = url;
+      a.download = `${fileName}.json`;
+    
+      // Append the link to the body (necessary for Firefox)
+      document.body.appendChild(a);
+    
+      // Trigger click on the link to start download
+      a.click();
+    
+      // Clean up and remove the link
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    }
+
+    downloadJson(jsonString,'database')
+  }
+
+  async importDatabase(){
+    
   }
 
 
@@ -71,7 +98,7 @@ export class AppComponent {
   getCurrentAppVersion = async () => {
     const result = await AppUpdate.getAppUpdateInfo();
     console.log('appUpdateResult',result)
-    return result.currentVersion;
+    return result.currentVersionCode;
   };
 
   async init() {
