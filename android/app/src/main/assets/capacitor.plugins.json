@@ -42,5 +42,9 @@
 	{
 		"pkg": "@capawesome/capacitor-app-update",
 		"classpath": "io.capawesome.capacitorjs.plugins.appupdate.AppUpdatePlugin"
+	},
+	{
+		"pkg": "@capawesome/capacitor-file-picker",
+		"classpath": "io.capawesome.capacitorjs.plugins.filepicker.FilePickerPlugin"
 	}
 ]

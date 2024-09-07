@@ -4,12 +4,12 @@
 
 export const environment = {
   production: false,
-  databaseName: 'test',
+  databaseName: 'bible-tools',
   pageSize: 10,
   featureFlags: {
     verseFilter: false,
     downloadBibles: false,
-    exportDatabase: true
+    exportDatabase: false
   },
   firebase: {
     apiKey: "AIzaSyDC7H8v4GBCifIxvQP_RwX3svsjmge_Fu4",

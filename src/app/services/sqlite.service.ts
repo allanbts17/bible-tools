@@ -7,6 +7,7 @@ import { CapacitorSQLite, SQLiteDBConnection, SQLiteConnection, capSQLiteSet,
          capNCDatabasePathResult, 
          CapacitorSQLitePlugin,
          capSQLiteVersionUpgrade} from '@capacitor-community/sqlite';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 
@@ -521,6 +522,10 @@ export class SQLiteService {
 
         })
         return data
+    }
+
+    async deleteDatabase(){
+        await this.sqlitePlugin.deleteDatabase({ database: environment.databaseName})
     }
 
     /**

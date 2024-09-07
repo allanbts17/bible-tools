@@ -55,7 +55,27 @@ export class DatabaseService {
     let data = await this.sqlite.exportToJson(databaseName)
     await this.closeConnection()
     return data
-
   }
+  async importFromJson(jsonString: string,databaseName: string = environment.databaseName){
+    await this.createConnection()
+    let data = await this.sqlite.importFromJson(jsonString)
+    await this.closeConnection()
+    return data
+  }
+
+  async deleteDatabase(){
+    await this.createConnection()
+    await this.sqlite.deleteDatabase()
+    await this.closeConnection()
+  }
+
+  async getDB(){
+      await this.createConnection()
+    let data = await this.sqlite.getDatabaseList()
+    console.log('db list',data)
+    await this.closeConnection()
+  }
+
+  
 }
 
