@@ -1,4 +1,4 @@
-<app-modal-template #modal [title]="actualTitle">
+<app-modal-template #modal [title]="actualTitle" [askBeforeCloseMessage]="askClosingMsg">
   <ion-item *ngIf="showNewCategoryInput">
     <ion-label>Escoja el color de la categoría</ion-label>
     <button
@@ -36,13 +36,13 @@
       [(ngModel)]="newCategory.category"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-input [(ngModel)]="note.title"
+      <ion-input [(ngModel)]="note.title" (ngModelChange)="changedDetected()"
       label="Titulo"
       label-placement="floating"></ion-input>
     </ion-item>
     <ion-item>
       <ion-textarea
-        [(ngModel)]="note.text"
+        [(ngModel)]="note.text" (ngModelChange)="changedDetected()"
         label="Contenido"
         labelPlacement="floating"
         placeholder="Escriba aquí el contenido de la nota"

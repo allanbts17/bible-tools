@@ -279,7 +279,7 @@ export class DailyDevotionalPage implements OnInit {
 
   presentNoteModal(note: Note = null) {
     if (note == null)
-      this.addNoteModal.setToNewFunction()
+      this.addNoteModal.setToNewFunction(this.selectedTab)
     else
       this.addNoteModal.setToEditFunction(note)
     this.addNoteModal.modal.present()

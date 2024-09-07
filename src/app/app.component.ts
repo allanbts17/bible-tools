@@ -191,7 +191,7 @@ export class AppComponent {
     this.config.changeFontSize(this.config.settings.options.fontSize)
     setTimeout(()=>{
       this.darkMode ? this.theme.applyDark() : this.theme.removeDark()
-    })
+    },1000)
 
   }
 

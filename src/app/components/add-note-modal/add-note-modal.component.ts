@@ -23,6 +23,7 @@ export class AddNoteModalComponent implements OnInit {
   showNewCategoryInput = false
   showColorPicker = false
   showRedText = false
+  askClosingMsg = { msg: "¿Quieres cerrar sin guardar la nota?", active: false }
 
   selectCategoryName = ""
   newCategory: Category = {
@@ -69,10 +70,19 @@ export class AddNoteModalComponent implements OnInit {
     }
   }
 
-  setToNewFunction() {
-    this.newNote = true
-    this.setTitle()
+  setCategory(tab: {name:string,id:number}){
+    this.showNewCategoryInput = false
+    this.selectCategoryName = this.categoryList.find(cat => cat.id == tab.id).category
+    this.note.category = tab.id
+  }
+
+  setToNewFunction(tab: {name:string,id:number}) {
     this.resetValues()
+    this.newNote = true
+    if(tab.id != -1)
+      this.setCategory(tab)
+    this.setTitle()
+    
   }
 
   setToEditFunction(note: Note) {
@@ -115,6 +125,7 @@ export class AddNoteModalComponent implements OnInit {
       else
         await this.editNote(this.note, noteCategoryName)
       this.resetValues()
+      console.log('before close',this.askClosingMsg)
       this.modal.dismiss()
     } else {
       this.showRedText = true
@@ -138,6 +149,10 @@ export class AddNoteModalComponent implements OnInit {
     console.log('added note: ', data, category)
     await this.storageService.addNote(data, category)
     this.addNoteEvent.emit()
+  }
+
+  changedDetected(){
+    this.askClosingMsg.active = true
   }
 
   async testAddNotes() {
@@ -184,6 +199,7 @@ export class AddNoteModalComponent implements OnInit {
   }
 
   resetValues() {
+    this.askClosingMsg.active = false
     this.showNewCategoryInput = false
     this.showColorPicker = false
     this.showRedText = false

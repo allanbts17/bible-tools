@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, Output, ViewChild, EventEmitter } from '@angular/core';
 import { StatusBar, Style } from '@capacitor/status-bar';
-import { IonModal } from '@ionic/angular';
+import { AlertController, IonModal } from '@ionic/angular';
 import { Colors, makeId } from 'src/app/classes/utils';
 import { ConfigService } from 'src/app/services/config.service';
 
@@ -15,7 +15,11 @@ export class ModalTemplateComponent implements OnInit {
   @Output() modalDidPresent = new EventEmitter<any>()
   @Output() closedEvent = new EventEmitter<any>()
   @Input() toolbarColor: string = '#1D71B8'
-  constructor(private config: ConfigService) { 
+  @Input() askBeforeCloseMessage: { msg: string, active: boolean }
+
+  constructor(private config: ConfigService,
+    private alertController: AlertController
+  ) { 
   }
 
   ngOnInit() { 
@@ -61,8 +65,42 @@ export class ModalTemplateComponent implements OnInit {
   }
 
   dismiss() {
-    this.closedEvent.emit()
-    this.modal.dismiss()
+    if(this.askBeforeCloseMessage.active){
+      this.closeConfirmationAlert(this.askBeforeCloseMessage.msg)
+    } else {
+      this.closedEvent.emit()
+      this.modal.dismiss()
+    }
+    
+  }
+
+
+
+  async closeConfirmationAlert(msg: string){
+    //console.log('confirm',cat)
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Confirmación',
+      message: msg,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          id: 'cancel-button',
+          handler: (blah) => {}
+        }, {
+          text: 'Cerrar',
+          id: 'confirm-button',
+          handler: async () => {
+            this.closedEvent.emit()
+            this.modal.dismiss()
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
 }
