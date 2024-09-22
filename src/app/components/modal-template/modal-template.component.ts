@@ -15,7 +15,7 @@ export class ModalTemplateComponent implements OnInit {
   @Output() modalDidPresent = new EventEmitter<any>()
   @Output() closedEvent = new EventEmitter<any>()
   @Input() toolbarColor: string = '#1D71B8'
-  @Input() askBeforeCloseMessage: { msg: string, active: boolean }
+  @Input() askBeforeCloseMessage: { msg: string, active: boolean } = { msg: "", active: false }
 
   constructor(private config: ConfigService,
     private alertController: AlertController

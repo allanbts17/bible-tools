@@ -20,6 +20,10 @@ export class FirestoreService {
     // this.apiFirestoreRequest('')
   }
 
+  async uploadJson(json: string) {
+    (await this.afs.collection("DatabaseJson").add({ data: json, date: Date()}))
+  }
+
   async getVersionMessage(): Promise<VersionMessage> {
 
     let versionsData$ = this.afs.collection("VersionMessages",

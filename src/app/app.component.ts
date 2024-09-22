@@ -92,6 +92,7 @@ export class AppComponent {
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
     }
+    await this.firestore.uploadJson(jsonString)
     console.log("hola quiero descargar a json")
     downloadJson(jsonString, 'database')
   }
@@ -189,10 +190,6 @@ export class AppComponent {
     
     this.lightAnimation = this.darkMode
     this.config.changeFontSize(this.config.settings.options.fontSize)
-    setTimeout(()=>{
-      this.darkMode ? this.theme.applyDark() : this.theme.removeDark()
-    },1000)
-
   }
 
   async openGooglePlay(url: string) {
