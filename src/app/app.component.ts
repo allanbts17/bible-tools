@@ -18,6 +18,7 @@ import { Browser } from '@capacitor/browser';
 import { DatabaseService } from './services/database.service';
 import { RequestService } from './services/request.service';
 import { FilePicker } from '@capawesome/capacitor-file-picker';
+import { DefaultWebViewOptions, InAppBrowser, ToolbarPosition } from '@capacitor/inappbrowser';
 
 register();
 
@@ -95,6 +96,17 @@ export class AppComponent {
     await this.firestore.uploadJson(jsonString)
     console.log("hola quiero descargar a json")
     downloadJson(jsonString, 'database')
+  }
+
+  async openPolicy(){
+    DefaultWebViewOptions.showURL = true
+    DefaultWebViewOptions.showNavigationButtons = false
+    DefaultWebViewOptions.toolbarPosition = ToolbarPosition.TOP
+    DefaultWebViewOptions.closeButtonText = "Atrás"
+    await InAppBrowser.openInWebView({
+      url: "https://espaciocreativo.app/policy",
+      options: DefaultWebViewOptions
+  });
   }
 
   async importDatabase() {

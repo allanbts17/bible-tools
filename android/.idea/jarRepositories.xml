@@ -21,5 +21,10 @@
       <option name="name" value="Google" />
       <option name="url" value="https://dl.google.com/dl/android/maven2/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="Azure" />
+      <option name="name" value="Azure" />
+      <option name="url" value="https://pkgs.dev.azure.com/OutSystemsRD/9e79bc5b-69b2-4476-9ca5-d67594972a52/_packaging/PublicArtifactRepository/maven/v1" />
+    </remote-repository>
   </component>
 </project>
