@@ -206,7 +206,8 @@ export class AppComponent {
 
   async openGooglePlay(url: string) {
     console.log('opening google play');
-    await Browser.open({ url: url });
+    AppUpdate.openAppStore()
+    //await Browser.open({ url: url });
   }
 
   changeTheme() {
