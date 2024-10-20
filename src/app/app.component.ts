@@ -19,6 +19,7 @@ import { DatabaseService } from './services/database.service';
 import { RequestService } from './services/request.service';
 import { FilePicker } from '@capawesome/capacitor-file-picker';
 import { DefaultWebViewOptions, InAppBrowser, ToolbarPosition } from '@capacitor/inappbrowser';
+//import { Directory, Encoding, Filesystem } from '@capacitor/filesystem'; 6.0.1
 
 register();
 
@@ -60,11 +61,7 @@ export class AppComponent {
       this.appPages.push({ title: 'Download', url: '/download', icon: 'download' })
     }
 
-    
-  }
 
-  async getDB(){
-    this.dbService.getDB()
   }
 
   async exportDatabase() {
@@ -93,9 +90,17 @@ export class AppComponent {
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
     }
-    await this.firestore.uploadJson(jsonString)
-    console.log("hola quiero descargar a json")
-    downloadJson(jsonString, 'database')
+    // await this.firestore.uploadJson(jsonString)
+    // console.log("hola quiero descargar a json")
+    // downloadJson(jsonString, 'database')
+    // await Filesystem.writeFile({
+    //   path: 'bible-tools.json',
+    //   data: jsonString,
+    //   directory: Directory.Documents,
+    //   encoding: Encoding.UTF8,
+    //   recursive: true
+    // });
+
   }
 
   async openPolicy(){
@@ -120,7 +125,7 @@ export class AppComponent {
 
       const decodedString = this.convertBase64ToString(result.files[0].data);
       let data = JSON.parse(decodedString)
-      //console.log(decodedString); // Imprime "Hello world"
+      console.log(decodedString); // Imprime "Hello world"
       let newDatabase = data.export
       newDatabase['overwrite'] = true
       newDatabase.version = 1
@@ -202,6 +207,7 @@ export class AppComponent {
     
     this.lightAnimation = this.darkMode
     this.config.changeFontSize(this.config.settings.options.fontSize)
+    this.darkMode ? this.theme.applyDark() : this.theme.removeDark()
   }
 
   async openGooglePlay(url: string) {
