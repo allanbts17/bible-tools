@@ -28,7 +28,12 @@ package-lock.json
 /.vscode
 /coverage
 /dist
+
 /node_modules
+# !node_modules/@capacitor-community/sqlite/android/build.gradle
+/saved-modules
+
+
 /platforms
 /plugins
 /www

@@ -47,8 +47,12 @@ export class AddNoteModalComponent implements OnInit {
   constructor(public config: ConfigService, public storageService: StorageService) { }
 
   ngOnInit() {
+    // setTimeout(()=> {
+    //   console.log("categorys")
+    //   console.log(this.categoryList)
+    // },5000)
     this.setTitle()
-    this.testAddNotes()
+    //this.testAddNotes()
   }
 
   /*onDismiss(){
@@ -157,16 +161,18 @@ export class AddNoteModalComponent implements OnInit {
 
   async testAddNotes() {
 
-    for (let i = 0; i <= 50; i++) {
+    for (let i = 0; i <= 300; i++) {
       let note = {
-        category: 6,
+        category: 5,
         date: "Oct 14, 2023 12:13 AM",
         title: makeId(10),
         text: makeId(100)
       }
       // console.log(note); 
-      // await this.storageService.addNote(note, "Test")
+      await this.storageService.addNote(note, "Prueba")
     }
+
+    console.log("done")
 
     //await this.storageService.addNote(data,category)
   }

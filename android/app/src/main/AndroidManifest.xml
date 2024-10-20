@@ -10,6 +10,7 @@
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
+        android:hasFragileUserData = "true"
       >
         <activity
 
@@ -37,4 +38,5 @@
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+
 </manifest>
