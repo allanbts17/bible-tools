@@ -28,7 +28,7 @@ export class ConfigService {
       menu:{
         header:"Bible Tools",
         note:"Choose a section",
-        items:["Bible","Daily devoctional","My verses","Download"],
+        items:["Bible","Daily devotional","My verses","Offline versions"],
         theme:["Light theme","Dark theme"]
       },
       daly_devotional:{
@@ -40,7 +40,7 @@ export class ConfigService {
       menu:{
         header:"Bible Tools",
         note:"Escoje una sección",
-        items:["Biblia","Diario devocional","Mis versículos","Descargar"],
+        items:["Biblia","Diario devocional","Mis versículos","Sin Conexión"],
         theme:["Modo claro","Modo oscuro"]
       },
       daly_devotional:{

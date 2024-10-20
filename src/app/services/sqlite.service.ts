@@ -33,6 +33,7 @@ export class SQLiteService {
             resolve(true);
         });
     }
+
     getPlatform() {
         return this.platform;
     }

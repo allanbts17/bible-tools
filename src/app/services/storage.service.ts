@@ -22,6 +22,7 @@ const LAST_CHAPTER_KEY = 'last-chapter'
 const MARKED_KEY = 'marked'
 const ID = 'id'
 const pagSize = 10
+const STORED_BIBLES = "stored-bibles"
 
 
 @Injectable({
@@ -326,6 +327,15 @@ export class StorageService {
 
   async getLastChapter() {
     return await this.storage.get(LAST_CHAPTER_KEY)
+  }
+
+  /***************** Stored Bibles ***********/
+  async setStoredBibles(bibles: string[]) {
+    return await this.storage.set(STORED_BIBLES, bibles)
+  }
+
+  async getStoredBibles() {
+    return await this.storage.get(STORED_BIBLES) || []
   }
 
   /***************** Data *******************/

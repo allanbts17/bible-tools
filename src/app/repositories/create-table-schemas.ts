@@ -90,4 +90,6 @@ CREATE TABLE IF NOT EXISTS chapters (
 );
 `;
 
-export const CreateTables = [categories, notes, topics, verses, marked, /*bibles, books, chapters*/]
+export const CreateTables = [categories, notes, topics, verses, marked, 
+ bibles, books, chapters
+]

@@ -61,9 +61,10 @@ export class BibleDataRepository {
         });
     }
 
-    async deleteBibleById(id: number): Promise<void> {
+    async deleteBibleById(id: string): Promise<void> {
+        console.log("deleting bible",id)
         return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
-            await db.query(`delete from bibles where id = ${id};`);
+            await db.query(`DELETE FROM bibles WHERE id = ?;`, [id]);
         });
     }
     ////////////////////////////////////////////////////////
@@ -110,6 +111,12 @@ export class BibleDataRepository {
             await db.query(`delete from books where id = ${id};`);
         });
     }
+
+    async deleteBooksByBibleId(id: string): Promise<void> {   
+        return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
+            await db.query(`DELETE FROM books WHERE bibleId = ?;`, [id]);
+        });
+    }
     ////////////////////////////////////////////////////////
     async getChapters(): Promise<any[]> {
         return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
@@ -154,6 +161,13 @@ export class BibleDataRepository {
     async deleteChapterById(id: string): Promise<void> {
         return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
             await db.query(`delete from chapters where id = ${id};`);
+        });
+    }
+
+    async deleteChapterByBibleId(id: string): Promise<void> {
+        return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
+            await db.query(`DELETE FROM chapters WHERE bibleId = ?;`,[id]);
+            
         });
     }
 }

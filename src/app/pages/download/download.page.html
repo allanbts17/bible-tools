@@ -7,21 +7,31 @@
         </ion-button>
       </ion-menu-toggle>
     </ion-buttons>
-    <ion-title>Descargar</ion-title>
+    <ion-title>Versiones sin conexión</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
     <ion-list  class="flex-1 w-full overflow-y-scroll h-full">
           <div *ngFor="let bible of biblesData">
-            <ion-item button (click)="select(bible)">
+            <ion-item button (click)="toDelete(bible.status)? deleteBible(bible):select(bible)">
                 <ion-label>{{bible.nameLocal}}</ion-label>
-                <ion-icon color="btprimary" *ngIf="bible.status == 0" name="download-outline"></ion-icon>
-                <ion-icon color="btprimary" *ngIf="bible.status == 1" name="close"></ion-icon>
-                <ion-icon color="btprimary" *ngIf="bible.status == 2" name="checkmark"></ion-icon>
+                <ion-icon color="btprimary" *ngIf="bible.status == status.NO_STORED" name="download-outline"></ion-icon>
+                <ion-icon color="btprimary" *ngIf="bible.status == status.DOWNLOADING" name="close"></ion-icon>
+                <ion-icon color="btprimary" *ngIf="bible.status == status.JUST_STORED" name="checkmark"></ion-icon>
+                <ion-icon color="btprimary" *ngIf="bible.status == status.ALREADY_STORED" name="checkmark-circle-outline"></ion-icon>
               </ion-item>
-              <ion-progress-bar  color="btprimary" *ngIf="bible.status == 1" [value]="bible.progress"></ion-progress-bar>
+              <ion-progress-bar  color="btprimary" *ngIf="bible.status == status.DOWNLOADING" [value]="bible.progress"></ion-progress-bar>
+              <ion-progress-bar color="btprimary"  *ngIf="bible.status == status.DELETING" type="indeterminate"></ion-progress-bar>
               
           </div>
       </ion-list>
+
+      <p ></p>
 </ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <p class="text-center p-2">Seleccione la versión de la biblia que desee descargar. Si ya la tiene descargada, podrá eliminarla. </p>
+  </ion-toolbar>
+  <!-- <p> Seleccione la versión de la biblia que desee descargar.</p> -->
+</ion-footer>
