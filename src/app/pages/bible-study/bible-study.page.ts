@@ -23,6 +23,7 @@ import { Swiper } from 'swiper/types';
 import { ConfigService } from 'src/app/services/config.service';
 import { App } from '@capacitor/app';
 import { RequestService } from 'src/app/services/request.service';
+import { OfflineRequestService } from 'src/app/services/offline-request.service';
 
 @Component({
   selector: 'app-bible-study',
@@ -83,7 +84,8 @@ export class BibleStudyPage implements OnInit {
     public sharedInfo: SharedInfoService,
     protected network: NetworkService,
     protected conf: ConfigService,
-    private req: RequestService
+    private req: RequestService,
+    private offline: OfflineRequestService
 
   ) {
     this.fontSize = `${conf.interpolateFontSize(conf.settings.options.fontSize)}rem`
@@ -267,16 +269,19 @@ export class BibleStudyPage implements OnInit {
   setAllSlides(bibleId: string, chapterId: string) {
     //this.slideIndex = 0
     ///debugger
+    console.log("setting all slides")
     this.resetSlides()
     this.apiService.getChapter(bibleId, chapterId, true).subscribe(
       async (chapterContent: Chapter) => {
         let chapter = chapterContent.data;
         this.chapterToSlideDistribution(this.slideIndex, chapter);
         
+        this.offline.retainConnection = true
         let promiseNext = this.setNextChapter(this.slideIndex, chapter); //.then(slide => console.log(slide)).catch(err => console.log(err))
         let promisePrev = this.setPrevChapter(this.slideIndex, chapter); //.then(slide => console.log(slide)).catch(err => console.log(err))
         this.req.showLoading()
         await Promise.all([promisePrev, promiseNext]);
+        this.offline.closeConnection()
         this.req.hideLoading()
         this.removeEmptySlides()
 

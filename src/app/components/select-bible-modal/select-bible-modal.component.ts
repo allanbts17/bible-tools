@@ -18,6 +18,7 @@ export class SelectBibleModalComponent {
   @Input() isOpen: boolean
   @Output() isOpenChange = new EventEmitter<boolean>()
   @Output() bibleSelectedEvent = new EventEmitter<any>()
+  storedBibles: string[] = []
 
   constructor(public config: ConfigService,
     public sharedInfo: SharedInfoService,
@@ -39,6 +40,14 @@ export class SelectBibleModalComponent {
   dismiss() {
     this.isOpen = false
     this.isOpenChange.emit(this.isOpen)
+  }
+
+  async justOpen(){
+    this.storedBibles = await this.storage.getStoredBibles()
+  }
+
+  bibleIsStored(id: string){
+    return this.storedBibles.find(sb => sb == id)
   }
 
 }

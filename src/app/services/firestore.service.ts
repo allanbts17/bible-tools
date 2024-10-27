@@ -2,13 +2,17 @@ import { Injectable } from '@angular/core';
 import { collection, doc, getDocs, setDoc, getFirestore, getDoc, updateDoc, deleteDoc, query } from "firebase/firestore";
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import { ConfigService } from './config.service';
-import { interval, firstValueFrom, Observable, throwError } from 'rxjs';
+import { interval, firstValueFrom, Observable, throwError, from } from 'rxjs';
 import { VersionMessage } from '../interfaces/version-message';
 import { RemoteConfig } from '../interfaces/remote-config';
-import { log } from '../classes/utils';
+import { log, OrderedBooksID } from '../classes/utils';
 import { map } from 'rxjs/operators';
 import { Chapter } from '../interfaces/chapter';
 import { Passage } from '../interfaces/passage';
+import { OfflineRequestService } from './offline-request.service';
+import { OfflineMethods } from '../offline-methods';
+import { StoredBook } from '../interfaces/stored-book';
+import { NetworkService } from './network.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +20,9 @@ import { Passage } from '../interfaces/passage';
 export class FirestoreService {
 
   constructor(private afs: AngularFirestore,
-    private config: ConfigService) {
+    private config: ConfigService,
+    private offline: OfflineRequestService,
+    private network: NetworkService) {
     // this.apiFirestoreRequest('')
   }
 
@@ -56,6 +62,7 @@ export class FirestoreService {
     return data
   }
 
+ 
   apiFirestoreRequest(url: string) {
     let response$: Observable<any>
     try {
@@ -79,29 +86,67 @@ export class FirestoreService {
       const getVerse = new RegExp(/https\:\/\/api\.scripture\.api\.bible\/v1\/bibles\/(.+)\/verses\/(.+).*/)
 
       if (getChapter.test(url)) {
-        console.log('enter on getChapter');
+        console.log('enter on getChapter',url);
         let { fir, sec } = getMatches(getChapter)
-        response$ = this.afs.collection(`Bibles/${fir}/Books/${sec.split('.')[0]}/Chapters`).doc(sec).get().pipe(map(res => res.data()))
+        if(this.offline.validateOffline(fir))
+          response$ = from(this.offline.handleRequest(OfflineMethods.GET_CHAPTER,fir,sec)).pipe(map(res => {
+            return {
+              data: res,
+              meta: res.meta
+            }
+        }))
+        else {
+          response$ = this.afs.collection(`Bibles/${fir}/Books/${sec.split('.')[0]}/Chapters`).doc(sec).get().pipe(map(res => res.data())) 
+        }
+
+
       } else if (getAllBibles.test(url)) {
         console.log('enter on allbibles');
-        response$ = this.afs.collection(`Bibles`).get()
+        // let no_conection = true
+        console.log("network",this.network.status)
+        if(!this.network.status.connected)
+          response$ = from(this.offline.handleRequest(OfflineMethods.GET_ALL_BIBLES)).pipe(map(res => {
+            return {
+              data: res
+            }
+          }))
+        else
+          response$ = this.afs.collection(`Bibles`).get()
           .pipe(map(res => {
             return {
               data: res.docs.map(doc => doc.data())
             }
           }))
+
+
       } else if (getAllBooks.test(url)) {
         console.log('enter on allBooks');
         let { fir, sec } = getMatches(getAllBooks)
-        response$ = this.afs.collection(`Bibles`).doc(fir).get().pipe(map((res: any) => {
-          return { data: res.data()?.bookList }
-        }))
+        if(this.offline.validateOffline(fir))
+          response$ = from(this.offline.handleRequest(OfflineMethods.GET_ALL_BOOKS,fir)).pipe(map((res: StoredBook[]) => {
+            return { data: res
+          }
+          }))
+        else
+          response$ = this.afs.collection(`Bibles`).doc(fir).get().pipe(map((res: any) => {
+            return { data: res.data()?.bookList }
+          }))
+
+
       } else if (getAllChapters.test(url)) {
         console.log('enter on allChapters');
         let { fir, sec } = getMatches(getAllChapters)
-        response$ = this.afs.collection(`Bibles/${fir}/Books`).doc(sec.split('.')[0]).get().pipe(map((res: any) => {
-          return { data: res.data()?.chapterList }
-        }))
+        if(this.offline.validateOffline(fir))
+          response$ = from(this.offline.handleRequest(OfflineMethods.GET_ALL_CHAPTERS,fir,sec.split('.')[0])).pipe(map((res: any) => {
+            return { data: res }
+          }))
+        else
+          response$ = this.afs.collection(`Bibles/${fir}/Books`).doc(sec.split('.')[0]).get().pipe(map((res: any) => {
+            return { data: res.data()?.chapterList }
+          }))
+
+
+
       } else if (getPassages.test(url)) {
         console.log('enter on passages');
 
@@ -114,8 +159,28 @@ export class FirestoreService {
         let chapter = passageRange[2]
         let firstVerse = passageRange[3]
         let lastVerse = passageRange[4]
-        response$ = this.afs.collection(`Bibles/${fir}/Books/${book}/Chapters`).doc(`${book}.${chapter}`).get().pipe(map(res => {
-          let chapterData: Chapter = res.data() as Chapter
+
+        let auxObs$: Observable<any>
+
+        if(this.offline.validateOffline(fir))
+          auxObs$ = from(this.offline.handleRequest(OfflineMethods.GET_PASSAGES,fir,`${book}.${chapter}`))
+        else
+          auxObs$ = this.afs.collection(`Bibles/${fir}/Books/${book}/Chapters`).doc(`${book}.${chapter}`).get()
+
+        auxObs$.subscribe(data => {
+          console.log("auxObs")
+          console.log(data)
+        })
+        response$ = auxObs$.pipe(map(res => {
+          let chapterData: Chapter
+          if(this.offline.validateOffline(fir)){
+            chapterData = {
+              data: res,
+              meta: res.meta
+            }
+          } else {
+            chapterData = res.data()
+          }
           let content = chapterData.data.content
           let htmlObject = document.createElement('div');
           htmlObject.innerHTML = content;

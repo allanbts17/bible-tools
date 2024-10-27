@@ -4,11 +4,14 @@ import { map } from 'rxjs';
 import { BibleDownloadStatus } from 'src/app/classes/bible-download-status';
 import { log, lopy } from 'src/app/classes/utils';
 import { Bible } from 'src/app/interfaces/bible';
+import { Chapter } from 'src/app/interfaces/chapter';
+import { StoredBook } from 'src/app/interfaces/stored-book';
 import { BibleDataRepository } from 'src/app/repositories/bible-data.repository';
 import { ApiService } from 'src/app/services/api.service';
 import { ConfigService } from 'src/app/services/config.service';
 import { DatabaseService } from 'src/app/services/database.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
+import { OfflineRequestService } from 'src/app/services/offline-request.service';
 import { SharedInfoService } from 'src/app/services/shared-info.service';
 import { StorageService } from 'src/app/services/storage.service';
 import { TaskService } from 'src/app/services/task.service';
@@ -22,7 +25,7 @@ export class DownloadPage implements OnInit {
   prograssBarData = []
   biblesData = []
   status = BibleDownloadStatus
-  storedBibles: string[] = []
+  //storedBibles: string[] = []
 
   constructor(protected config: ConfigService,
     public sharedInfo: SharedInfoService,
@@ -32,7 +35,8 @@ export class DownloadPage implements OnInit {
     private bibleRep: BibleDataRepository,
     private db: DatabaseService,
     private storage: StorageService,
-    private alertController: AlertController) {
+    private alertController: AlertController,
+    private offlineReq: OfflineRequestService) {
     // status
     // 0 No stored
     // 1 Downloading
@@ -40,7 +44,7 @@ export class DownloadPage implements OnInit {
     // 3 Already stored
 
     storage.getStoredBibles().then((bibles: string[]) => {
-      this.storedBibles = bibles
+      this.offlineReq.storedBibles = bibles
       api.getAllBibles().subscribe(data => {
         this.biblesData = data.data.map(b => {
           return {
@@ -109,8 +113,8 @@ export class DownloadPage implements OnInit {
       await this.bibleRep.deleteBibleById(bible.id)
       await this.bibleRep.deleteBooksByBibleId(bible.id)
       await this.bibleRep.deleteChapterByBibleId(bible.id)
-      this.storedBibles = this.storedBibles.filter(sb => sb !== bible.id)
-      await this.storage.setStoredBibles(this.storedBibles)
+      this.offlineReq.storedBibles = this.offlineReq.storedBibles.filter(sb => sb !== bible.id)
+      await this.storage.setStoredBibles(this.offlineReq.storedBibles)
 
       bible.status = BibleDownloadStatus.NO_STORED
     }
@@ -121,7 +125,7 @@ export class DownloadPage implements OnInit {
 
 
 
-  select(bible: any) {
+  select(bible: Bible & { status: BibleDownloadStatus, progress: number } ) {
     if (bible.status == BibleDownloadStatus.DOWNLOADING) {
       bible.status = BibleDownloadStatus.NO_STORED
       this.task.abortTask(bible.id)
@@ -133,7 +137,12 @@ export class DownloadPage implements OnInit {
     this.task.createTask(bible.id, (id) => {
 
       let books: any[]
-      this.firestore.getBooks(bible.id).then(async data => {
+      this.firestore.getBooks(bible.id).then(async (data: StoredBook[]) => {
+        data.sort((a,b,)=>{
+          let aIndex = bible.bookList.findIndex(bk => bk.id == a.id)
+          let bIndex = bible.bookList.findIndex(bk => bk.id == b.id)
+          return aIndex - bIndex
+        })
         books = data
         let step = 1 / (4 + books.length)
         bible.progress += step
@@ -141,7 +150,9 @@ export class DownloadPage implements OnInit {
 
         for (let bk of books) {
           this.task.checkStatus(id)
-          bk['chapters'] = await this.firestore.getChapters(bible.id, bk.id)
+          bk['chapters'] = (await this.firestore.getChapters(bible.id, bk.id)).sort((a: Chapter,b: Chapter)=>{
+            return parseInt(a.data.number) - parseInt(b.data.number)
+          })
           this.task.checkStatus(id)
           bible.progress += step
         }
@@ -161,8 +172,8 @@ export class DownloadPage implements OnInit {
           }
         }
 
-        this.storedBibles.push(bible.id)
-        await this.storage.setStoredBibles(this.storedBibles)
+        this.offlineReq.storedBibles.push(bible.id)
+        await this.storage.setStoredBibles(this.offlineReq.storedBibles)
         this.task.checkStatus(id)
 
         bible.progress = 1

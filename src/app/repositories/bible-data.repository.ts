@@ -72,7 +72,20 @@ export class BibleDataRepository {
         return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
             var bibles: DBSQLiteValues = await db.query("select * from books");
             bibles.values.forEach(b => this.convertJSON(b,['chapterList']))
-            return bibles.values as Bible[];
+            return bibles.values;
+        });
+    }
+
+    async getBooksByBibleId(bibleId: string): Promise<any> {
+        return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
+            let sqlcmd: string = "select * from books where bibleId = ?";
+            let values: Array<any> = [bibleId];
+            let ret: any = await db.query(sqlcmd, values);
+            if (ret.values.length > 0) {
+                ret.values.forEach(b => this.convertJSON(b,['chapterList']))
+                return ret.values;
+            }
+            throw Error('get book by id failed');
         });
     }
 
@@ -93,7 +106,7 @@ export class BibleDataRepository {
         });
     }
 
-    async getBookById(id: string): Promise<any> {
+    async getBookById(bibleId: string, id: string): Promise<any> {
         return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
             let sqlcmd: string = "select * from books where id = ? limit 1";
             let values: Array<any> = [id];
@@ -106,7 +119,7 @@ export class BibleDataRepository {
         });
     }
 
-    async deleteBookById(id: string): Promise<void> {
+    async deleteBookById(bibleId: string, id: string): Promise<void> {
         return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
             await db.query(`delete from books where id = ${id};`);
         });
@@ -125,6 +138,20 @@ export class BibleDataRepository {
             return bibles.values as Bible[];
         });
     }
+
+    async getChaptersByBibleIdAndBook(bibleId: string, bookId: string): Promise<any> {
+        return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
+            let sqlcmd: string = "select * from chapters where bibleId = ? and bookId = ?";
+            let values: Array<any> = [bibleId,bookId];
+            let ret: any = await db.query(sqlcmd, values);
+            if (ret.values.length > 0) {
+                ret.values.forEach(b => this.convertJSON(b,['meta','next','previous']))
+                return ret.values as Bible[];
+            }
+            throw Error('get book by id failed');
+        });
+    }
+
 
     async createChapters(chapter: Chapter) {
         return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
@@ -145,20 +172,20 @@ export class BibleDataRepository {
         });
     }
 
-    async getChapterById(id: string): Promise<any> {
+    async getChapterById(bibleId: string, id: string, retainConnection = false): Promise<any> {
         return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
-            let sqlcmd: string = "select * from chapters where id = ? limit 1";
-            let values: Array<any> = [id];
+            let sqlcmd: string = "SELECT * FROM chapters WHERE id = ? AND bibleId = ? LIMIT 1";
+            let values: Array<any> = [id, bibleId]; 
             let ret: any = await db.query(sqlcmd, values);
             if (ret.values.length > 0) {
                 this.convertJSON(ret.values[0],['meta','next','previous'])
                 return ret.values[0] as Bible;
             }
             throw Error('get book by id failed');
-        });
+        },retainConnection);
     }
 
-    async deleteChapterById(id: string): Promise<void> {
+    async deleteChapterById(bibleId: string, id: string): Promise<void> {
         return this._databaseService.executeQuery<any>(async (db: SQLiteDBConnection) => {
             await db.query(`delete from chapters where id = ${id};`);
         });

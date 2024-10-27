@@ -103,6 +103,7 @@ export class SelectPassageModalComponent {
         console.log('booksss',books);
         this.bookList = data.data
         console.log(data);
+        console.log('to copy',data.data.map(bk => bk.id));
       })
     }
   }

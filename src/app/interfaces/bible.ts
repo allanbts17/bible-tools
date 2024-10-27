@@ -1,4 +1,5 @@
 import { Language } from "./language";
+import { StoredBook } from "./stored-book";
 
 export interface Bible {
   id:	string;
@@ -16,6 +17,6 @@ export interface Bible {
   updatedAt:	string;
   relatedDbl:	string;
   audioBibles:any[];
-  bookList: any[];
+  bookList: StoredBook[];
   order: number;
 }
