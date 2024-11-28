@@ -9,7 +9,7 @@ export const environment = {
   featureFlags: {
     verseFilter: false,
     downloadBibles: true,
-    exportDatabase: true
+    exportDatabase: false
   },
   firebase: {
     apiKey: "AIzaSyDC7H8v4GBCifIxvQP_RwX3svsjmge_Fu4",

@@ -44,6 +44,7 @@ export class SelectBibleModalComponent {
 
   async justOpen(){
     this.storedBibles = await this.storage.getStoredBibles()
+    console.log('storedBibles',this.storedBibles)
   }
 
   bibleIsStored(id: string){

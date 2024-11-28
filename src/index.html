@@ -56,6 +56,16 @@
 
         return rgbToYIQ(rgb) >= threshold ? "#000" : "#fff";
       }
+
+      var hideLogs = false
+      console.tag = (message,tag,type) => {
+        if(hideLogs) return
+        if(tag != undefined){
+          console.log(tag,message)
+        } else {
+          console.log(message)
+        }
+      }
     </script>
     <script
       type="text/javascript"

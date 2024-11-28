@@ -72,9 +72,8 @@ export class RequestService {
     saveCache = true,
     showLoading = true,
     handleError = true): Observable<any> {
+    console.log("Request",path,showLoading)
     let index = path + JSON.stringify(headers)
-    // if(showLoading)
-    //   console.log('loading request',path)
     if (this.cache[index]) {
       return of(this.cache[index])
     }
@@ -88,21 +87,16 @@ export class RequestService {
           return this.http.get<T>(path, headers)
       }
   
-      //log('selectEmitter',selectEmiter())
       let request$ = selectEmiter().pipe(map(data => {
-        //console.log('dataa', data);
-  
         if (saveCache) {
           this.cache[index] = data
         }
         return data
       }))
 
-      let promise = new Promise((sucess, reject) => {
-        
+      let promise = new Promise(async (sucess, reject) => {
+        if (showLoading) await this.showLoading()
         request$.subscribe(async (data: any) => {
-          //console.log('dataa',data);
-          
           if (data?.meta?.fumsToken)
             fums(
               "trackView",
@@ -114,13 +108,12 @@ export class RequestService {
           if (showLoading) this.hideLoading()
           sucess(data)
         }, async error => {
-          //console.log('on error',error);
           if (showLoading) await this.hideLoading()
           if (handleError) await this.errorMessageAlert()
           reject(error)
         })
       })
-      if (showLoading) this.showLoading()
+     
       return from(promise)
 
     } catch (error) {

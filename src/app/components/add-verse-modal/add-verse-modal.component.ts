@@ -116,6 +116,8 @@ export class AddVerseModalComponent implements OnInit {
     }
     this.verseInputTimeout = setTimeout(() => {
       this.showInputMessage = !this.validateVerseInput(text)
+      if(this.showInputMessage)
+        return
       let chId = this.selectedChapter.id
       text = text.replace(/\s+/g, '')
       let arr = text.split(',')
@@ -191,9 +193,10 @@ export class AddVerseModalComponent implements OnInit {
     let verseTopicName
     if (this.newVerse)
       this.verse.date = moment().format('lll')
-
+    //console.log('showNewTopicInput',this.showNewTopicInput,this.validateVerse())
     if (this.showNewTopicInput) {
-      if (this.newTopic.name != "") {
+      if (this.newTopic.name != "" && this.verse.text != "" && !this.showInputMessage && !this.showNotFoundMessage) {
+       // console.log("llegue aqui")
         let topic = await this.addTopics(this.newTopic)
         verseTopicName = topic.name
         this.verse.topic = topic.id
@@ -207,6 +210,7 @@ export class AddVerseModalComponent implements OnInit {
     }
 
     //console.log('Before save',this.verse)
+    //console.log("Validate",this.validateVerse())
     if (this.validateVerse() && !this.showInputMessage && !this.showNotFoundMessage) {
       //console.log('enter, newNote',this.newVerse)
       if (this.newVerse)

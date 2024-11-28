@@ -7,6 +7,7 @@ import { BibleDataRepository } from '../repositories/bible-data.repository';
 import { NoteRepository } from '../repositories/note.repository';
 import { NetworkService } from './network.service';
 import { RequestService } from './request.service';
+import { OfflineRequestService } from './offline-request.service';
 
 @Injectable({
   providedIn: 'root'
@@ -24,16 +25,17 @@ export class SharedInfoService {
     private storage: StorageService,
     private bibleRep: BibleDataRepository,
     private network: NetworkService,
-    private req: RequestService) { }
+    private req: RequestService,
+    private offline: OfflineRequestService) { }
 
   async init() {
     if (!this.once) {
       this.once = true
-      if (this.network.status.connected) {
+     // if (this.network.status.connected) {
         this.req.showLoading()
         await this.getAvailableBibles();
         await this.setChapterAndBible();
-      }
+     // }
 
       console.log('on sharedInfo');
       // let bibles = await this.bibleRep.getBibles()
@@ -69,11 +71,18 @@ export class SharedInfoService {
 
   async setChapterAndBible() {
     let lastChapter = await this.getLastChapterStored()
-    console.log('last chap', lastChapter);
+    
+      
+    console.log('last chap','des', lastChapter);
     if (lastChapter !== null) {
-      this.bible = this.allBibles.find(bible => bible.id === lastChapter.bibleId)
+      this.bible = this.allBibles.find(bible => bible.id === lastChapter.bibleId) || this.allBibles[0] || this.bibleList[0].bibles[0]
+      console.log("bible",'des',this.bible)
+      if(!this.network.status.connected){
+        this.offline.storedBibles = await this.storage.getStoredBibles()
+        lastChapter.bibleId = this.bible.id
+      }
       let aux: any = await this.apiService.getChapter(lastChapter.bibleId, lastChapter.chapterId).toPromise()
-      console.log('auuux', aux);
+      console.log('auuux','des', aux);
 
       this.chapter = aux.data
     } else {

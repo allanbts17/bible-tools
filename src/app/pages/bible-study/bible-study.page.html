@@ -8,7 +8,7 @@
       </ion-menu-toggle>
     </ion-buttons>
     <ion-buttons
-      *ngIf="network.status?.connected && sharedInfo.chapter && sharedInfo.bible"
+      *ngIf="sharedInfo.chapter && sharedInfo.bible"
     >
       <ion-button
         color="{{conf.TOOLBAR_BUTTONS_COLOR}}"

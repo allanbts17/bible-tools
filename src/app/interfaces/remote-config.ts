@@ -1,3 +1,4 @@
 export interface RemoteConfig {
-    requestToFirebase: boolean
+    requestToFirebase: boolean;
+    copyOwnDb: boolean
 }

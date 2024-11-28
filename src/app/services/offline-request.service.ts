@@ -23,8 +23,7 @@ export class OfflineRequestService {
   }
 
   validateOffline(bibleId: string){
-    return false
-    return this.storedBibles.find(sb => sb == bibleId)
+    return this.storedBibles?.find(sb => sb == bibleId)
   }
 
   handleRequest(method: OfflineMethods, bibleId?: string, second?: string): Promise<any> {

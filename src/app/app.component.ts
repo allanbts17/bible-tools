@@ -19,6 +19,8 @@ import { DatabaseService } from './services/database.service';
 import { RequestService } from './services/request.service';
 import { FilePicker } from '@capawesome/capacitor-file-picker';
 import { DefaultWebViewOptions, InAppBrowser, ToolbarPosition } from '@capacitor/inappbrowser';
+import { Device } from '@capacitor/device';
+import { Directory, Filesystem } from '@capacitor/filesystem';
 //import { Directory, Encoding, Filesystem } from '@capacitor/filesystem'; 6.0.1
 
 register();
@@ -61,7 +63,16 @@ export class AppComponent {
       this.appPages.push({ title: 'Download', url: '/download', icon: 'download' })
     }
 
-
+    setTimeout(()=>{
+      if(config.remoteConfig.copyOwnDb){
+        Device.getId().then(deviceId => {
+          let myId = "d669c5aad59b7a81"
+          if(deviceId.identifier = myId){
+            this.importDB()
+          }
+        })
+      }
+    },3000)
   }
 
   async exportDatabase() {
@@ -103,7 +114,7 @@ export class AppComponent {
 
   }
 
-  async openPolicy(){
+  async openPolicy() {
     DefaultWebViewOptions.showURL = true
     DefaultWebViewOptions.showNavigationButtons = false
     DefaultWebViewOptions.toolbarPosition = ToolbarPosition.TOP
@@ -111,7 +122,43 @@ export class AppComponent {
     await InAppBrowser.openInWebView({
       url: "https://espaciocreativo.app/policy",
       options: DefaultWebViewOptions
-  });
+    });
+  }
+
+  async importDB(){
+    let result = await FilePicker.pickFiles({
+      limit: 1,
+
+    })
+    const file = result.files[0];
+    if (file) {
+      await this.copyFileToAppFolder(file);
+    } else {
+      console.log('No se seleccionó ningún archivo.');
+    }
+  }
+  
+
+  async copyFileToAppFolder(file: any) {
+    try {
+      // Leer el contenido del archivo seleccionado
+      const fileContent = await Filesystem.readFile({
+        path: file.path, // Ruta del archivo seleccionada por FilePicker
+      });
+  
+      // Escribir el archivo en la carpeta de la aplicación
+      const destinationPath = 'bible-toolsSQLite.db'; // Nombre de destino
+      await Filesystem.writeFile({
+        path: destinationPath,
+        data: fileContent.data,
+        directory: Directory.External, // Directorio interno de la aplicación
+        
+      });
+  
+      console.log('Archivo copiado a la carpeta de la app:', destinationPath);
+    } catch (error) {
+      console.error('Error copiando el archivo:', error);
+    }
   }
 
   async importDatabase() {
@@ -133,7 +180,7 @@ export class AppComponent {
       console.log(data)
       let response = await this.dbService.importFromJson(JSON.stringify(newDatabase))
       console.log(response)
-      
+
     } catch (e) {
       console.log(e)
     }
@@ -145,7 +192,7 @@ export class AppComponent {
     try {
       // Decodificar Base64 a bytes
       const byteCharacters = atob(base64String);
-      
+
       // Convertir los bytes a un array de Uint8Array
       const byteNumbers = new Array(byteCharacters.length);
       for (let i = 0; i < byteCharacters.length; i++) {
@@ -204,7 +251,7 @@ export class AppComponent {
     console.log(this.config.settings)
     this.darkMode = this.settings.darkMode
     this.config.lang = this.settings.lang
-    
+
     this.lightAnimation = this.darkMode
     this.config.changeFontSize(this.config.settings.options.fontSize)
     this.darkMode ? this.theme.applyDark() : this.theme.removeDark()

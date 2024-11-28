@@ -126,25 +126,29 @@ export class BibleStudyPage implements OnInit {
         id: 'EMPTY',
       } as ChapterData);
     this.setDefaultData();
+    this.storage.getStoredBibles().then(storedBibles => {
+      this.offline.storedBibles = storedBibles
+      console.log("storedBibles",this.offline.storedBibles)
+    })
     setTimeout(() => {
       let obs$ = this.network.status$.subscribe(async (status) => {
         if (this.networkStatus !== status.connected && this.networkStatus !== undefined)
           setTimeout(async () => {
             console.log('to reload page');
             this.networkStatus = status.connected
-            this.slides = this.swiperRef?.nativeElement.swiper;
-            // lopy("debug", "network status", status)
-            // lopy("debug", "on network sus slides", this.slides)
-            // lopy("debug", "swiperRef", this.swiperRef)
-            this.showedChapters = []
-            this.showedChapters.push({
-              content: '',
-              bibleId: '',
-              id: 'EMPTY',
-            } as ChapterData);
-            this.sharedInfo.once = false
-            await this.sharedInfo.init()
-            this.setDefaultData();
+            // this.slides = this.swiperRef?.nativeElement.swiper;
+            // // lopy("debug", "network status", status)
+            // // lopy("debug", "on network sus slides", this.slides)
+            // // lopy("debug", "swiperRef", this.swiperRef)
+            // this.showedChapters = []
+            // this.showedChapters.push({
+            //   content: '',
+            //   bibleId: '',
+            //   id: 'EMPTY',
+            // } as ChapterData);
+            // this.sharedInfo.once = false
+            // await this.sharedInfo.init()
+            // this.setDefaultData();
 
           });
 
@@ -279,9 +283,11 @@ export class BibleStudyPage implements OnInit {
         this.offline.retainConnection = true
         let promiseNext = this.setNextChapter(this.slideIndex, chapter); //.then(slide => console.log(slide)).catch(err => console.log(err))
         let promisePrev = this.setPrevChapter(this.slideIndex, chapter); //.then(slide => console.log(slide)).catch(err => console.log(err))
-        this.req.showLoading()
+        await this.req.showLoading()
         await Promise.all([promisePrev, promiseNext]);
+        //console.tag("Prueba","Tambien Llegué Aquí")
         this.offline.closeConnection()
+        //console.tag("Prueba","Llegué Aquí")
         this.req.hideLoading()
         this.removeEmptySlides()
 

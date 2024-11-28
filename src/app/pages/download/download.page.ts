@@ -43,8 +43,15 @@ export class DownloadPage implements OnInit {
     // 2 Just stored
     // 3 Already stored
 
-    storage.getStoredBibles().then((bibles: string[]) => {
+    storage.getStoredBibles().then(async (bibles: string[]) => {
       this.offlineReq.storedBibles = bibles
+      if(bibles.length == 0){
+        bibles = (await this.bibleRep.getBibles()).map(b => b.id)
+        this.offlineReq.storedBibles = bibles
+        storage.setStoredBibles(this.offlineReq.storedBibles)
+      }
+      
+      
       api.getAllBibles().subscribe(data => {
         this.biblesData = data.data.map(b => {
           return {
@@ -55,16 +62,17 @@ export class DownloadPage implements OnInit {
         })
         //log(this.biblesData)
       })
+    
     })
 
   }
 
 
   async ngOnInit(): Promise<void> {
-    let bibles = await this.bibleRep.getBibles()
+    //let bibles = await this.bibleRep.getBibles()
     let chapters = await this.bibleRep.getChapters()
     let books = await this.bibleRep.getBooks()
-    console.log('bibles', bibles)
+   // console.log('bibles', bibles)
     console.log('chapters', chapters)
     console.log('books', books)
 

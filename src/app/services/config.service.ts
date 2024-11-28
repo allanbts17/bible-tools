@@ -19,7 +19,8 @@ export class ConfigService {
     }
   }
   remoteConfig: RemoteConfig = {
-    requestToFirebase: true
+    requestToFirebase: true,
+    copyOwnDb: false
   }
   availableBibleLanguages = [{id:"spa",name:"Español"},{id:"eng",name:"English"}]
 

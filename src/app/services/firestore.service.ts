@@ -136,6 +136,7 @@ export class FirestoreService {
       } else if (getAllChapters.test(url)) {
         console.log('enter on allChapters');
         let { fir, sec } = getMatches(getAllChapters)
+        console.log("validateOffline",fir,this.offline.validateOffline(fir))
         if(this.offline.validateOffline(fir))
           response$ = from(this.offline.handleRequest(OfflineMethods.GET_ALL_CHAPTERS,fir,sec.split('.')[0])).pipe(map((res: any) => {
             return { data: res }
