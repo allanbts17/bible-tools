@@ -6,7 +6,7 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage-angular';
 import { FormsModule } from '@angular/forms';
 import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
@@ -28,38 +28,32 @@ export function initializeFactory(init: InitializeAppService) {
   return () => init.initializeApp();
 }
 
-@NgModule({
-  declarations: [AppComponent],
-  //entryComponents: [],
-  imports: [BrowserModule,
-    IonicModule.forRoot(),
-    FormsModule,
-    IonicStorageModule.forRoot({
-      name: "new-database",
-      driverOrder: [CordovaSQLiteDriver._driver, Drivers.IndexedDB]
-    }),
-    AppRoutingModule,
-    HttpClientModule],
-  providers: [
-    SQLiteService,
-    DetailService,
-    DatabaseService,
-    InitializeAppService,
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideFirestore(() => getFirestore()),
-    //  ProductRepository,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeFactory,
-      deps: [InitializeAppService],
-      multi: true
-    },
-    { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
-
-    MigrationService,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
-  ],
-  bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-})
+@NgModule({ declarations: [AppComponent],
+    bootstrap: [AppComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [BrowserModule,
+        IonicModule.forRoot(),
+        FormsModule,
+        IonicStorageModule.forRoot({
+            name: "new-database",
+            driverOrder: [CordovaSQLiteDriver._driver, Drivers.IndexedDB]
+        }),
+        AppRoutingModule], providers: [
+        SQLiteService,
+        DetailService,
+        DatabaseService,
+        InitializeAppService,
+        provideFirebaseApp(() => initializeApp(environment.firebase)),
+        provideFirestore(() => getFirestore()),
+        //  ProductRepository,
+        {
+            provide: APP_INITIALIZER,
+            useFactory: initializeFactory,
+            deps: [InitializeAppService],
+            multi: true
+        },
+        { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
+        MigrationService,
+        { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule { }
