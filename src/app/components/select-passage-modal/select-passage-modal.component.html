@@ -58,8 +58,8 @@
   @if (showFab) {
   <ion-fab
     [ngClass]="{
-      animate__bounceInUp: slides?.activeIndex == 1,
-      animate__backOutDown: slides?.activeIndex == 0
+      animate__bounceInUp: $safeNavigationMigration(slides?.activeIndex) == 1,
+      animate__backOutDown: $safeNavigationMigration(slides?.activeIndex) == 0
     }"
     class="animate__animated"
     vertical="bottom"

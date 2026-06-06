@@ -264,7 +264,7 @@
               threshold="100px"
               id="infinite-scroll"
               class=""
-              [disabled]="tab?.disabled"
+              [disabled]="$safeNavigationMigration(tab?.disabled)"
               (ionInfinite)="onScroll($event)"
             >
               <ion-infinite-scroll-content

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { map } from 'rxjs';
 import { BibleDownloadStatus } from 'src/app/classes/bible-download-status';
@@ -17,18 +17,20 @@ import { StorageService } from 'src/app/services/storage.service';
 import { TaskService } from 'src/app/services/task.service';
 
 @Component({
-    selector: 'app-download.page',
-    templateUrl: './download.page.html',
-    styleUrls: ['./download.page.css'],
-    standalone: false
+  selector: 'app-download.page',
+  templateUrl: './download.page.html',
+  styleUrls: ['./download.page.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false,
 })
 export class DownloadPage implements OnInit {
-  prograssBarData = []
-  biblesData = []
-  status = BibleDownloadStatus
+  prograssBarData = [];
+  biblesData = [];
+  status = BibleDownloadStatus;
   //storedBibles: string[] = []
 
-  constructor(protected config: ConfigService,
+  constructor(
+    protected config: ConfigService,
     public sharedInfo: SharedInfoService,
     private api: ApiService,
     private firestore: FirestoreService,
@@ -37,51 +39,50 @@ export class DownloadPage implements OnInit {
     private db: DatabaseService,
     private storage: StorageService,
     private alertController: AlertController,
-    private offlineReq: OfflineRequestService) {
+    private offlineReq: OfflineRequestService
+  ) {
     // status
     // 0 No stored
     // 1 Downloading
     // 2 Just stored
     // 3 Already stored
-    console.log("download constructor")
+    console.log('download constructor');
 
     storage.getStoredBibles().then(async (bibles: string[]) => {
-      this.offlineReq.storedBibles = bibles
-      console.log("download","status",bibles)
-      if(bibles.length == 0){
-        bibles = (await this.bibleRep.getBibles()).map(b => b.id)
-        this.offlineReq.storedBibles = bibles
-        storage.setStoredBibles(this.offlineReq.storedBibles)
+      this.offlineReq.storedBibles = bibles;
+      console.log('download', 'status', bibles);
+      if (bibles.length == 0) {
+        bibles = (await this.bibleRep.getBibles()).map((b) => b.id);
+        this.offlineReq.storedBibles = bibles;
+        storage.setStoredBibles(this.offlineReq.storedBibles);
       }
-      
-      console.log("download","stored bibles", bibles)
-      api.getAllBibles().subscribe(data => {
-        console.log("download","get all bibles", data)
-        this.biblesData = data.data.map(b => {
+
+      console.log('download', 'stored bibles', bibles);
+      api.getAllBibles().subscribe((data) => {
+        console.log('download', 'get all bibles', data);
+        this.biblesData = data.data.map((b) => {
           return {
             ...b,
-            status: bibles.find(bible => bible == b.id) ? BibleDownloadStatus.ALREADY_STORED : BibleDownloadStatus.NO_STORED,
-            progress: 0
-          }
-        })
+            status: bibles.find((bible) => bible == b.id)
+              ? BibleDownloadStatus.ALREADY_STORED
+              : BibleDownloadStatus.NO_STORED,
+            progress: 0,
+          };
+        });
         //log(this.biblesData)
-      })
-    
-    })
+      });
+    });
 
-    console.log("end download constructor")
-
+    console.log('end download constructor');
   }
 
-
   async ngOnInit(): Promise<void> {
-    let bibles = await this.bibleRep.getBibles()
-    let chapters = await this.bibleRep.getChapters()
-    let books = await this.bibleRep.getBooks()
-    console.log('bibles', bibles)
-    console.log('chapters', chapters)
-    console.log('books', books)
-
+    let bibles = await this.bibleRep.getBibles();
+    let chapters = await this.bibleRep.getChapters();
+    let books = await this.bibleRep.getBooks();
+    console.log('bibles', bibles);
+    console.log('chapters', chapters);
+    console.log('books', books);
   }
 
   async presentAlert(callback: any) {
@@ -90,116 +91,114 @@ export class DownloadPage implements OnInit {
       message: '¿Seguro que desea borrar esta versión de la biblia?',
       buttons: [
         {
-          text: "Sí",
+          text: 'Sí',
           role: 'confirm',
           handler: () => {
-            callback()
-          }
+            callback();
+          },
         },
         {
-          text: "No",
+          text: 'No',
           role: 'cancel',
-          handler: () => {
-
-          }
-        }
-      ]
+          handler: () => {},
+        },
+      ],
     });
 
     await alert.present();
   }
 
-
   toDelete(bibleStatus: BibleDownloadStatus) {
-    if (bibleStatus == BibleDownloadStatus.ALREADY_STORED || bibleStatus == BibleDownloadStatus.JUST_STORED)
-      return true
-    else
-      return false
+    if (
+      bibleStatus == BibleDownloadStatus.ALREADY_STORED ||
+      bibleStatus == BibleDownloadStatus.JUST_STORED
+    )
+      return true;
+    else return false;
   }
 
   deleteBible(bible: any) {
-    
-
     let onDelete = async () => {
       //console.log(bible, bible.id)
-      bible.status = BibleDownloadStatus.DELETING
+      bible.status = BibleDownloadStatus.DELETING;
 
-      await this.bibleRep.deleteBibleById(bible.id)
-      await this.bibleRep.deleteBooksByBibleId(bible.id)
-      await this.bibleRep.deleteChapterByBibleId(bible.id)
-      this.offlineReq.storedBibles = this.offlineReq.storedBibles.filter(sb => sb !== bible.id)
-      await this.storage.setStoredBibles(this.offlineReq.storedBibles)
+      await this.bibleRep.deleteBibleById(bible.id);
+      await this.bibleRep.deleteBooksByBibleId(bible.id);
+      await this.bibleRep.deleteChapterByBibleId(bible.id);
+      this.offlineReq.storedBibles = this.offlineReq.storedBibles.filter(
+        (sb) => sb !== bible.id
+      );
+      await this.storage.setStoredBibles(this.offlineReq.storedBibles);
 
-      bible.status = BibleDownloadStatus.NO_STORED
-    }
+      bible.status = BibleDownloadStatus.NO_STORED;
+    };
 
-    this.presentAlert(onDelete)
-
+    this.presentAlert(onDelete);
   }
 
-
-
-  select(bible: Bible & { status: BibleDownloadStatus, progress: number } ) {
+  select(bible: Bible & { status: BibleDownloadStatus; progress: number }) {
     if (bible.status == BibleDownloadStatus.DOWNLOADING) {
-      bible.status = BibleDownloadStatus.NO_STORED
-      this.task.abortTask(bible.id)
-      return
+      bible.status = BibleDownloadStatus.NO_STORED;
+      this.task.abortTask(bible.id);
+      return;
     }
-    if (bible.status !== BibleDownloadStatus.NO_STORED) return
-    bible.status = BibleDownloadStatus.DOWNLOADING
+    if (bible.status !== BibleDownloadStatus.NO_STORED) return;
+    bible.status = BibleDownloadStatus.DOWNLOADING;
 
     this.task.createTask(bible.id, (id) => {
+      let books: any[];
+      this.firestore
+        .getBooks(bible.id)
+        .then(async (data: StoredBook[]) => {
+          data.sort((a, b) => {
+            let aIndex = bible.bookList.findIndex((bk) => bk.id == a.id);
+            let bIndex = bible.bookList.findIndex((bk) => bk.id == b.id);
+            return aIndex - bIndex;
+          });
+          books = data;
+          let step = 1 / (4 + books.length);
+          bible.progress += step;
+          this.task.checkStatus(id);
 
-      let books: any[]
-      this.firestore.getBooks(bible.id).then(async (data: StoredBook[]) => {
-        data.sort((a,b,)=>{
-          let aIndex = bible.bookList.findIndex(bk => bk.id == a.id)
-          let bIndex = bible.bookList.findIndex(bk => bk.id == b.id)
-          return aIndex - bIndex
-        })
-        books = data
-        let step = 1 / (4 + books.length)
-        bible.progress += step
-        this.task.checkStatus(id)
-
-        for (let bk of books) {
-          this.task.checkStatus(id)
-          bk['chapters'] = (await this.firestore.getChapters(bible.id, bk.id)).sort((a: Chapter,b: Chapter)=>{
-            return parseInt(a.data.number) - parseInt(b.data.number)
-          })
-          this.task.checkStatus(id)
-          bible.progress += step
-        }
-
-        await this.db.createConnection()
-        await this.bibleRep.createBible(bible)
-        bible.progress += step
-        this.task.checkStatus(id)
-        for (let bk of books) {
-          this.task.checkStatus(id)
-          await this.bibleRep.createBooks(bk)
-          bible.progress += step
-          lopy('book pro', bible.progress)
-          for (let ch of bk.chapters) {
-            this.task.checkStatus(id)
-            await this.bibleRep.createChapters(ch)
+          for (let bk of books) {
+            this.task.checkStatus(id);
+            bk['chapters'] = (
+              await this.firestore.getChapters(bible.id, bk.id)
+            ).sort((a: Chapter, b: Chapter) => {
+              return parseInt(a.data.number) - parseInt(b.data.number);
+            });
+            this.task.checkStatus(id);
+            bible.progress += step;
           }
-        }
 
-        this.offlineReq.storedBibles.push(bible.id)
-        await this.storage.setStoredBibles(this.offlineReq.storedBibles)
-        this.task.checkStatus(id)
+          await this.db.createConnection();
+          await this.bibleRep.createBible(bible);
+          bible.progress += step;
+          this.task.checkStatus(id);
+          for (let bk of books) {
+            this.task.checkStatus(id);
+            await this.bibleRep.createBooks(bk);
+            bible.progress += step;
+            lopy('book pro', bible.progress);
+            for (let ch of bk.chapters) {
+              this.task.checkStatus(id);
+              await this.bibleRep.createChapters(ch);
+            }
+          }
 
-        bible.progress = 1
-        bible.status = BibleDownloadStatus.JUST_STORED
-        console.log('finished', books);
-        await this.db.closeConnection()
+          this.offlineReq.storedBibles.push(bible.id);
+          await this.storage.setStoredBibles(this.offlineReq.storedBibles);
+          this.task.checkStatus(id);
 
-      }).catch(async (error) => {
-        console.log(error)
-        await this.db.closeConnection()
-      })
-    })
+          bible.progress = 1;
+          bible.status = BibleDownloadStatus.JUST_STORED;
+          console.log('finished', books);
+          await this.db.closeConnection();
+        })
+        .catch(async (error) => {
+          console.log(error);
+          await this.db.closeConnection();
+        });
+    });
   }
-
 }

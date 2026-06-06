@@ -1,40 +1,50 @@
-import { Component, Input, OnInit, Output, ViewChild, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+  EventEmitter,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { AlertController, IonModal } from '@ionic/angular';
 import { Colors, makeId } from 'src/app/classes/utils';
 import { ConfigService } from 'src/app/services/config.service';
 
 @Component({
-    selector: 'app-modal-template',
-    templateUrl: './modal-template.component.html',
-    styleUrls: ['./modal-template.component.scss'],
-    standalone: false
+  selector: 'app-modal-template',
+  templateUrl: './modal-template.component.html',
+  styleUrls: ['./modal-template.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false,
 })
 export class ModalTemplateComponent implements OnInit {
   @ViewChild('modal') modal: IonModal;
-  @Input() title
-  @Output() modalDidPresent = new EventEmitter<any>()
-  @Output() closedEvent = new EventEmitter<any>()
-  @Input() toolbarColor: string = '#1D71B8'
-  @Input() askBeforeCloseMessage: { msg: string, active: boolean } = { msg: "", active: false }
+  @Input() title;
+  @Output() modalDidPresent = new EventEmitter<any>();
+  @Output() closedEvent = new EventEmitter<any>();
+  @Input() toolbarColor: string = '#1D71B8';
+  @Input() askBeforeCloseMessage: { msg: string; active: boolean } = {
+    msg: '',
+    active: false,
+  };
 
-  constructor(private config: ConfigService,
+  constructor(
+    private config: ConfigService,
     private alertController: AlertController
-  ) { 
-  }
+  ) {}
 
-  ngOnInit() { 
-    
-  }
+  ngOnInit() {}
 
   willDismiss() {
     try {
       if (this.config.settings.darkMode) {
-        StatusBar.setBackgroundColor({ color: Colors.statusBarDarkMode })
-        StatusBar.setStyle({ style: Style.Dark })
+        StatusBar.setBackgroundColor({ color: Colors.statusBarDarkMode });
+        StatusBar.setStyle({ style: Style.Dark });
       } else {
-        StatusBar.setBackgroundColor({ color: Colors.statusBarLightMode })
-        StatusBar.setStyle({ style: Style.Dark })
+        StatusBar.setBackgroundColor({ color: Colors.statusBarLightMode });
+        StatusBar.setStyle({ style: Style.Dark });
       }
       //console.log('destroyed');
     } catch (err) {
@@ -45,11 +55,11 @@ export class ModalTemplateComponent implements OnInit {
   willPresent() {
     try {
       if (this.config.settings.darkMode) {
-        StatusBar.setBackgroundColor({ color: Colors.statusBarModalDarkMode })
-        StatusBar.setStyle({ style: Style.Dark })
+        StatusBar.setBackgroundColor({ color: Colors.statusBarModalDarkMode });
+        StatusBar.setStyle({ style: Style.Dark });
       } else {
-        StatusBar.setBackgroundColor({ color: Colors.statusBarModalLightMode })
-        StatusBar.setStyle({ style: Style.Dark })
+        StatusBar.setBackgroundColor({ color: Colors.statusBarModalLightMode });
+        StatusBar.setStyle({ style: Style.Dark });
       }
       //console.log('init');
     } catch (err) {
@@ -58,26 +68,23 @@ export class ModalTemplateComponent implements OnInit {
   }
 
   didPresent() {
-    this.modalDidPresent.emit()
+    this.modalDidPresent.emit();
   }
 
   present() {
-    this.modal.present()
+    this.modal.present();
   }
 
   dismiss() {
-    if(this.askBeforeCloseMessage.active){
-      this.closeConfirmationAlert(this.askBeforeCloseMessage.msg)
+    if (this.askBeforeCloseMessage.active) {
+      this.closeConfirmationAlert(this.askBeforeCloseMessage.msg);
     } else {
-      this.closedEvent.emit()
-      this.modal.dismiss()
+      this.closedEvent.emit();
+      this.modal.dismiss();
     }
-    
   }
 
-
-
-  async closeConfirmationAlert(msg: string){
+  async closeConfirmationAlert(msg: string) {
     //console.log('confirm',cat)
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
@@ -89,19 +96,19 @@ export class ModalTemplateComponent implements OnInit {
           role: 'cancel',
           cssClass: 'secondary',
           id: 'cancel-button',
-          handler: (blah) => {}
-        }, {
+          handler: (blah) => {},
+        },
+        {
           text: 'Cerrar',
           id: 'confirm-button',
           handler: async () => {
-            this.closedEvent.emit()
-            this.modal.dismiss()
-          }
-        }
-      ]
+            this.closedEvent.emit();
+            this.modal.dismiss();
+          },
+        },
+      ],
     });
 
     await alert.present();
   }
-
 }

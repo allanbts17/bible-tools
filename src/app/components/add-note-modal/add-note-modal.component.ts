@@ -1,58 +1,72 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { IonModal } from '@ionic/angular';
 import { StorageService } from 'src/app/services/storage.service';
-import * as moment from 'moment'
+import * as moment from 'moment';
 import { Category } from 'src/app/interfaces/category';
 import { Note } from 'src/app/interfaces/note';
 //import { StatusBar, Style } from '@capacitor/status-bar';
 import { Colors, makeId } from 'src/app/classes/utils';
 import { ConfigService } from 'src/app/services/config.service';
 
-
 @Component({
-    selector: 'app-add-note-modal',
-    templateUrl: './add-note-modal.component.html',
-    styleUrls: ['./add-note-modal.component.scss'],
-    standalone: false
+  selector: 'app-add-note-modal',
+  templateUrl: './add-note-modal.component.html',
+  styleUrls: ['./add-note-modal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false,
 })
 export class AddNoteModalComponent implements OnInit {
   @ViewChild('modal') modal: IonModal;
-  @Output() addNoteEvent = new EventEmitter<any>()
-  @Output() addCategoryEvent = new EventEmitter<any>()
-  @Input() categoryList: Category[]
-  newNote = true
-  showNewCategoryInput = false
-  showColorPicker = false
-  showRedText = false
-  askClosingMsg = { msg: "¿Quieres cerrar sin guardar la nota?", active: false }
+  @Output() addNoteEvent = new EventEmitter<any>();
+  @Output() addCategoryEvent = new EventEmitter<any>();
+  @Input() categoryList: Category[];
+  newNote = true;
+  showNewCategoryInput = false;
+  showColorPicker = false;
+  showRedText = false;
+  askClosingMsg = {
+    msg: '¿Quieres cerrar sin guardar la nota?',
+    active: false,
+  };
 
-  selectCategoryName = ""
+  selectCategoryName = '';
   newCategory: Category = {
-    category: "",
-    color: "#fff"
-  }
+    category: '',
+    color: '#fff',
+  };
   note: Note = {
     category: 0,
-    date: "",
-    title: "",
-    text: ""
-  }
+    date: '',
+    title: '',
+    text: '',
+  };
 
   titleText = {
-    new: "Añadir nota",
-    edit: "Editar nota"
-  }
-  actualTitle
+    new: 'Añadir nota',
+    edit: 'Editar nota',
+  };
+  actualTitle;
   prevCategory: string;
 
-  constructor(public config: ConfigService, public storageService: StorageService) { }
+  constructor(
+    public config: ConfigService,
+    public storageService: StorageService
+  ) {}
 
   ngOnInit() {
     // setTimeout(()=> {
     //   console.log("categorys")
     //   console.log(this.categoryList)
     // },5000)
-    this.setTitle()
+    this.setTitle();
     //this.testAddNotes()
   }
 
@@ -69,129 +83,127 @@ export class AddNoteModalComponent implements OnInit {
 
   setTitle() {
     if (this.newNote) {
-      this.actualTitle = this.titleText.new
+      this.actualTitle = this.titleText.new;
     } else {
-      this.actualTitle = this.titleText.edit
+      this.actualTitle = this.titleText.edit;
     }
   }
 
-  setCategory(tab: {name:string,id:number}){
-    this.showNewCategoryInput = false
-    this.selectCategoryName = this.categoryList.find(cat => cat.id == tab.id).category
-    this.note.category = tab.id
+  setCategory(tab: { name: string; id: number }) {
+    this.showNewCategoryInput = false;
+    this.selectCategoryName = this.categoryList.find(
+      (cat) => cat.id == tab.id
+    ).category;
+    this.note.category = tab.id;
   }
 
-  setToNewFunction(tab: {name:string,id:number}) {
-    this.resetValues()
-    this.newNote = true
-    if(tab.id != -1)
-      this.setCategory(tab)
-    this.setTitle()
-    
+  setToNewFunction(tab: { name: string; id: number }) {
+    this.resetValues();
+    this.newNote = true;
+    if (tab.id != -1) this.setCategory(tab);
+    this.setTitle();
   }
 
   setToEditFunction(note: Note) {
-    this.newNote = false
-    this.setTitle()
-    this.showNewCategoryInput = false
-    this.selectCategoryName = this.categoryList.find(cat => cat.id == note.category).category
-    this.prevCategory = this.selectCategoryName
-    this.note = { ...note }
-    console.log(this.note)
+    this.newNote = false;
+    this.setTitle();
+    this.showNewCategoryInput = false;
+    this.selectCategoryName = this.categoryList.find(
+      (cat) => cat.id == note.category
+    ).category;
+    this.prevCategory = this.selectCategoryName;
+    this.note = { ...note };
+    console.log(this.note);
     // this.initialCategoryName = category.category
   }
 
-
   async saveNote() {
-    let noteCategoryName
-    if (this.newNote)
-      this.note.date = moment().format('lll')
+    let noteCategoryName;
+    if (this.newNote) this.note.date = moment().format('lll');
 
     if (this.showNewCategoryInput) {
-      if (this.newCategory.category != "") {
-        var cat = await this.addCategories(this.newCategory)
-        noteCategoryName = cat.category
-        this.note.category = cat.id
+      if (this.newCategory.category != '') {
+        var cat = await this.addCategories(this.newCategory);
+        noteCategoryName = cat.category;
+        this.note.category = cat.id;
       }
     } else {
-      if (this.selectCategoryName != "") {
-        let category = this.categoryList.find(cat => cat.category == this.selectCategoryName)
-        this.note.category = category.id
-        noteCategoryName = category.category
+      if (this.selectCategoryName != '') {
+        let category = this.categoryList.find(
+          (cat) => cat.category == this.selectCategoryName
+        );
+        this.note.category = category.id;
+        noteCategoryName = category.category;
       }
     }
 
-    console.log('Before save', this.note)
+    console.log('Before save', this.note);
 
     if (this.validateNote()) {
-      console.log('enter, newNote', this.newNote)
-      if (this.newNote)
-        await this.addNote(this.note, noteCategoryName)
-      else
-        await this.editNote(this.note, noteCategoryName)
-      this.resetValues()
-      console.log('before close',this.askClosingMsg)
-      this.modal.dismiss()
+      console.log('enter, newNote', this.newNote);
+      if (this.newNote) await this.addNote(this.note, noteCategoryName);
+      else await this.editNote(this.note, noteCategoryName);
+      this.resetValues();
+      console.log('before close', this.askClosingMsg);
+      this.modal.dismiss();
     } else {
-      this.showRedText = true
+      this.showRedText = true;
     }
-
   }
 
   validateNote() {
-    var validTitle = this.note.title != ""
-    var validText = this.note.text != ""
-    var validCategory = this.note.category != 0
+    var validTitle = this.note.title != '';
+    var validText = this.note.text != '';
+    var validCategory = this.note.category != 0;
     //var validNewCategory = !(this.showNewCategoryInput && this.newCategory.category == "")
-    return validTitle && validText && validCategory
+    return validTitle && validText && validCategory;
   }
 
   selectColor(color) {
-    this.newCategory.color = color
+    this.newCategory.color = color;
   }
 
   async addNote(data, category) {
-    console.log('added note: ', data, category)
-    await this.storageService.addNote(data, category)
-    this.addNoteEvent.emit()
+    console.log('added note: ', data, category);
+    await this.storageService.addNote(data, category);
+    this.addNoteEvent.emit();
   }
 
-  changedDetected(){
-    this.askClosingMsg.active = true
+  changedDetected() {
+    this.askClosingMsg.active = true;
   }
 
   async testAddNotes() {
-
     for (let i = 0; i <= 300; i++) {
       let note = {
         category: 5,
-        date: "Oct 14, 2023 12:13 AM",
+        date: 'Oct 14, 2023 12:13 AM',
         title: makeId(10),
-        text: makeId(100)
-      }
-      // console.log(note); 
-      await this.storageService.addNote(note, "Prueba")
+        text: makeId(100),
+      };
+      // console.log(note);
+      await this.storageService.addNote(note, 'Prueba');
     }
 
-    console.log("done")
+    console.log('done');
 
     //await this.storageService.addNote(data,category)
   }
 
   async editNote(data, category) {
-    await this.storageService.editNote(data, this.prevCategory)
+    await this.storageService.editNote(data, this.prevCategory);
     //await this.storageService.editItemByID('notes',data)
-    this.addNoteEvent.emit()
+    this.addNoteEvent.emit();
   }
 
   async addCategories(data) {
     //var catArr = await this.storageService.addData('categories',data)
-    var catArr = await this.storageService.addCategories(data)
-    this.addCategoryEvent.emit(catArr)
-    this.loadCategories()
+    var catArr = await this.storageService.addCategories(data);
+    this.addCategoryEvent.emit(catArr);
+    this.loadCategories();
     console.log('newCat', catArr, catArr.slice(-1)[0]);
 
-    return catArr.slice(-1)[0]
+    return catArr.slice(-1)[0];
   }
 
   async loadCategories() {
@@ -201,26 +213,25 @@ export class AddNoteModalComponent implements OnInit {
   handleSelectChange(e) {
     console.log('sel', e);
 
-    var value = e.detail.value
-    this.showNewCategoryInput = value == "Nuevo"
+    var value = e.detail.value;
+    this.showNewCategoryInput = value == 'Nuevo';
   }
 
   resetValues() {
-    this.askClosingMsg.active = false
-    this.showNewCategoryInput = false
-    this.showColorPicker = false
-    this.showRedText = false
-    this.selectCategoryName = ""
+    this.askClosingMsg.active = false;
+    this.showNewCategoryInput = false;
+    this.showColorPicker = false;
+    this.showRedText = false;
+    this.selectCategoryName = '';
     this.newCategory = {
-      category: "",
-      color: "#fff"
-    }
+      category: '',
+      color: '#fff',
+    };
     this.note = {
       category: 0,
-      date: "",
-      title: "",
-      text: ""
-    }
+      date: '',
+      title: '',
+      text: '',
+    };
   }
-
 }

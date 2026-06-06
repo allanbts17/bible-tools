@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { Platform } from '@ionic/angular';
@@ -18,7 +18,11 @@ import { Browser } from '@capacitor/browser';
 import { DatabaseService } from './services/database.service';
 import { RequestService } from './services/request.service';
 import { FilePicker } from '@capawesome/capacitor-file-picker';
-import { DefaultWebViewOptions, InAppBrowser, ToolbarPosition } from '@capacitor/inappbrowser';
+import {
+  DefaultWebViewOptions,
+  InAppBrowser,
+  ToolbarPosition,
+} from '@capacitor/inappbrowser';
 import { Device } from '@capacitor/device';
 import { Directory, Filesystem } from '@capacitor/filesystem';
 //import { Directory, Encoding, Filesystem } from '@capacitor/filesystem'; 6.0.1
@@ -26,59 +30,69 @@ import { Directory, Filesystem } from '@capacitor/filesystem';
 register();
 
 @Component({
-    selector: 'app-root',
-    templateUrl: 'app.component.html',
-    styleUrls: ['app.component.scss'],
-    standalone: false
+  selector: 'app-root',
+  templateUrl: 'app.component.html',
+  styleUrls: ['app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false,
 })
 export class AppComponent {
   public appPages = [
     { title: 'Bible', url: '/bible-study', icon: 'book' },
-    { title: 'Daily devotional', url: '/daily-devotional', icon: 'document-text' },
+    {
+      title: 'Daily devotional',
+      url: '/daily-devotional',
+      icon: 'document-text',
+    },
     { title: 'Verse index', url: '/verse-index', icon: 'list' },
   ];
-  header_title = "Herramientas Bíblicas"
-  header_subtitle = ""
-  darkMode = false
-  settings: Settings
+  header_title = 'Herramientas Bíblicas';
+  header_subtitle = '';
+  darkMode = false;
+  settings: Settings;
   private initPlugin: boolean;
   products: Product[] = [];
   public isWeb: boolean = false;
-  showAnimate = false
-  lightAnimation = false
-  versionMessage: VersionMessage
-  allowExportToJson: boolean = false
-  constructor(public config: ConfigService,
+  showAnimate = false;
+  lightAnimation = false;
+  versionMessage: VersionMessage;
+  allowExportToJson: boolean = false;
+  constructor(
+    public config: ConfigService,
     public storage: StorageService,
     public theme: ThemeService,
     public platform: Platform,
     private firestore: FirestoreService,
     sql: SQLiteService,
-    private dbService: DatabaseService,
-    //req: RequestService
+    private dbService: DatabaseService
+  ) //req: RequestService
 
-  ) {
-    this.allowExportToJson = environment.featureFlags.exportDatabase
-    this.init()
+  {
+    this.allowExportToJson = environment.featureFlags.exportDatabase;
+    this.init();
     if (environment.featureFlags.downloadBibles) {
-      this.appPages.push({ title: 'Download', url: '/download', icon: 'download' })
+      this.appPages.push({
+        title: 'Download',
+        url: '/download',
+        icon: 'download',
+      });
     }
 
-    setTimeout(()=>{
-      if(config.remoteConfig.copyOwnDb){
-        Device.getId().then(deviceId => {
-          let myId = "d669c5aad59b7a81"
-          if(deviceId.identifier = myId){
-            this.importDB()
+    setTimeout(() => {
+      if (config.remoteConfig.copyOwnDb) {
+        Device.getId().then((deviceId) => {
+          let myId = 'd669c5aad59b7a81';
+          if ((deviceId.identifier = myId)) {
+            this.importDB();
           }
-        })
+        });
       }
-    },3000)
+    }, 3000);
   }
 
   async exportDatabase() {
-    let data = await this.dbService.exportToJson()
-    console.log("JSON Data", data)
+    let data = await this.dbService.exportToJson();
+    console.log('JSON Data', data);
     const jsonString = JSON.stringify(data, null, 2);
     function downloadJson(jsonString: string, fileName: string) {
       // Create a blob of the JSON data
@@ -112,25 +126,23 @@ export class AppComponent {
     //   encoding: Encoding.UTF8,
     //   recursive: true
     // });
-
   }
 
   async openPolicy() {
-    DefaultWebViewOptions.showURL = true
-    DefaultWebViewOptions.showNavigationButtons = false
-    DefaultWebViewOptions.toolbarPosition = ToolbarPosition.TOP
-    DefaultWebViewOptions.closeButtonText = "Atrás"
+    DefaultWebViewOptions.showURL = true;
+    DefaultWebViewOptions.showNavigationButtons = false;
+    DefaultWebViewOptions.toolbarPosition = ToolbarPosition.TOP;
+    DefaultWebViewOptions.closeButtonText = 'Atrás';
     await InAppBrowser.openInWebView({
-      url: "https://espaciocreativo.app/policy",
-      options: DefaultWebViewOptions
+      url: 'https://espaciocreativo.app/policy',
+      options: DefaultWebViewOptions,
     });
   }
 
-  async importDB(){
+  async importDB() {
     let result = await FilePicker.pickFiles({
       limit: 1,
-
-    })
+    });
     const file = result.files[0];
     if (file) {
       await this.copyFileToAppFolder(file);
@@ -138,7 +150,6 @@ export class AppComponent {
       console.log('No se seleccionó ningún archivo.');
     }
   }
-  
 
   async copyFileToAppFolder(file: any) {
     try {
@@ -146,16 +157,15 @@ export class AppComponent {
       const fileContent = await Filesystem.readFile({
         path: file.path, // Ruta del archivo seleccionada por FilePicker
       });
-  
+
       // Escribir el archivo en la carpeta de la aplicación
       const destinationPath = 'bible-toolsSQLite.db'; // Nombre de destino
       await Filesystem.writeFile({
         path: destinationPath,
         data: fileContent.data,
         directory: Directory.External, // Directorio interno de la aplicación
-        
       });
-  
+
       console.log('Archivo copiado a la carpeta de la app:', destinationPath);
     } catch (error) {
       console.error('Error copiando el archivo:', error);
@@ -167,26 +177,25 @@ export class AppComponent {
       let result = await FilePicker.pickFiles({
         types: ['application/json'],
         limit: 1,
-        readData: true
-      })
-      console.log(result)
+        readData: true,
+      });
+      console.log(result);
 
       const decodedString = this.convertBase64ToString(result.files[0].data);
-      let data = JSON.parse(decodedString)
+      let data = JSON.parse(decodedString);
       console.log(decodedString); // Imprime "Hello world"
-      let newDatabase = data.export
-      newDatabase['overwrite'] = true
-      newDatabase.version = 1
-      newDatabase['database'] = "bible-tools"
-      console.log(data)
-      let response = await this.dbService.importFromJson(JSON.stringify(newDatabase))
-      console.log(response)
-
+      let newDatabase = data.export;
+      newDatabase['overwrite'] = true;
+      newDatabase.version = 1;
+      newDatabase['database'] = 'bible-tools';
+      console.log(data);
+      let response = await this.dbService.importFromJson(
+        JSON.stringify(newDatabase)
+      );
+      console.log(response);
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
-
-
   }
 
   convertBase64ToString(base64String: string): string {
@@ -206,18 +215,15 @@ export class AppComponent {
 
       console.log('Decoded String:', decodedString);
       return decodedString;
-
     } catch (error) {
       console.error('Error decoding Base64:', error);
       return '';
     }
   }
 
-
-
   getCurrentAppVersion = async () => {
     const result = await AppUpdate.getAppUpdateInfo();
-    console.log('appUpdateResult', result)
+    console.log('appUpdateResult', result);
     return result.currentVersionCode;
   };
 
@@ -229,75 +235,73 @@ export class AppComponent {
 
     this.platform.ready().then(async () => {
       //SplashScreen.hide();
-      await this.getSettings()
-      this.setText()
+      await this.getSettings();
+      this.setText();
 
       try {
-        this.config.versionApp = parseFloat(await this.getCurrentAppVersion())
+        this.config.versionApp = parseFloat(await this.getCurrentAppVersion());
         console.log('version', this.config.versionApp);
       } catch (err) {
-        this.config.versionApp = 1
+        this.config.versionApp = 1;
       }
-      this.versionMessage = await this.firestore.getVersionMessage()
+      this.versionMessage = await this.firestore.getVersionMessage();
     });
     // this.config.remoteConfig = await this.firestore.getRemoteConfig()
     // console.log('set: ',this.config.remoteConfig)
   }
 
   async getSettings() {
-    this.settings = await this.storage.getSettings()
+    this.settings = await this.storage.getSettings();
 
+    this.config.settings = this.settings;
+    console.log(this.config.settings);
+    this.darkMode = this.settings.darkMode;
+    this.config.lang = this.settings.lang;
 
-    this.config.settings = this.settings
-    console.log(this.config.settings)
-    this.darkMode = this.settings.darkMode
-    this.config.lang = this.settings.lang
-
-    this.lightAnimation = this.darkMode
-    this.config.changeFontSize(this.config.settings.options.fontSize)
-    this.darkMode ? this.theme.applyDark() : this.theme.removeDark()
+    this.lightAnimation = this.darkMode;
+    this.config.changeFontSize(this.config.settings.options.fontSize);
+    this.darkMode ? this.theme.applyDark() : this.theme.removeDark();
   }
 
   async openGooglePlay(url: string) {
     console.log('opening google play');
-    AppUpdate.openAppStore()
+    AppUpdate.openAppStore();
     //await Browser.open({ url: url });
   }
 
   changeTheme() {
     // this.lightAnimation = this.darkMode
-    this.showAnimate = true
+    this.showAnimate = true;
     setTimeout(() => {
-      this.showAnimate = false
-      this.lightAnimation = this.darkMode
-    }, 700)
+      this.showAnimate = false;
+      this.lightAnimation = this.darkMode;
+    }, 700);
 
     setTimeout(() => {
-      this.darkMode = !this.darkMode
-      this.darkMode ? this.theme.applyDark() : this.theme.removeDark()
-      this.settings.darkMode = this.darkMode
-      this.config.settings = this.settings
-      this.storage.setSettings(this.settings)
-    }, 196)
-
+      this.darkMode = !this.darkMode;
+      this.darkMode ? this.theme.applyDark() : this.theme.removeDark();
+      this.settings.darkMode = this.darkMode;
+      this.config.settings = this.settings;
+      this.storage.setSettings(this.settings);
+    }, 196);
   }
 
   setText() {
-    this.header_title = this.config.getData().menu.header
+    this.header_title = this.config.getData().menu.header;
     console.log('title', this.header_title);
 
-    this.header_subtitle = this.config.getData().menu.note
+    this.header_subtitle = this.config.getData().menu.note;
     for (let i = 0; i < this.appPages.length; i++) {
-      this.appPages[i].title = this.config.getData().menu.items[i]
+      this.appPages[i].title = this.config.getData().menu.items[i];
     }
   }
 
   onRangeChange(e: any) {
-    let size = e.detail.value
-    this.config.settings.options.fontSize = e.detail.value
-    this.config.changeFontSize(this.config.settings.options.fontSize)
-    this.storage.setSettings(this.config.settings)
-    log(e.detail.value)
+    let size = e.detail.value;
+    this.config.settings.options.fontSize = e.detail.value;
+    this.config.changeFontSize(this.config.settings.options.fontSize);
+    this.storage.setSettings(this.config.settings);
+    log(e.detail.value);
   }
 }
 
