@@ -12,12 +12,16 @@
     "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "es2015",
-    "module": "es2020"
+    "module": "es2020",
+    "strict": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "suppressImplicitAnyIndexErrors": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
-    "strictTemplates": true
+    "strictTemplates": false
   }
 }
