@@ -13,7 +13,7 @@ import { StorageService } from 'src/app/services/storage.service';
 import { SharedInfoService } from 'src/app/services/shared-info.service';
 import { SelectPassageModalComponent } from 'src/app/components/select-passage-modal/select-passage-modal.component';
 import _ from 'underscore';
-import { Utils, copy, log, lopy, removeByIndexList } from 'src/app/classes/utils';
+import { SharedActions, Utils, copy, log, lopy, removeByIndexList } from 'src/app/classes/utils';
 import { SelectBibleModalComponent } from 'src/app/components/select-bible-modal/select-bible-modal.component';
 import { NetworkService } from 'src/app/services/network.service';
 import { Chapter, ChapterData } from 'src/app/interfaces/chapter';
@@ -125,7 +125,29 @@ export class BibleStudyPage implements OnInit {
         bibleId: '',
         id: 'EMPTY',
       } as ChapterData);
-    this.setDefaultData();
+      // setTimeout(()=>{
+      //   this.setDefaultData();
+      // },7000)
+      //this.setDefaultData();
+
+      if(this.sharedInfo.initFinished){
+        console.log("just finished")
+        setTimeout(() => {
+          this.setDefaultData();
+        },500)
+      } else {
+        let actionSubscription = this.sharedInfo.sharedAction$.subscribe(action => {
+          console.log("throuth obs",action)
+          if(action == SharedActions.SHARED_INFO_INIT){
+            setTimeout(() => {
+              this.setDefaultData();
+            })
+            actionSubscription.unsubscribe()
+          }
+        })
+      }
+
+
     this.storage.getStoredBibles().then(storedBibles => {
       this.offline.storedBibles = storedBibles
       console.log("storedBibles",this.offline.storedBibles)
@@ -283,7 +305,7 @@ export class BibleStudyPage implements OnInit {
         this.offline.retainConnection = true
         let promiseNext = this.setNextChapter(this.slideIndex, chapter); //.then(slide => console.log(slide)).catch(err => console.log(err))
         let promisePrev = this.setPrevChapter(this.slideIndex, chapter); //.then(slide => console.log(slide)).catch(err => console.log(err))
-        await this.req.showLoading()
+        await this.req.showLoading(false,'BibleStudyPage')
         await Promise.all([promisePrev, promiseNext]);
         //console.tag("Prueba","Tambien Llegué Aquí")
         this.offline.closeConnection()
@@ -685,7 +707,7 @@ export class BibleStudyPage implements OnInit {
   }
 
   async setDefaultData() {
-    //lopy("debug", "sharedInfo bible and chapter", this.sharedInfo.bible, this.sharedInfo.chapter)
+    lopy("debug", "sharedInfo bible and chapter", this.sharedInfo.bible, this.sharedInfo.chapter)
     this.setAllSlides(this.sharedInfo.bible.id, this.sharedInfo.chapter.id);
 
   }

@@ -41,7 +41,7 @@ export class RequestService {
     alert.present();
   }
 
-  public async showLoading() {
+  public async showLoading(onRequest = false, classNamePath?: string) {
     if (!this.loadingPresented) {
       this.loadingPresented = true
       const modal = await this.modalCtrl.create({
@@ -50,11 +50,18 @@ export class RequestService {
         showBackdrop: true,
         animated: true
       });
+      if(onRequest){
+        console.trace("load",classNamePath,"onRequest","showLoading")
+      } else {
+        console.trace("load",classNamePath,"out Request","showLoading")
+      }
+      
       await modal.present();
     }
   }
 
   public async hideLoading() {
+    console.trace("load","hideLoading")
     await this.modalCtrl.dismiss()
     this.loadingPresented = false
   }
@@ -95,7 +102,7 @@ export class RequestService {
       }))
 
       let promise = new Promise(async (sucess, reject) => {
-        if (showLoading) await this.showLoading()
+        if (showLoading) await this.showLoading(true,path)
         request$.subscribe(async (data: any) => {
           if (data?.meta?.fumsToken)
             fums(
@@ -108,6 +115,7 @@ export class RequestService {
           if (showLoading) this.hideLoading()
           sucess(data)
         }, async error => {
+          console.log("error",path,error)
           if (showLoading) await this.hideLoading()
           if (handleError) await this.errorMessageAlert()
           reject(error)

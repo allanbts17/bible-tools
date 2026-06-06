@@ -9,6 +9,7 @@ import { NetworkService } from './network.service';
 import _ from 'underscore'
 import { FirestoreService } from './firestore.service';
 import { ConfigService } from './config.service';
+import { DatabaseService } from './database.service';
 
 @Injectable()
 export class InitializeAppService {
@@ -20,12 +21,15 @@ export class InitializeAppService {
     private shareInfo: SharedInfoService,
     private network: NetworkService,
     private firestore: FirestoreService,
-    private config: ConfigService) { }
+    private config: ConfigService,
+    private db: DatabaseService
+  ) { }
 
   async initializeApp() {
     await this.sqliteService.initializePlugin().then(async (ret) => {
       try {
         //execute startup queries
+        this.db.retainConnection = true
         await this.migrationService.migrate();
         await this.storageService.init();
         let status = await this.network.getStatus()
@@ -39,8 +43,10 @@ export class InitializeAppService {
         }
 
         await this.shareInfo.init()
-
-
+        console.log("Init sucessfull")
+        setTimeout(()=>{
+          this.db.retainConnection = false
+        },5000)
 
         // if (status.connected) {
         //   await this.shareInfo.init()

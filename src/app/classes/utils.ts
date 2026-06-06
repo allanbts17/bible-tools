@@ -60,6 +60,10 @@ export enum Colors {
   statusBarModalLightMode = '#1D71B8',
 }
 
+export enum SharedActions {
+  SHARED_INFO_INIT
+}
+
 export class Utils {
   private stack: Array<any> = []
   private runFor = true

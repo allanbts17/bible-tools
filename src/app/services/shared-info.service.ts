@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { ConfigService } from './config.service';
 import { StorageService } from './storage.service';
-import { copy } from '../classes/utils';
+import { copy, SharedActions } from '../classes/utils';
 import { BibleDataRepository } from '../repositories/bible-data.repository';
 import { NoteRepository } from '../repositories/note.repository';
 import { NetworkService } from './network.service';
 import { RequestService } from './request.service';
 import { OfflineRequestService } from './offline-request.service';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,8 @@ export class SharedInfoService {
   bibleList = []
   private allBibles = []
   once = false
+  initFinished = false
+  sharedAction$: Subject<SharedActions> = new Subject<SharedActions>()
   constructor(private config: ConfigService,
     private apiService: ApiService,
     private storage: StorageService,
@@ -32,11 +35,13 @@ export class SharedInfoService {
     if (!this.once) {
       this.once = true
      // if (this.network.status.connected) {
-        this.req.showLoading()
+        await this.req.showLoading(false,'SharedInfoService')
         await this.getAvailableBibles();
         await this.setChapterAndBible();
+        this.req.hideLoading()
      // }
-
+      this.initFinished = true
+      this.sharedAction$.next(SharedActions.SHARED_INFO_INIT)
       console.log('on sharedInfo');
       // let bibles = await this.bibleRep.getBibles()
       // let books = await this.bibleRep.getBooks()
