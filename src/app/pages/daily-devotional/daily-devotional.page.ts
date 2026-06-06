@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { ConfigService } from 'src/app/services/config.service';
 import { StorageService } from 'src/app/services/storage.service';
-import * as moment from 'moment';
+import moment from 'moment';
 import { AddNoteModalComponent } from 'src/app/components/add-note-modal/add-note-modal.component';
 import { AddCategoryComponent } from 'src/app/components/add-category/add-category.component';
 import { Category } from 'src/app/interfaces/category';

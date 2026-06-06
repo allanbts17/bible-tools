@@ -1,5 +1,5 @@
 import cloneDeep from 'lodash.clonedeep'
-import * as moment from 'moment'
+import moment from 'moment'
 
 export const copy = (source: any) => {
   return cloneDeep(source)

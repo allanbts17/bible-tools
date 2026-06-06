@@ -10,7 +10,7 @@ import {
 import { IonModal, ToastController } from '@ionic/angular';
 import { ConfigService } from 'src/app/services/config.service';
 import { StorageService } from 'src/app/services/storage.service';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Topic } from 'src/app/interfaces/topic';
 import { Verse } from 'src/app/interfaces/verse';
 import { SharedInfoService } from 'src/app/services/shared-info.service';

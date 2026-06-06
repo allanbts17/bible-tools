@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { IonModal } from '@ionic/angular';
 import { StorageService } from 'src/app/services/storage.service';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Category } from 'src/app/interfaces/category';
 import { Note } from 'src/app/interfaces/note';
 //import { StatusBar, Style } from '@capacitor/status-bar';

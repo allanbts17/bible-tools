@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 //import { PopoverController } from '@ionic/angular';
 declare var contrast;
-import * as moment from 'moment';
+import moment from 'moment';
 import { Note } from 'src/app/interfaces/note';
 import { ConfigService } from 'src/app/services/config.service';
 
