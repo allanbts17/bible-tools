@@ -11,9 +11,10 @@ import { FormsModule } from '@angular/forms';
 import { lopy } from 'src/app/classes/utils';
 
 @Component({
-  selector: 'app-add-verse-modal',
-  templateUrl: './add-verse-modal.component.html',
-  styleUrls: ['./add-verse-modal.component.scss']
+    selector: 'app-add-verse-modal',
+    templateUrl: './add-verse-modal.component.html',
+    styleUrls: ['./add-verse-modal.component.scss'],
+    standalone: false
 })
 export class AddVerseModalComponent implements OnInit {
   @ViewChild('modal') modal: IonModal;

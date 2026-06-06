@@ -8,9 +8,10 @@ import { StorageService } from 'src/app/services/storage.service';
 
 
 @Component({
-  selector: 'app-custom-alert',
-  templateUrl: './custom-alert.component.html',
-  styleUrls: ['./custom-alert.component.scss'],
+    selector: 'app-custom-alert',
+    templateUrl: './custom-alert.component.html',
+    styleUrls: ['./custom-alert.component.scss'],
+    standalone: false
 })
 export class CustomAlertComponent implements OnInit {
   @Input() notes

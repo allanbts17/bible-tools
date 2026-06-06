@@ -26,10 +26,11 @@ import { RequestService } from 'src/app/services/request.service';
 import { OfflineRequestService } from 'src/app/services/offline-request.service';
 
 @Component({
-  selector: 'app-bible-study',
-  templateUrl: './bible-study.page.html',
-  styleUrls: ['./bible-study.page.scss'],
-  encapsulation: ViewEncapsulation.None,
+    selector: 'app-bible-study',
+    templateUrl: './bible-study.page.html',
+    styleUrls: ['./bible-study.page.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class BibleStudyPage implements OnInit {
   @ViewChild('swiperRef') swiperRef: ElementRef | undefined;

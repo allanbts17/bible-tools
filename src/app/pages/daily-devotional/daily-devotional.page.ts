@@ -15,10 +15,11 @@ import { Swiper } from 'swiper/types';
 
 const pagSize = 10
 @Component({
-  selector: 'app-daily-devotional',
-  templateUrl: './daily-devotional.page.html',
-  styleUrls: ['./daily-devotional.page.scss'],
-  encapsulation: ViewEncapsulation.None,
+    selector: 'app-daily-devotional',
+    templateUrl: './daily-devotional.page.html',
+    styleUrls: ['./daily-devotional.page.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class DailyDevotionalPage implements OnInit {
   @ViewChild('swiperRef') swiperRef: ElementRef | undefined;

@@ -10,9 +10,10 @@ import { ConfigService } from 'src/app/services/config.service';
 
 
 @Component({
-  selector: 'app-add-note-modal',
-  templateUrl: './add-note-modal.component.html',
-  styleUrls: ['./add-note-modal.component.scss'],
+    selector: 'app-add-note-modal',
+    templateUrl: './add-note-modal.component.html',
+    styleUrls: ['./add-note-modal.component.scss'],
+    standalone: false
 })
 export class AddNoteModalComponent implements OnInit {
   @ViewChild('modal') modal: IonModal;

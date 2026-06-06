@@ -5,9 +5,10 @@ import { ConfigService } from 'src/app/services/config.service';
 import { Topic } from 'src/app/interfaces/topic';
 
 @Component({
-  selector: 'app-topic-modal',
-  templateUrl: './topic-modal.component.html',
-  styleUrls: ['./topic-modal.component.scss'],
+    selector: 'app-topic-modal',
+    templateUrl: './topic-modal.component.html',
+    styleUrls: ['./topic-modal.component.scss'],
+    standalone: false
 })
 export class TopicModalComponent implements OnInit {
   @ViewChild('modal') modal: IonModal;

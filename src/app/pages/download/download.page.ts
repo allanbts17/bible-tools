@@ -17,9 +17,10 @@ import { StorageService } from 'src/app/services/storage.service';
 import { TaskService } from 'src/app/services/task.service';
 
 @Component({
-  selector: 'app-download.page',
-  templateUrl: './download.page.html',
-  styleUrls: ['./download.page.css']
+    selector: 'app-download.page',
+    templateUrl: './download.page.html',
+    styleUrls: ['./download.page.css'],
+    standalone: false
 })
 export class DownloadPage implements OnInit {
   prograssBarData = []

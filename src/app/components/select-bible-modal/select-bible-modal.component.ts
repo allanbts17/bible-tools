@@ -7,9 +7,10 @@ import { StorageService } from 'src/app/services/storage.service';
 import { copy } from 'src/app/classes/utils';
 
 @Component({
-  selector: 'app-select-bible-modal',
-  templateUrl: './select-bible-modal.component.html',
-  styleUrls: ['./select-bible-modal.component.scss'],
+    selector: 'app-select-bible-modal',
+    templateUrl: './select-bible-modal.component.html',
+    styleUrls: ['./select-bible-modal.component.scss'],
+    standalone: false
 })
 export class SelectBibleModalComponent {
   @ViewChild('modal') modal: IonModal;

@@ -3,9 +3,10 @@ import { Category } from 'src/app/interfaces/category';
 import { Note } from 'src/app/interfaces/note';
 
 @Component({
-  selector: 'app-daily-devotional-main-menu',
-  templateUrl: './daily-devotional-main-menu.component.html',
-  styleUrls: ['./daily-devotional-main-menu.component.scss'],
+    selector: 'app-daily-devotional-main-menu',
+    templateUrl: './daily-devotional-main-menu.component.html',
+    styleUrls: ['./daily-devotional-main-menu.component.scss'],
+    standalone: false
 })
 export class DailyDevotionalMainMenuComponent implements OnInit {
   @Input() filterOn

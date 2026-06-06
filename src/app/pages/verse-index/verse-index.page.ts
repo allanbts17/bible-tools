@@ -21,10 +21,11 @@ import { copy } from 'src/app/classes/utils';
 import { environment } from 'src/environments/environment';
 const pagSize = 10
 @Component({
-  selector: 'app-verse-index',
-  templateUrl: './verse-index.page.html',
-  encapsulation: ViewEncapsulation.None,
-  styleUrls: ['./verse-index.page.scss'],
+    selector: 'app-verse-index',
+    templateUrl: './verse-index.page.html',
+    encapsulation: ViewEncapsulation.None,
+    styleUrls: ['./verse-index.page.scss'],
+    standalone: false
 })
 export class VerseIndexPage implements OnInit {
   @ViewChild(AddVerseModalComponent) addVerseModal: AddVerseModalComponent;

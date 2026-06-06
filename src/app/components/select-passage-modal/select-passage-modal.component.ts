@@ -5,9 +5,10 @@ import { ApiService } from 'src/app/services/api.service';
 import { NgxSpinnerService } from "ngx-spinner";
 import { Swiper }  from 'swiper/types';
 @Component({
-  selector: 'app-select-passage-modal',
-  templateUrl: './select-passage-modal.component.html',
-  styleUrls: ['./select-passage-modal.component.scss'],
+    selector: 'app-select-passage-modal',
+    templateUrl: './select-passage-modal.component.html',
+    styleUrls: ['./select-passage-modal.component.scss'],
+    standalone: false
 })
 export class SelectPassageModalComponent {
   @ViewChild('swiperRef') swiperRef: ElementRef | undefined;

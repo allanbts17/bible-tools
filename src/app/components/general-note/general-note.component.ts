@@ -6,9 +6,10 @@ import { Note } from 'src/app/interfaces/note';
 import { ConfigService } from 'src/app/services/config.service';
 
 @Component({
-  selector: 'app-general-note',
-  templateUrl: './general-note.component.html',
-  styleUrls: ['./general-note.component.scss'],
+    selector: 'app-general-note',
+    templateUrl: './general-note.component.html',
+    styleUrls: ['./general-note.component.scss'],
+    standalone: false
 })
 export class GeneralNoteComponent implements OnInit {
   @Input() note: Note

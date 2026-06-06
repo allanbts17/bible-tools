@@ -3,9 +3,10 @@ import iro from '@jaames/iro'
 
 
 @Component({
-  selector: 'app-color-picker',
-  templateUrl: './color-picker.component.html',
-  styleUrls: ['./color-picker.component.scss'],
+    selector: 'app-color-picker',
+    templateUrl: './color-picker.component.html',
+    styleUrls: ['./color-picker.component.scss'],
+    standalone: false
 })
 export class ColorPickerComponent implements OnInit {
   @Output() selectColorEvent = new EventEmitter<string>()

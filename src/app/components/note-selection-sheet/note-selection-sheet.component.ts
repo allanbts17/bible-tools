@@ -10,9 +10,10 @@ import { MarkedVerse } from 'src/app/interfaces/marked-verse';
 
 
 @Component({
-  selector: 'app-note-selection-sheet',
-  templateUrl: './note-selection-sheet.component.html',
-  styleUrls: ['./note-selection-sheet.component.scss'],
+    selector: 'app-note-selection-sheet',
+    templateUrl: './note-selection-sheet.component.html',
+    styleUrls: ['./note-selection-sheet.component.scss'],
+    standalone: false
 })
 export class NoteSelectionSheetComponent implements OnInit {
   @ViewChild(AddVerseModalComponent) addVerseModal: AddVerseModalComponent;

@@ -5,9 +5,10 @@ import { ConfigService } from 'src/app/services/config.service';
 import { Category } from 'src/app/interfaces/category';
 
 @Component({
-  selector: 'app-add-category',
-  templateUrl: './add-category.component.html',
-  styleUrls: ['./add-category.component.scss'],
+    selector: 'app-add-category',
+    templateUrl: './add-category.component.html',
+    styleUrls: ['./add-category.component.scss'],
+    standalone: false
 })
 export class AddCategoryComponent implements OnInit {
   @ViewChild('catModal') modal: IonModal;

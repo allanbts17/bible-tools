@@ -5,9 +5,10 @@ import { Colors, makeId } from 'src/app/classes/utils';
 import { ConfigService } from 'src/app/services/config.service';
 
 @Component({
-  selector: 'app-modal-template',
-  templateUrl: './modal-template.component.html',
-  styleUrls: ['./modal-template.component.scss'],
+    selector: 'app-modal-template',
+    templateUrl: './modal-template.component.html',
+    styleUrls: ['./modal-template.component.scss'],
+    standalone: false
 })
 export class ModalTemplateComponent implements OnInit {
   @ViewChild('modal') modal: IonModal;
