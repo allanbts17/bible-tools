@@ -1,18 +1,21 @@
-<app-modal-template #modal [title]="actualTitle" [askBeforeCloseMessage]="askClosingMsg">
-  <ion-item *ngIf="showNewCategoryInput">
+<app-modal-template
+  #modal
+  [title]="actualTitle"
+  [askBeforeCloseMessage]="askClosingMsg"
+>
+  @if (showNewCategoryInput) {
+  <ion-item>
     <ion-label>Escoja el color de la categoría</ion-label>
     <button
       (click)="showColorPicker = !showColorPicker"
-      [ngStyle]="{background: newCategory?.color || '#fff'}"
+      [ngStyle]="{ background: newCategory?.color || '#fff' }"
       class="color-button w-8 h-8 ring-1 mr-1 ring-black rounded-full"
     ></button>
   </ion-item>
-  <app-color-picker
-    *ngIf="showColorPicker"
-    (selectColorEvent)="selectColor($event)"
-  ></app-color-picker>
-
-  <ion-list *ngIf="!showColorPicker">
+  } @if (showColorPicker) {
+  <app-color-picker (selectColorEvent)="selectColor($event)"></app-color-picker>
+  } @if (!showColorPicker) {
+  <ion-list>
     <ion-item>
       <ion-select
         [(ngModel)]="selectCategoryName"
@@ -22,27 +25,35 @@
         label-placement="floating"
         (ionChange)="handleSelectChange($event)"
       >
-       <ion-select-option
-          *ngFor="let cat of categoryList"
-          [value]="cat.category"
-          >{{ cat.category }}</ion-select-option>    
-          <ion-select-option value="Nuevo">Nuevo</ion-select-option>   
+        @for (cat of categoryList; track cat) {
+        <ion-select-option [value]="cat.category">{{
+          cat.category
+        }}</ion-select-option>
+        }
+        <ion-select-option value="Nuevo">Nuevo</ion-select-option>
       </ion-select>
     </ion-item>
-    <ion-item *ngIf="showNewCategoryInput">
-      <ion-input 
-      label="Nueva categoría"
-      label-placement="floating"
-      [(ngModel)]="newCategory.category"></ion-input>
-    </ion-item>
+    @if (showNewCategoryInput) {
     <ion-item>
-      <ion-input [(ngModel)]="note.title" (ngModelChange)="changedDetected()"
-      label="Titulo"
-      label-placement="floating"></ion-input>
+      <ion-input
+        label="Nueva categoría"
+        label-placement="floating"
+        [(ngModel)]="newCategory.category"
+      ></ion-input>
+    </ion-item>
+    }
+    <ion-item>
+      <ion-input
+        [(ngModel)]="note.title"
+        (ngModelChange)="changedDetected()"
+        label="Titulo"
+        label-placement="floating"
+      ></ion-input>
     </ion-item>
     <ion-item>
       <ion-textarea
-        [(ngModel)]="note.text" (ngModelChange)="changedDetected()"
+        [(ngModel)]="note.text"
+        (ngModelChange)="changedDetected()"
         label="Contenido"
         labelPlacement="floating"
         placeholder="Escriba aquí el contenido de la nota"
@@ -51,19 +62,17 @@
       ></ion-textarea>
     </ion-item>
   </ion-list>
-  <p *ngIf="showRedText" class="w-full text-center text-red-600">
-    Faltan espacios por llenar
-  </p>
+  } @if (showRedText) {
+  <p class="w-full text-center text-red-600">Faltan espacios por llenar</p>
+  }
 
   <div class="mt-5 flex justify-center w-full">
-    <ion-button *ngIf="!showColorPicker" color="btprimary" (click)="saveNote()"
-      >Guardar</ion-button
-    >
-    <ion-button
-      *ngIf="showColorPicker"
-      color="btprimary"
-      (click)="showColorPicker = false"
+    @if (!showColorPicker) {
+    <ion-button color="btprimary" (click)="saveNote()">Guardar</ion-button>
+    } @if (showColorPicker) {
+    <ion-button color="btprimary" (click)="showColorPicker = false"
       >Seleccionar color</ion-button
     >
+    }
   </div>
 </app-modal-template>

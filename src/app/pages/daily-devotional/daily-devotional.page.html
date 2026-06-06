@@ -8,10 +8,10 @@
         </ion-button>
       </ion-menu-toggle>
     </ion-buttons>
-    <ion-title *ngIf="!filterOn" slot="">Diario devocional</ion-title>
-
+    @if (!filterOn) {
+    <ion-title slot="">Diario devocional</ion-title>
+    } @if (filterOn && filterType != 'date') {
     <ion-searchbar
-      *ngIf="filterOn && filterType != 'date'"
       (ionFocus)="searchbarFocus()"
       (ionCancel)="clearSearchTerm()"
       [(ngModel)]="searchTerm"
@@ -19,13 +19,17 @@
       animated
       placeholder=""
     ></ion-searchbar>
+    }
     <ion-buttons slot="primary">
-      <ion-button *ngIf="!filterOn" id="daily-dev-menu" (click)="presentPopover($event)">
+      @if (!filterOn) {
+      <ion-button id="daily-dev-menu" (click)="presentPopover($event)">
         <ion-icon slot="icon-only" name="chevron-down-outline"></ion-icon>
       </ion-button>
-      <ion-button *ngIf="filterOn" slot="primary" (click)="quitFilter()" >
+      } @if (filterOn) {
+      <ion-button slot="primary" (click)="quitFilter()">
         <ion-icon slot="icon-only" name="filter-circle-outline"></ion-icon>
       </ion-button>
+      }
       <ion-popover
         #popover
         [isOpen]="isOpen"
@@ -75,8 +79,8 @@
                       class="overflow-y-auto"
                       [style.maxHeight]="categoryEditSize"
                     >
+                      @for (cat of categoryList; track cat; let last = $last) {
                       <ion-item
-                        *ngFor="let cat of categoryList; let last = last;"
                         [lines]="last ? 'none' : 'full'"
                         (click)="presentCategoryModal(cat)"
                         [button]="true"
@@ -89,6 +93,7 @@
                         ></ion-icon>
                         <ion-label>{{cat.category}}</ion-label>
                       </ion-item>
+                      }
                     </ion-list>
                   </ion-content>
                 </ng-template>
@@ -116,8 +121,8 @@
                       class="overflow-y-auto"
                       [style.maxHeight]="categoryDeleteSize"
                     >
+                      @for (cat of categoryList; track cat; let last = $last) {
                       <ion-item
-                        *ngFor="let cat of categoryList; let last = last;"
                         [lines]="last ? 'none' : 'full'"
                         (click)="deleteCategory(cat)"
                         [button]="true"
@@ -130,6 +135,7 @@
                         ></ion-icon>
                         <ion-label>{{cat.category}}</ion-label>
                       </ion-item>
+                      }
                     </ion-list>
                   </ion-content>
                 </ng-template>
@@ -164,7 +170,8 @@
       ></app-tabs>
       <!-- flex justify-center items-center relative -->
       <!-- Filter select -->
-      <ion-item *ngIf="filterOn" lines="full" class=" mt-1">
+      @if (filterOn) {
+      <ion-item lines="full" class="mt-1">
         <ion-select
           color="btprimary"
           label="Tipo de filtro"
@@ -177,7 +184,6 @@
           <ion-select-option value="text">Texto</ion-select-option>
           <ion-select-option value="date">Fecha</ion-select-option>
         </ion-select>
-
         <!-- <button (click)="showDate = !showDate" *ngIf="filterType == 'date'" class="absolute top-1 left-2 w-10">
           <ion-icon class="text-3xl" name="calendar-outline"></ion-icon>
         </button>
@@ -185,17 +191,17 @@
           <ion-icon class="text-3xl" name="close-outline"></ion-icon>
         </button> -->
         <!--<button *ngIf="filterType == 'date'" (click)="showDate = !showDate" class="absolute top-1 left-2 w-10">
-          <ion-icon class="text-3xl" name="calendar"></ion-icon>
-        </button>-->
+        <ion-icon class="text-3xl" name="calendar"></ion-icon>
+      </button>-->
       </ion-item>
-
-      <div *ngIf="filterOn"
+      } @if (filterOn) {
+      <div
         [ngClass]="{'hide':quit,'show':show}"
         class="calendar-container w-full flex justify-center scale-y-100 overflow-hidden"
       >
+        @if (showDate && filterType == 'date') {
         <ion-datetime
           color="btprimary"
-          *ngIf="showDate && filterType == 'date'"
           (ionCancel)="showDate=false"
           (ionChange)="dateSelectionChange($event)"
           presentation="date"
@@ -204,11 +210,10 @@
           doneText="Ok"
           cancelText="Ocultar"
         ></ion-datetime>
+        }
       </div>
-      <div
-        *ngIf="!showDate && filterType == 'date' && filterOn"
-        class="calendar-show w-full flex justify-center"
-      >
+      } @if (!showDate && filterType == 'date' && filterOn) {
+      <div class="calendar-show w-full flex justify-center">
         <ion-button
           color="light"
           fill="solid"
@@ -219,64 +224,60 @@
           Mostrar calendario
         </ion-button>
       </div>
+      }
     </div>
 
     <!-- Notes-->
-    <div id="swiper-height-limit" class="flex-1 ">
+    <div id="swiper-height-limit" class="flex-1">
       <swiper-container
-      #swiperRef
-      class="w-full"
-      (afterinit)="swiperInit()"
-      (slidechangetransitionstart)="transitionStarted()"
-    >
-      <swiper-slide class="h-full w-full" *ngFor="let tab of tabs">
-        <div
-          id="slide-{{tab.name}}"
-          class="scrolled-slide h-full w-full scroll ion-content-scroll-host"
-        >
-          <app-general-note
-            (noteDeleteEvent)="deleteNote($event)"
-            (noteEditEvent)="presentNoteModal($event)"
-            [categories]="categoryList"
-            *ngFor="let note of getPaginatedNotes(tab); let i = index"
-            [index]="'popover-'+tab.name+'-'+i"
-            [note]="note"
-          ></app-general-note>
-          <p
-            class="text-slate-500 w-full text-center mt-2"
-            *ngIf="notes[tab.name]?.length == 0 && filterOn"
-          >
-            No existen notas para este filtro
-          </p>
-          <p
-            class="text-slate-500 w-full text-center mt-2"
-            *ngIf="notes[tab.name]?.length == 0 && !filterOn"
-          >
-            No existen notas para esta categoría
-          </p>
+        #swiperRef
+        class="w-full"
+        (afterinit)="swiperInit()"
+        (slidechangetransitionstart)="transitionStarted()"
+      >
+        @for (tab of tabs; track tab) {
+        <swiper-slide class="h-full w-full">
           <div
-            *ngIf="showDate && filterType == 'date'"
-            style="height: 100px"
-          ></div>
-
-          <ion-infinite-scroll
-            threshold="100px"
-            id="infinite-scroll"
-            class=""
-            [disabled]="tab?.disabled"
-            (ionInfinite)="onScroll($event)"
+            id="slide-{{tab.name}}"
+            class="scrolled-slide h-full w-full scroll ion-content-scroll-host"
           >
-            <ion-infinite-scroll-content
-              loading-spinner="bubbles"
-              loading-text="Cargando más notas..."
+            @for (note of getPaginatedNotes(tab); track note; let i = $index) {
+            <app-general-note
+              (noteDeleteEvent)="deleteNote($event)"
+              (noteEditEvent)="presentNoteModal($event)"
+              [categories]="categoryList"
+              [index]="'popover-'+tab.name+'-'+i"
+              [note]="note"
+            ></app-general-note>
+            } @if (notes[tab.name]?.length == 0 && filterOn) {
+            <p class="text-slate-500 w-full text-center mt-2">
+              No existen notas para este filtro
+            </p>
+            } @if (notes[tab.name]?.length == 0 && !filterOn) {
+            <p class="text-slate-500 w-full text-center mt-2">
+              No existen notas para esta categoría
+            </p>
+            } @if (showDate && filterType == 'date') {
+            <div style="height: 100px"></div>
+            }
+            <ion-infinite-scroll
+              threshold="100px"
+              id="infinite-scroll"
+              class=""
+              [disabled]="tab?.disabled"
+              (ionInfinite)="onScroll($event)"
             >
-            </ion-infinite-scroll-content>
-          </ion-infinite-scroll>
-        </div>
-      </swiper-slide>
-    </swiper-container>
+              <ion-infinite-scroll-content
+                loading-spinner="bubbles"
+                loading-text="Cargando más notas..."
+              >
+              </ion-infinite-scroll-content>
+            </ion-infinite-scroll>
+          </div>
+        </swiper-slide>
+        }
+      </swiper-container>
     </div>
-    
 
     <!-- fab placed to the bottom end -->
     <ion-fab

@@ -7,63 +7,126 @@
         </ion-button>
       </ion-menu-toggle>
     </ion-buttons>
-    <ion-title *ngIf="!filterOn" slot="">Mis versículos</ion-title>
-
-    <ion-searchbar *ngIf="filterOn" (ionCancel)="clearSearchTerm()" [(ngModel)]="searchTerm" (ionChange)="searchbarChange($event)" animated placeholder=""></ion-searchbar>
+    @if (!filterOn) {
+    <ion-title slot="">Mis versículos</ion-title>
+    } @if (filterOn) {
+    <ion-searchbar
+      (ionCancel)="clearSearchTerm()"
+      [(ngModel)]="searchTerm"
+      (ionChange)="searchbarChange($event)"
+      animated
+      placeholder=""
+    ></ion-searchbar>
+    }
     <ion-buttons slot="primary">
       <ion-button (click)="presentPopover($event)">
         <ion-icon slot="icon-only" name="chevron-down-outline"></ion-icon>
       </ion-button>
-      <ion-popover #popover [isOpen]="isOpen" (didDismiss)="isOpen = false" [dismissOnSelect]="true">
+      <ion-popover
+        #popover
+        [isOpen]="isOpen"
+        (didDismiss)="isOpen = false"
+        [dismissOnSelect]="true"
+      >
         <ng-template>
           <ion-content>
             <ion-list class="menu-list">
-              <ion-item lines="full" (click)="presentVerseModal()" [button]="true" [detail]="false">
+              <ion-item
+                lines="full"
+                (click)="presentVerseModal()"
+                [button]="true"
+                [detail]="false"
+              >
                 <ion-icon name="document-text" slot="start"></ion-icon>
                 <ion-label>Nuevo versículo</ion-label>
               </ion-item>
-              <ion-item lines="full" (click)="presentTopicModal()" [button]="true" [detail]="false">
+              <ion-item
+                lines="full"
+                (click)="presentTopicModal()"
+                [button]="true"
+                [detail]="false"
+              >
                 <ion-icon name="albums" slot="start"></ion-icon>
                 <ion-label>Nuevo tema</ion-label>
               </ion-item>
-              <ion-item lines="full" id="topic-edit" [button]="true" [detail]="false">
+              <ion-item
+                lines="full"
+                id="topic-edit"
+                [button]="true"
+                [detail]="false"
+              >
                 <ion-icon name="create" slot="start"></ion-icon>
                 <ion-label>Editar tema</ion-label>
               </ion-item>
 
-              <ion-popover [animated]="true" trigger="topic-edit"  [dismissOnSelect]="true">
+              <ion-popover
+                [animated]="true"
+                trigger="topic-edit"
+                [dismissOnSelect]="true"
+              >
                 <ng-template>
                   <ion-content>
                     <ion-list>
-                      <ion-item *ngFor="let topic of topicList; let last = last;" [lines]="last ? 'none' : 'full'" (click)="presentTopicModal(topic)" [button]="true" [detail]="false">
+                      @for (topic of topicList; track topic; let last = $last) {
+                      <ion-item
+                        [lines]="last ? 'none' : 'full'"
+                        (click)="presentTopicModal(topic)"
+                        [button]="true"
+                        [detail]="false"
+                      >
                         <ion-label>{{topic.name}}</ion-label>
                       </ion-item>
+                      }
                     </ion-list>
                   </ion-content>
                 </ng-template>
               </ion-popover>
 
-              <ion-item lines="full" id="topic-delete" [button]="true" [detail]="false" [lines]="FF_VERSE_FILTER? 'full':'none'">
+              <ion-item
+                lines="full"
+                id="topic-delete"
+                [button]="true"
+                [detail]="false"
+                [lines]="FF_VERSE_FILTER? 'full':'none'"
+              >
                 <ion-icon name="trash" slot="start"></ion-icon>
                 <ion-label>Eliminar tema</ion-label>
               </ion-item>
 
-              <ion-popover [animated]="true" trigger="topic-delete"  [dismissOnSelect]="true">
+              <ion-popover
+                [animated]="true"
+                trigger="topic-delete"
+                [dismissOnSelect]="true"
+              >
                 <ng-template>
                   <ion-content>
                     <ion-list>
-                      <ion-item *ngFor="let topic of topicList; let last = last;" [lines]="last ? 'none' : 'full'" (click)="deleteTopic(topic)" [button]="true" [detail]="false">
+                      @for (topic of topicList; track topic; let last = $last) {
+                      <ion-item
+                        [lines]="last ? 'none' : 'full'"
+                        (click)="deleteTopic(topic)"
+                        [button]="true"
+                        [detail]="false"
+                      >
                         <ion-label>{{topic.name}}</ion-label>
                       </ion-item>
+                      }
                     </ion-list>
                   </ion-content>
                 </ng-template>
               </ion-popover>
 
-              <ion-item *ngIf="FF_VERSE_FILTER" lines="none" (click)="toogleFilter()" [button]="true" [detail]="false">
+              @if (FF_VERSE_FILTER) {
+              <ion-item
+                lines="none"
+                (click)="toogleFilter()"
+                [button]="true"
+                [detail]="false"
+              >
                 <ion-icon name="filter" slot="start"></ion-icon>
                 <ion-label>Filtar versículos</ion-label>
               </ion-item>
+              }
             </ion-list>
           </ion-content>
         </ng-template>
@@ -76,65 +139,140 @@
   <section class="h-full flex flex-col">
     <!-- Scrollable Segment -->
     <div class="sticky top-0 z-10 segment-background flex-none">
-      <app-tabs #dailyTabs [segmentId]="'verse-div'" [tabs]="tabs" (selectedTabEvent)="tabSelected($event)"></app-tabs>
+      <app-tabs
+        #dailyTabs
+        [segmentId]="'verse-div'"
+        [tabs]="tabs"
+        (selectedTabEvent)="tabSelected($event)"
+      ></app-tabs>
     </div>
     <div class="w-full flex justify-center flex-none">
-      <ion-button *ngIf="filterOn" fill="outline" shape="round" (click)="quiteFilter()">
+      @if (filterOn) {
+      <ion-button fill="outline" shape="round" (click)="quiteFilter()">
         Quitar filtro
         <ion-icon name="close-outline"></ion-icon>
       </ion-button>
+      }
     </div>
-
 
     <!-- Verses -->
     <div [style]="contentHeight">
-      <swiper-container #swiperRef class="flex-1 w-full" 
-    (afterinit)="swiperInit()"
-    (slidechangetransitionstart)="transitionStarted()">
-      <swiper-slide class="h-full w-full" *ngFor="let tab of tabs">
-        <div id="slide-{{tab.name}}-verses" class="scrolled-slide-verses h-full w-full scroll ion-content-scroll-host">
-          <ion-card *ngFor="let verse of getPaginatedVerses(tab)">
-            <ion-item [color]="config.settings.darkMode? config.TOOLBAR_COLOR:config.UNIQUEBAR_COLOR" class="">
-              <ion-label>{{verse.passage.reference}}</ion-label>
-              <ion-button (click)="openBibleModal(verse)" fill="outline" color="dark" shape="round" >{{verse.bible.reference}}</ion-button>
-              <ion-button fill="outline" color="dark" shape="round" (click)="changeVerseTopic(verse)">
-                <ion-icon name="repeat-outline"></ion-icon>
-              </ion-button>
-              <ion-button fill="outline" color="dark" shape="round" (click)="deleteVerse(verse)">
-                <ion-icon name="trash-outline"></ion-icon>
-              </ion-button>
-            </ion-item>
-            <ion-card-content class="text-left" style="white-space: pre-line">
-              {{verse.text}}
-            </ion-card-content>
-          </ion-card>
-          <p class="text-slate-500 w-full text-center mt-2" *ngIf="verses[tab.name]?.length == 0 && filterOn">No existen versículos para este filtro</p>
-          <p class="text-slate-500 w-full text-center mt-2" *ngIf="verses[tab.name]?.length == 0 && !filterOn">No existen versículos con este tema</p>
-
-          <ion-infinite-scroll style="height: 120px;" threshold="100px" id="infinite-scroll" class="" (ionInfinite)="onScroll($event)">
-            <ion-infinite-scroll-content
-              loading-spinner="bubbles"
-              loading-text="Cargando más versículos...">
-            </ion-infinite-scroll-content>
-          </ion-infinite-scroll>
-        </div>
-      </swiper-slide>
-    </swiper-container>
+      <swiper-container
+        #swiperRef
+        class="flex-1 w-full"
+        (afterinit)="swiperInit()"
+        (slidechangetransitionstart)="transitionStarted()"
+      >
+        @for (tab of tabs; track tab) {
+        <swiper-slide class="h-full w-full">
+          <div
+            id="slide-{{tab.name}}-verses"
+            class="scrolled-slide-verses h-full w-full scroll ion-content-scroll-host"
+          >
+            @for (verse of getPaginatedVerses(tab); track verse) {
+            <ion-card>
+              <ion-item
+                [color]="config.settings.darkMode? config.TOOLBAR_COLOR:config.UNIQUEBAR_COLOR"
+                class=""
+              >
+                <ion-label>{{verse.passage.reference}}</ion-label>
+                <ion-button
+                  (click)="openBibleModal(verse)"
+                  fill="outline"
+                  color="dark"
+                  shape="round"
+                  >{{verse.bible.reference}}</ion-button
+                >
+                <ion-button
+                  fill="outline"
+                  color="dark"
+                  shape="round"
+                  (click)="changeVerseTopic(verse)"
+                >
+                  <ion-icon name="repeat-outline"></ion-icon>
+                </ion-button>
+                <ion-button
+                  fill="outline"
+                  color="dark"
+                  shape="round"
+                  (click)="deleteVerse(verse)"
+                >
+                  <ion-icon name="trash-outline"></ion-icon>
+                </ion-button>
+              </ion-item>
+              <ion-card-content class="text-left" style="white-space: pre-line">
+                {{verse.text}}
+              </ion-card-content>
+            </ion-card>
+            } @if (verses[tab.name]?.length == 0 && filterOn) {
+            <p class="text-slate-500 w-full text-center mt-2">
+              No existen versículos para este filtro
+            </p>
+            } @if (verses[tab.name]?.length == 0 && !filterOn) {
+            <p class="text-slate-500 w-full text-center mt-2">
+              No existen versículos con este tema
+            </p>
+            }
+            <ion-infinite-scroll
+              style="height: 120px"
+              threshold="100px"
+              id="infinite-scroll"
+              class=""
+              (ionInfinite)="onScroll($event)"
+            >
+              <ion-infinite-scroll-content
+                loading-spinner="bubbles"
+                loading-text="Cargando más versículos..."
+              >
+              </ion-infinite-scroll-content>
+            </ion-infinite-scroll>
+          </div>
+        </swiper-slide>
+        }
+      </swiper-container>
     </div>
-    
+
     <!-- fab placed to the bottom end -->
-    <ion-fab vertical="bottom" horizontal="end" slot="fixed"
-    [ngClass]="{'animate__fadeInUp':getStatus(),'animate__fadeOutDown':!getStatus()}"
-    class="animate__animated animate__faster">
+    <ion-fab
+      vertical="bottom"
+      horizontal="end"
+      slot="fixed"
+      [ngClass]="{'animate__fadeInUp':getStatus(),'animate__fadeOutDown':!getStatus()}"
+      class="animate__animated animate__faster"
+    >
       <ion-fab-button color="btprimary" (click)="scrollToTop()">
         <ion-icon name="arrow-up-outline"></ion-icon>
       </ion-fab-button>
     </ion-fab>
 
-    <app-topic-modal [topicList]="topicList" (addTopicEvent)="loadTopics()"></app-topic-modal>
-    <app-select-passage-modal [bible]="sharedInfo.viBible" (passageSelectedEvent)="chapterChange($event)"></app-select-passage-modal>
-    <app-select-bible-modal [onlyViBible]="true" [(isOpen)]="isOpenBibleModal" (bibleSelectedEvent)="bibleChange($event)"></app-select-bible-modal>
-    <app-add-verse-modal (selectChapterEvent)="openChapterModal()" (selectBibleEvent)="openBibleModal()" [selectedBible]="sharedInfo.viBible" [selectedChapter]="sharedInfo.viChapter" [topicList]="topicList" (addTopicEvent)="loadTopics()" (addVerseEvent)="loadVerses()"></app-add-verse-modal>
-    <app-custom-alert (versesChangedEvent)="loadVerses()" (topicAddedEvent)="loadTopics()" (topicErasedEvent)="loadTopics()" [topics]="topicList" [verses]="verses"></app-custom-alert>
+    <app-topic-modal
+      [topicList]="topicList"
+      (addTopicEvent)="loadTopics()"
+    ></app-topic-modal>
+    <app-select-passage-modal
+      [bible]="sharedInfo.viBible"
+      (passageSelectedEvent)="chapterChange($event)"
+    ></app-select-passage-modal>
+    <app-select-bible-modal
+      [onlyViBible]="true"
+      [(isOpen)]="isOpenBibleModal"
+      (bibleSelectedEvent)="bibleChange($event)"
+    ></app-select-bible-modal>
+    <app-add-verse-modal
+      (selectChapterEvent)="openChapterModal()"
+      (selectBibleEvent)="openBibleModal()"
+      [selectedBible]="sharedInfo.viBible"
+      [selectedChapter]="sharedInfo.viChapter"
+      [topicList]="topicList"
+      (addTopicEvent)="loadTopics()"
+      (addVerseEvent)="loadVerses()"
+    ></app-add-verse-modal>
+    <app-custom-alert
+      (versesChangedEvent)="loadVerses()"
+      (topicAddedEvent)="loadTopics()"
+      (topicErasedEvent)="loadTopics()"
+      [topics]="topicList"
+      [verses]="verses"
+    ></app-custom-alert>
   </section>
 </ion-content>

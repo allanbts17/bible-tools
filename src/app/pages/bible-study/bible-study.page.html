@@ -7,9 +7,8 @@
         </ion-button>
       </ion-menu-toggle>
     </ion-buttons>
-    <ion-buttons
-      *ngIf="sharedInfo.chapter && sharedInfo.bible"
-    >
+    @if (sharedInfo.chapter && sharedInfo.bible) {
+    <ion-buttons>
       <ion-button
         color="{{conf.TOOLBAR_BUTTONS_COLOR}}"
         fill="solid"
@@ -32,6 +31,7 @@
         {{sharedInfo.bible.abbreviationLocal}}
       </ion-button>
     </ion-buttons>
+    }
   </ion-toolbar>
 </ion-header>
 
@@ -46,7 +46,6 @@
     (slideprevtransitionend)="start? onTransitionToPrev():''"
     (transitionstart)="start?  onTransitionStart($event):''"
     initial-slide="1"
-
   >
     <swiper-slide>
       <ion-text class="block h-full scroll px-4 py-4 text-left"></ion-text>
@@ -70,19 +69,19 @@
   </swiper-container>
 
   <!-- <ion-slides
-    id="bible-slides"
-    #slide
-    [options]="myOptions"
-    class="h-full w-full"
-    (ionSlideTransitionEnd)="transitionFinished()"
+  id="bible-slides"
+  #slide
+  [options]="myOptions"
+  class="h-full w-full"
+  (ionSlideTransitionEnd)="transitionFinished()"
   >
-    <ion-slide class="h-full" *ngFor="let slide of showedChapters; index as i">
-      {{i}}
-      <ion-text class="h-full overflow-y-scroll px-4 py-4 text-left">
-        <div [innerHTML]="slide.content"></div>
-      </ion-text>
-    </ion-slide>
-  </ion-slides> -->
+  <ion-slide class="h-full" *ngFor="let slide of showedChapters; index as i">
+    {{i}}
+    <ion-text class="h-full overflow-y-scroll px-4 py-4 text-left">
+      <div [innerHTML]="slide.content"></div>
+    </ion-text>
+  </ion-slide>
+</ion-slides> -->
 
   <app-note-selection-sheet
     #sheet
@@ -99,8 +98,8 @@
     [bible]="sharedInfo.bible"
     (passageSelectedEvent)="chapterChange($event)"
   ></app-select-passage-modal>
+  @if (ALLOW_BUTTON_SLIDE) {
   <ion-fab
-    *ngIf="ALLOW_BUTTON_SLIDE"
     class="study-fab"
     vertical="bottom"
     horizontal="end"
@@ -111,9 +110,8 @@
       <ion-icon name="chevron-forward-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-
+  } @if (ALLOW_BUTTON_SLIDE) {
   <ion-fab
-    *ngIf="ALLOW_BUTTON_SLIDE"
     class="study-fab"
     vertical="bottom"
     horizontal="start"
@@ -124,10 +122,11 @@
       <ion-icon name="chevron-back-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
+  }
 </ion-content>
 
 <!-- <ion-content scroll-y="false" *ngIf="!network.status?.connected">
-  <ion-card class="overflow-hidden w-full h-36">
-    No tiene conexión a internet y esta sección lo requiere.
-  </ion-card>
+<ion-card class="overflow-hidden w-full h-36">
+  No tiene conexión a internet y esta sección lo requiere.
+</ion-card>
 </ion-content> -->

@@ -13,14 +13,28 @@
       <ion-label>Editar categoría</ion-label>
     </ion-item>
 
-    <ion-popover [animated]="true" trigger="category-edit"  [dismissOnSelect]="true">
+    <ion-popover
+      [animated]="true"
+      trigger="category-edit"
+      [dismissOnSelect]="true"
+    >
       <ng-template>
         <ion-content>
           <ion-list>
-            <ion-item *ngFor="let cat of categoryList" (click)="presentCategoryModal(cat)" [button]="true" [detail]="false">
-              <ion-icon [style.color]="cat.color" name="ellipse" slot="start"></ion-icon>
-              <ion-label>{{cat.category}}</ion-label>
+            @for (cat of categoryList; track cat) {
+            <ion-item
+              (click)="presentCategoryModal(cat)"
+              [button]="true"
+              [detail]="false"
+            >
+              <ion-icon
+                [style.color]="cat.color"
+                name="ellipse"
+                slot="start"
+              ></ion-icon>
+              <ion-label>{{ cat.category }}</ion-label>
             </ion-item>
+            }
           </ion-list>
         </ion-content>
       </ng-template>
@@ -31,23 +45,36 @@
       <ion-label>Eliminar categoría</ion-label>
     </ion-item>
 
-    <ion-popover [animated]="true" trigger="category-delete"  [dismissOnSelect]="true">
+    <ion-popover
+      [animated]="true"
+      trigger="category-delete"
+      [dismissOnSelect]="true"
+    >
       <ng-template>
         <ion-content>
           <ion-list>
-            <ion-item *ngFor="let cat of categoryList" (click)="deleteCategory(cat)" [button]="true" [detail]="false">
-              <ion-icon [style.color]="cat.color" name="ellipse" slot="start"></ion-icon>
-              <ion-label>{{cat.category}}</ion-label>
+            @for (cat of categoryList; track cat) {
+            <ion-item
+              (click)="deleteCategory(cat)"
+              [button]="true"
+              [detail]="false"
+            >
+              <ion-icon
+                [style.color]="cat.color"
+                name="ellipse"
+                slot="start"
+              ></ion-icon>
+              <ion-label>{{ cat.category }}</ion-label>
             </ion-item>
+            }
           </ion-list>
         </ion-content>
       </ng-template>
     </ion-popover>
 
-    <ion-item (click)="filterOn=!filterOn" [button]="true" [detail]="false">
+    <ion-item (click)="filterOn = !filterOn" [button]="true" [detail]="false">
       <ion-icon name="filter" slot="start"></ion-icon>
       <ion-label>Filtar notas</ion-label>
     </ion-item>
   </ion-list>
-
 </ion-content>

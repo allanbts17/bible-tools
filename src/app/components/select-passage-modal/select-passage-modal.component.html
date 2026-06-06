@@ -1,58 +1,75 @@
-<app-modal-template #modal [title]="title" (modalDidPresent)="modalPresented()" (closedEvent)="resetValues()">
-  <swiper-container #swiperRef allow-touch-move="false" (afterinit)="swiperInit()" class="h-full">
+<app-modal-template
+  #modal
+  [title]="title"
+  (modalDidPresent)="modalPresented()"
+  (closedEvent)="resetValues()"
+>
+  <swiper-container
+    #swiperRef
+    allow-touch-move="false"
+    (afterinit)="swiperInit()"
+    class="h-full"
+  >
     <swiper-slide class="h-full">
       <div class="overflow-y-scroll h-full w-full">
         <ion-list class="w-full">
-          <ion-item *ngFor="let book of bookList; let last = last;" [lines]="last ? 'none' : 'full'" (click)="setBook(book)" button>
+          @for (book of bookList; track book; let last = $last) {
+          <ion-item
+            [lines]="last ? 'none' : 'full'"
+            (click)="setBook(book)"
+            button
+          >
             <ion-label>{{ book.name }}</ion-label>
           </ion-item>
+          }
         </ion-list>
       </div>
     </swiper-slide>
 
     <swiper-slide class="h-full w-full">
-      <div
-        class=" h-full w-full overflow-y-scroll"
-        *ngIf="chapterList?.length > 0; else spinner"
-      >
-      <div class="flex flex-wrap">
-        <ion-button
-          class="h-20 chapter-item"
-          shape="round"
-          color="medium"
-          fill=""
-          *ngFor="let chapter of chapterList"
-          (click)="setChapter(chapter)"
-        >
-          {{ chapter.number }}
-        </ion-button>
-        
+      @if (chapterList?.length > 0) {
+      <div class="h-full w-full overflow-y-scroll">
+        <div class="flex flex-wrap">
+          @for (chapter of chapterList; track chapter) {
+          <ion-button
+            class="h-20 chapter-item"
+            shape="round"
+            color="medium"
+            fill=""
+            (click)="setChapter(chapter)"
+          >
+            {{ chapter.number }}
+          </ion-button>
+          }
+        </div>
+        <div class="h-20 w-full"></div>
       </div>
-      <div class="h-20 w-full"></div>
-        
-      </div>
-
-      
+      } @else {
+      <!-- <div class="flex flex-wrap justify-around h-full overflow-y-scroll">
+        <ion-item class="mt-9" lines="none">
+          <ion-spinner name="circles"></ion-spinner>
+        </ion-item>
+      </div> -->
+      <app-spinner></app-spinner>
+      }
     </swiper-slide>
   </swiper-container>
 
-  <ion-fab *ngIf="showFab" [ngClass]="{'animate__bounceInUp':slides?.activeIndex == 1,'animate__backOutDown':slides?.activeIndex == 0}"
-  class="animate__animated"
-   vertical="bottom" horizontal="start" slot="fixed" (click)="returnToPrev()">
-        <ion-fab-button color="medium">
-          <ion-icon name="arrow-back-outline"></ion-icon>
-        </ion-fab-button>
-      </ion-fab>
+  @if (showFab) {
+  <ion-fab
+    [ngClass]="{
+      animate__bounceInUp: slides?.activeIndex == 1,
+      animate__backOutDown: slides?.activeIndex == 0
+    }"
+    class="animate__animated"
+    vertical="bottom"
+    horizontal="start"
+    slot="fixed"
+    (click)="returnToPrev()"
+  >
+    <ion-fab-button color="medium">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  }
 </app-modal-template>
-
-<ng-template #spinner>
-  <!-- <div class="flex flex-wrap justify-around h-full overflow-y-scroll">
-    <ion-item class="mt-9" lines="none">
-      <ion-spinner name="circles"></ion-spinner>
-    </ion-item>
-  </div> -->
-  <app-spinner></app-spinner>
-</ng-template>
-
-
-
